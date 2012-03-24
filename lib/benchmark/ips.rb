@@ -5,6 +5,8 @@ require 'benchmark/compare'
 module Benchmark
 
   class IPSReport
+    VERSION = "1.0.0"
+
     def initialize(label, us, iters, ips, ips_sd, cycles)
       @label = label
       @microseconds = us
@@ -41,7 +43,7 @@ module Benchmark
     end
 
     def display
-      STDOUT.puts to_s
+      $stdout.puts to_s
     end
   end
 
@@ -139,7 +141,7 @@ module Benchmark
   def ips(time=5, warmup=2)
     suite = nil
 
-    sync, STDOUT.sync = STDOUT.sync, true
+    sync, $stdout.sync = $stdout.sync, true
 
     if defined? Benchmark::Suite and Suite.current
       suite = Benchmark::Suite.current
@@ -157,9 +159,9 @@ module Benchmark
 
       if !suite or !suite.quiet?
         if item.label.size > 20
-          STDOUT.print "#{item.label}\n#{' ' * 20}"
+          $stdout.print "#{item.label}\n#{' ' * 20}"
         else
-          STDOUT.print item.label.rjust(20)
+          $stdout.print item.label.rjust(20)
         end
       end
 
@@ -215,11 +217,11 @@ module Benchmark
 
       rep = IPSReport.new(item.label, measured_us, iter, avg_ips, sd_ips, cycles_per_100ms)
 
-      STDOUT.puts " #{rep.body}" if !suite or !suite.quiet?
+      $stdout.puts " #{rep.body}" if !suite or !suite.quiet?
 
       suite.add_report rep, caller(1).first if suite
 
-      STDOUT.sync = sync
+      $stdout.sync = sync
 
       reports << rep
     end
@@ -227,6 +229,8 @@ module Benchmark
     if job.compare
       Benchmark.compare(*reports)
     end
+
+    return reports
   end
 
 
