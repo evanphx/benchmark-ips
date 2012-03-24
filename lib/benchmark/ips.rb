@@ -5,7 +5,7 @@ require 'benchmark/compare'
 module Benchmark
 
   class IPSReport
-    VERSION = "1.0.0"
+    VERSION = "1.1.0"
 
     def initialize(label, us, iters, ips, ips_sd, cycles)
       @label = label
@@ -30,8 +30,7 @@ module Benchmark
 
     def body
       left = "%10.1f (±%.1f%%) i/s" % [ips, stddev_percentage]
-      left.ljust(20) + (" - %10d in %10.6fs (cycle=%d)" % 
-                          [@iterations, runtime, @measurement_cycle])
+      left.ljust(20) + (" - %10d in %10.6fs" % [@iterations, runtime])
     end
 
     def header
@@ -147,17 +146,23 @@ module Benchmark
       suite = Benchmark::Suite.current
     end
 
+    quiet = suite && !suite.quiet?
+
     job = IPSJob.new
     yield job
 
     reports = []
+
+    timing = {}
+
+    $stdout.puts "Calculating -------------------------------------" unless quiet
 
     job.list.each do |item|
       suite.warming item.label, warmup if suite
 
       Timing.clean_env
 
-      if !suite or !suite.quiet?
+      unless quiet
         if item.label.size > 20
           $stdout.print "#{item.label}\n#{' ' * 20}"
         else
@@ -184,7 +189,23 @@ module Benchmark
       cycles_per_100ms = ((100_000 / warmup_time) * warmup_iter).to_i
       cycles_per_100ms = 1 if cycles_per_100ms <= 0
 
+      timing[item] = cycles_per_100ms
+
+      $stdout.printf "%10d i/100ms\n", cycles_per_100ms unless quiet
+
       suite.warmup_stats warmup_time, cycles_per_100ms if suite
+    end
+
+    $stdout.puts "-------------------------------------------------" unless quiet
+
+    job.list.each do |item|
+      unless quiet
+        if item.label.size > 20
+          $stdout.print "#{item.label}\n#{' ' * 20}"
+        else
+          $stdout.print item.label.rjust(20)
+        end
+      end
 
       Timing.clean_env
 
@@ -195,6 +216,8 @@ module Benchmark
       target = Time.now + time
 
       measurements = []
+
+      cycles_per_100ms = timing[item]
 
       while Time.now < target
         before = Time.now
@@ -217,14 +240,14 @@ module Benchmark
 
       rep = IPSReport.new(item.label, measured_us, iter, avg_ips, sd_ips, cycles_per_100ms)
 
-      $stdout.puts " #{rep.body}" if !suite or !suite.quiet?
+      $stdout.puts " #{rep.body}" unless quiet
 
       suite.add_report rep, caller(1).first if suite
 
-      $stdout.sync = sync
-
       reports << rep
     end
+
+    $stdout.sync = sync
 
     if job.compare
       Benchmark.compare(*reports)
