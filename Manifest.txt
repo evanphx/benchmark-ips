@@ -1,0 +1,8 @@
+.autotest
+History.txt
+Manifest.txt
+README.txt
+Rakefile
+bin/benchmark/ips
+lib/benchmark/ips.rb
+test/test_benchmark/ips.rb
