@@ -1,26 +1,49 @@
 = benchmark-ips
 
-* FIX (url)
+* http://github.com/evanphx/benchmark-ips
 
 == DESCRIPTION:
 
-FIX (describe your package)
+A iterations per second enhancement to Benchmark
 
 == FEATURES/PROBLEMS:
 
-* FIX (list of features or problems)
+ * benchmark/ips - benchmarks a blocks iterations/second. For short snippits
+   of code, ips automatically figures out how many times to run the code
+   to get interesting data. No more guessing at random iteration counts!
 
 == SYNOPSIS:
 
-  FIX (code sample of usage)
+require 'benchmark/ips'
+
+Benchmark.ips do
+  # Typical mode, runs the block as many times as it can
+  x.report("addition") { 1 + 2 }
+
+  # To reduce overhead, the number of iterations is passed in
+  # and the block must run the code the specific number of times.
+  # Used for when the workload is very small and any overhead
+  # introduces incorrectable errors.
+  x.report("addition2") do |times|
+    i = 0
+    while i < times
+      1 + 2
+    end
+  end
+
+  # To reduce overhead even more, grafts the code given into
+  # the loop that performs the iterations internally to reduce
+  # overhead. Typically not needed, use the |times| form instead.
+  x.report("addition3", "1 + 2")
+end
 
 == REQUIREMENTS:
 
-* FIX (list of requirements)
+* None!
 
 == INSTALL:
 
-* FIX (sudo gem install, anything else)
+* gem install benchmark-ips
 
 == DEVELOPERS:
 
@@ -35,7 +58,7 @@ and generate the RDoc.
 
 (The MIT License)
 
-Copyright (c) 2012 FIX
+Copyright (c) 2012 Evan Phoenix
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
