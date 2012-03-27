@@ -16,7 +16,7 @@ A iterations per second enhancement to Benchmark
 
 require 'benchmark/ips'
 
-Benchmark.ips do
+Benchmark.ips do |x|
   # Typical mode, runs the block as many times as it can
   x.report("addition") { 1 + 2 }
 
