@@ -1,26 +1,5 @@
 module Benchmark
   module Timing
-    def self.resolution
-      samples = []
-
-      t1 = TimeVal.new
-      t2 = TimeVal.new
-
-      30.times do
-        t1.update!
-
-        while true
-          t2.update!
-          break if t2 != t1
-        end
-
-        samples << t1.diff(t2)
-      end
-
-      sum = samples.inject(0) { |acc, i| acc + i }
-      sum / 30
-    end
-
     def self.mean(samples)
       sum = samples.inject(0) { |acc, i| acc + i }
       sum / samples.size
