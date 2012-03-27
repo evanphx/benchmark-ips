@@ -224,9 +224,15 @@ module Benchmark
         item.call_times cycles_per_100ms
         after = Time.now
 
+        # If for some reason the timing said this too no time (O_o)
+        # then ignore the iteration entirely and start another.
+        #
+        m = ((after.to_f - before.to_f) * 1_000_000.0)
+        next if m <= 0.0
+
         iter += cycles_per_100ms
 
-        measurements << ((after.to_f - before.to_f) * 1_000_000.0)
+        measurements << m
       end
 
       measured_us = measurements.inject(0) { |a,i| a + i }
