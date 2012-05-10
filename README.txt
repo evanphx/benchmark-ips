@@ -28,6 +28,7 @@ Benchmark.ips do |x|
     i = 0
     while i < times
       1 + 2
+      i += 1
     end
   end
 
