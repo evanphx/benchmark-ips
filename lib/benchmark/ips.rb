@@ -121,11 +121,11 @@ module Benchmark
     #
     def item(label="", str=nil, &blk) # :yield:
       if blk and str
-        raise ArgmentError, "specify a block and a str, but not both"
+        raise ArgumentError, "specify a block and a str, but not both"
       end
 
       action = str || blk
-      raise ArgmentError, "no block or string" unless action
+      raise ArgumentError, "no block or string" unless action
 
       @list.push Entry.new(label, action)
       self
@@ -236,8 +236,6 @@ module Benchmark
       end
 
       measured_us = measurements.inject(0) { |a,i| a + i }
-
-      seconds = measured_us.to_f / 1_000_000.0
 
       all_ips = measurements.map { |i| cycles_per_100ms.to_f / (i.to_f / 1_000_000) }
 
