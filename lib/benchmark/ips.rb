@@ -121,11 +121,11 @@ module Benchmark
     #
     def item(label="", str=nil, &blk) # :yield:
       if blk and str
-        raise ArgmentError, "specify a block and a str, but not both"
+        raise ArgumentError, "specify a block and a str, but not both"
       end
 
       action = str || blk
-      raise ArgmentError, "no block or string" unless action
+      raise ArgumentError, "no block or string" unless action
 
       @list.push Entry.new(label, action)
       self
