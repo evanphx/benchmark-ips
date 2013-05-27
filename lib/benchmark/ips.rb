@@ -237,8 +237,6 @@ module Benchmark
 
       measured_us = measurements.inject(0) { |a,i| a + i }
 
-      seconds = measured_us.to_f / 1_000_000.0
-
       all_ips = measurements.map { |i| cycles_per_100ms.to_f / (i.to_f / 1_000_000) }
 
       avg_ips = Timing.mean(all_ips)
