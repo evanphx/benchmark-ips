@@ -1,19 +1,20 @@
-= benchmark-ips
+# benchmark-ips
 
 * http://github.com/evanphx/benchmark-ips
 
-== DESCRIPTION:
+## DESCRIPTION:
 
 A iterations per second enhancement to Benchmark
 
-== FEATURES/PROBLEMS:
+## FEATURES/PROBLEMS:
 
  * benchmark/ips - benchmarks a blocks iterations/second. For short snippits
    of code, ips automatically figures out how many times to run the code
    to get interesting data. No more guessing at random iteration counts!
 
-== SYNOPSIS:
+## SYNOPSIS:
 
+```ruby
 require 'benchmark/ips'
 
 Benchmark.ips do |x|
@@ -37,25 +38,27 @@ Benchmark.ips do |x|
   # overhead. Typically not needed, use the |times| form instead.
   x.report("addition3", "1 + 2")
 end
+```
 
-== REQUIREMENTS:
+## REQUIREMENTS:
 
 * None!
 
-== INSTALL:
+## INSTALL:
 
-* gem install benchmark-ips
 
-== DEVELOPERS:
+    $ gem install benchmark-ips
+
+## DEVELOPERS:
 
 After checking out the source, run:
 
-  $ rake newb
+    $ rake newb
 
 This task will install any missing dependencies, run the tests/specs,
 and generate the RDoc.
 
-== LICENSE:
+## LICENSE:
 
 (The MIT License)
 
