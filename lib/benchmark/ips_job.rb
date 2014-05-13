@@ -144,7 +144,7 @@ module Benchmark
       MICROSECONDS_PER_SECOND * (cycles.to_f / time_us.to_f)
     end
 
-    def warmup
+    def run_warmup
       @timing = {}
       @list.each do |item|
         @suite.warming item.label, @warmup if @suite

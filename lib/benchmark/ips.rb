@@ -33,7 +33,7 @@ module Benchmark
 
       $stdout.puts "Calculating -------------------------------------" unless quiet
 
-      job.warmup
+      job.run_warmup
 
       $stdout.puts "-------------------------------------------------" unless quiet
 
