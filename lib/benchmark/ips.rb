@@ -126,6 +126,10 @@ module Benchmark
 
     attr_reader :compare
 
+    def compare?
+      @compare
+    end
+
     def compare!
       @compare = true
     end
@@ -272,7 +276,7 @@ module Benchmark
 
     $stdout.sync = sync
 
-    if job.compare
+    if job.compare?
       Benchmark.compare(*reports)
     end
 
