@@ -82,6 +82,7 @@ module Benchmark
         end
       end
 
+
       def as_action?
         @as_action
       end
@@ -124,6 +125,98 @@ module Benchmark
       @compare = true
     end
 
+    def warmup suite, quiet, warmup
+      timing = {}
+      @list.each do |item|
+        suite.warming item.label, warmup if suite
+
+        Timing.clean_env
+
+        unless quiet
+          $stdout.printf item.label_rjust
+        end
+
+        before = Time.now
+        target = Time.now + warmup
+
+        warmup_iter = 0
+
+        while Time.now < target
+          item.call_times(1)
+          warmup_iter += 1
+        end
+
+        after = Time.now
+
+        warmup_time = (after.to_f - before.to_f) * 1_000_000.0
+
+        # calculate the time to run approx 100ms
+
+        cycles_per_100ms = ((100_000 / warmup_time) * warmup_iter).to_i
+        cycles_per_100ms = 1 if cycles_per_100ms <= 0
+
+        timing[item] = cycles_per_100ms
+
+        $stdout.printf "%10d i/100ms\n", cycles_per_100ms unless quiet
+
+        suite.warmup_stats warmup_time, cycles_per_100ms if suite
+      end
+      timing
+    end
+
+    def run suite, quiet, time, timing
+      reports = []
+
+      @list.each do |item|
+        unless quiet
+          $stdout.print item.label_rjust
+        end
+
+        Timing.clean_env
+
+        suite.running item.label, time if suite
+
+        iter = 0
+
+        target = Time.now + time
+
+        measurements = []
+
+        cycles_per_100ms = timing[item]
+
+        while Time.now < target
+          before = Time.now
+          item.call_times cycles_per_100ms
+          after = Time.now
+
+          # If for some reason the timing said this too no time (O_o)
+          # then ignore the iteration entirely and start another.
+          #
+          m = ((after.to_f - before.to_f) * 1_000_000.0)
+          next if m <= 0.0
+
+          iter += cycles_per_100ms
+
+          measurements << m
+        end
+
+        measured_us = measurements.inject(0) { |a,i| a + i }
+
+        all_ips = measurements.map { |i| cycles_per_100ms.to_f / (i.to_f / 1_000_000) }
+
+        avg_ips = Timing.mean(all_ips)
+        sd_ips =  Timing.stddev(all_ips).round
+
+        rep = IPSReport.new(item.label, measured_us, iter, avg_ips, sd_ips, cycles_per_100ms)
+
+        $stdout.puts " #{rep.body}" unless quiet
+
+        suite.add_report rep, caller(1).first if suite
+
+        reports << rep
+      end
+    end
+
     #
     # Registers the given label and block pair in the job list.
     #
@@ -159,97 +252,13 @@ module Benchmark
     job = IPSJob.new
     yield job
 
-    reports = []
-
-    timing = {}
-
     $stdout.puts "Calculating -------------------------------------" unless quiet
 
-    job.list.each do |item|
-      suite.warming item.label, warmup if suite
-
-      Timing.clean_env
-
-      unless quiet
-        $stdout.printf item.label_rjust
-      end
-
-      before = Time.now
-      target = Time.now + warmup
-
-      warmup_iter = 0
-
-      while Time.now < target
-        item.call_times(1)
-        warmup_iter += 1
-      end
-
-      after = Time.now
-
-      warmup_time = (after.to_f - before.to_f) * 1_000_000.0
-
-      # calculate the time to run approx 100ms
-
-      cycles_per_100ms = ((100_000 / warmup_time) * warmup_iter).to_i
-      cycles_per_100ms = 1 if cycles_per_100ms <= 0
-
-      timing[item] = cycles_per_100ms
-
-      $stdout.printf "%10d i/100ms\n", cycles_per_100ms unless quiet
-
-      suite.warmup_stats warmup_time, cycles_per_100ms if suite
-    end
+    timing = job.warmup suite, quiet, warmup
 
     $stdout.puts "-------------------------------------------------" unless quiet
 
-    job.list.each do |item|
-      unless quiet
-        $stdout.print item.label_rjust
-      end
-
-      Timing.clean_env
-
-      suite.running item.label, time if suite
-
-      iter = 0
-
-      target = Time.now + time
-
-      measurements = []
-
-      cycles_per_100ms = timing[item]
-
-      while Time.now < target
-        before = Time.now
-        item.call_times cycles_per_100ms
-        after = Time.now
-
-        # If for some reason the timing said this too no time (O_o)
-        # then ignore the iteration entirely and start another.
-        #
-        m = ((after.to_f - before.to_f) * 1_000_000.0)
-        next if m <= 0.0
-
-        iter += cycles_per_100ms
-
-        measurements << m
-      end
-
-      measured_us = measurements.inject(0) { |a,i| a + i }
-
-      all_ips = measurements.map { |i| cycles_per_100ms.to_f / (i.to_f / 1_000_000) }
-
-      avg_ips = Timing.mean(all_ips)
-      sd_ips =  Timing.stddev(all_ips).round
-
-      rep = IPSReport.new(item.label, measured_us, iter, avg_ips, sd_ips, cycles_per_100ms)
-
-      $stdout.puts " #{rep.body}" unless quiet
-
-      suite.add_report rep, caller(1).first if suite
-
-      reports << rep
-    end
+    reports = job.run suite, quiet, time, timing
 
     $stdout.sync = sync
 
