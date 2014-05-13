@@ -73,12 +73,16 @@ module Benchmark
     end
 
     attr_accessor :warmup, :time
+    attr_reader :timing, :reports
 
     def initialize opts={}
       @suite = opts[:suite] || nil
       @quiet = opts[:quiet] || false
       @list = []
       @compare = false
+
+      @timing = {}
+      @reports = []
 
       # defaults
       @warmup = 2
@@ -141,7 +145,7 @@ module Benchmark
     end
 
     def warmup
-      timing = {}
+      @timing = {}
       @list.each do |item|
         @suite.warming item.label, @warmup if @suite
 
@@ -165,17 +169,16 @@ module Benchmark
 
         warmup_time_us = time_us before, after
 
-        timing[item] = cycles_per_100ms warmup_time_us, warmup_iter
+        @timing[item] = cycles_per_100ms warmup_time_us, warmup_iter
 
-        $stdout.printf "%10d i/100ms\n", timing[item] unless @quiet
+        $stdout.printf "%10d i/100ms\n", @timing[item] unless @quiet
 
-        @suite.warmup_stats warmup_time_us, timing[item] if @suite
+        @suite.warmup_stats warmup_time_us, @timing[item] if @suite
       end
-      timing
     end
 
-    def run timing
-      reports = []
+    def run
+      @reports = []
 
       @list.each do |item|
         @suite.running item.label, @time if @suite
@@ -193,7 +196,7 @@ module Benchmark
         measurements_us = []
 
         # running this number of cycles should take around 100ms
-        cycles = timing[item]
+        cycles = @timing[item]
 
         while Time.now < target
           before = Time.now
@@ -226,9 +229,8 @@ module Benchmark
 
         @suite.add_report rep, caller(1).first if @suite
 
-        reports << rep
+        @reports << rep
       end
-      reports
     end
 
     def create_report(item, measured_us, iter, avg_ips, sd_ips, cycles)

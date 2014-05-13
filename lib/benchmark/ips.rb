@@ -73,19 +73,19 @@ module Benchmark
 
       $stdout.puts "Calculating -------------------------------------" unless quiet
 
-      timing = job.warmup
+      job.warmup
 
       $stdout.puts "-------------------------------------------------" unless quiet
 
-      reports = job.run timing
+      job.run
 
       $stdout.sync = sync
 
       if job.compare?
-        Benchmark.compare(*reports)
+        Benchmark.compare(*job.reports)
       end
 
-      return reports
+      return job.reports
     end
   end
 
