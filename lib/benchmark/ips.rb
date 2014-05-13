@@ -224,6 +224,7 @@ module Benchmark
 
         reports << rep
       end
+      reports
     end
 
     #
