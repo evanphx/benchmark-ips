@@ -244,7 +244,7 @@ module Benchmark
         avg_ips = Timing.mean(all_ips)
         sd_ips =  Timing.stddev(all_ips).round
 
-        rep = IPSReport.new(item.label, measured_us, iter, avg_ips, sd_ips, cycles_per_100ms)
+        rep = create_report(item, measured_us, iter, avg_ips, sd_ips, cycles_per_100ms)
 
         $stdout.puts " #{rep.body}" unless @quiet
 
@@ -253,6 +253,10 @@ module Benchmark
         reports << rep
       end
       reports
+    end
+
+    def create_report(item, measured_us, iter, avg_ips, sd_ips, cycles_per_100ms)
+      IPSReport.new(item.label, measured_us, iter, avg_ips, sd_ips, cycles_per_100ms)
     end
 
   end
