@@ -3,6 +3,9 @@ module Benchmark
 
     VERSION = "1.1.0"
 
+    MICROSECONDS_PER_100MS = 100_000
+    MICROSECONDS_PER_SECOND = 1_000_000
+
     class Entry
       def initialize(label, action)
         @label = label
@@ -37,7 +40,6 @@ module Benchmark
           @label.rjust(20)
         end
       end
-
 
       def as_action?
         @as_action
@@ -118,6 +120,26 @@ module Benchmark
     end
     alias_method :report, :item
 
+    # calculate the cycles needed to run for approx 100ms
+    # given the number of iterations to run the given time
+    def cycles_per_100ms time_msec, iters
+      cycles = ((MICROSECONDS_PER_100MS / time_msec) * iters).to_i
+      cycles = 1 if cycles <= 0
+      cycles
+    end
+
+    # calculate the difference in microseconds between
+    # before and after
+    def time_us before, after
+      (after.to_f - before.to_f) * MICROSECONDS_PER_SECOND
+    end
+
+    # calculate the interations per second given the number
+    # of cycles run and the time in microseconds that elapsed
+    def iterations_per_sec cycles, time_us
+      MICROSECONDS_PER_SECOND * (cycles.to_f / time_us.to_f)
+    end
+
     def warmup
       timing = {}
       @list.each do |item|
@@ -141,18 +163,13 @@ module Benchmark
 
         after = Time.now
 
-        warmup_time = (after.to_f - before.to_f) * 1_000_000.0
+        warmup_time_us = time_us before, after
 
-        # calculate the time to run approx 100ms
+        timing[item] = cycles_per_100ms warmup_time_us, warmup_iter
 
-        cycles_per_100ms = ((100_000 / warmup_time) * warmup_iter).to_i
-        cycles_per_100ms = 1 if cycles_per_100ms <= 0
+        $stdout.printf "%10d i/100ms\n", timing[item] unless @quiet
 
-        timing[item] = cycles_per_100ms
-
-        $stdout.printf "%10d i/100ms\n", cycles_per_100ms unless @quiet
-
-        @suite.warmup_stats warmup_time, cycles_per_100ms if @suite
+        @suite.warmup_stats warmup_time_us, timing[item] if @suite
       end
       timing
     end
@@ -173,34 +190,37 @@ module Benchmark
 
         target = Time.now + @time
 
-        measurements = []
+        measurements_us = []
 
-        cycles_per_100ms = timing[item]
+        # running this number of cycles should take around 100ms
+        cycles = timing[item]
 
         while Time.now < target
           before = Time.now
-          item.call_times cycles_per_100ms
+          item.call_times cycles
           after = Time.now
 
           # If for some reason the timing said this took no time (O_o)
           # then ignore the iteration entirely and start another.
           #
-          m = ((after.to_f - before.to_f) * 1_000_000.0)
-          next if m <= 0.0
+          iter_us = time_us before, after
+          next if iter_us <= 0.0
 
-          iter += cycles_per_100ms
+          iter += cycles
 
-          measurements << m
+          measurements_us << iter_us
         end
 
-        measured_us = measurements.inject(0) { |a,i| a + i }
+        measured_us = measurements_us.inject(0) { |a,i| a + i }
 
-        all_ips = measurements.map { |i| cycles_per_100ms.to_f / (i.to_f / 1_000_000) }
+        all_ips = measurements_us.map { |time_us|
+          iterations_per_sec cycles, time_us
+        }
 
         avg_ips = Timing.mean(all_ips)
         sd_ips =  Timing.stddev(all_ips).round
 
-        rep = create_report(item, measured_us, iter, avg_ips, sd_ips, cycles_per_100ms)
+        rep = create_report(item, measured_us, iter, avg_ips, sd_ips, cycles)
 
         $stdout.puts " #{rep.body}" unless @quiet
 
@@ -211,8 +231,8 @@ module Benchmark
       reports
     end
 
-    def create_report(item, measured_us, iter, avg_ips, sd_ips, cycles_per_100ms)
-      IPSReport.new(item.label, measured_us, iter, avg_ips, sd_ips, cycles_per_100ms)
+    def create_report(item, measured_us, iter, avg_ips, sd_ips, cycles)
+      IPSReport.new(item.label, measured_us, iter, avg_ips, sd_ips, cycles)
     end
 
   end
