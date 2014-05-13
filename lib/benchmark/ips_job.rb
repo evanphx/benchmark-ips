@@ -182,7 +182,7 @@ module Benchmark
           item.call_times cycles_per_100ms
           after = Time.now
 
-          # If for some reason the timing said this too no time (O_o)
+          # If for some reason the timing said this took no time (O_o)
           # then ignore the iteration entirely and start another.
           #
           m = ((after.to_f - before.to_f) * 1_000_000.0)
