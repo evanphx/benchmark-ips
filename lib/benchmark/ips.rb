@@ -114,6 +114,8 @@ module Benchmark
       end
     end
 
+    attr_accessor :warmup, :time
+
     def initialize opts={}
       @suite = opts[:suite] || nil
       @quiet = opts[:quiet] || false
