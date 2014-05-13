@@ -114,7 +114,12 @@ module Benchmark
       end
     end
 
-    def initialize
+    def initialize opts={}
+      @suite = opts[:suite]
+      @quiet = opts[:quiet]
+      @warmup = opts[:warmup]
+      @time = opts[:time]
+
       @list = []
       @compare = false
     end
@@ -125,19 +130,19 @@ module Benchmark
       @compare = true
     end
 
-    def warmup suite, quiet, warmup
+    def warmup
       timing = {}
       @list.each do |item|
-        suite.warming item.label, warmup if suite
+        @suite.warming item.label, @warmup if @suite
 
         Timing.clean_env
 
-        unless quiet
+        unless @quiet
           $stdout.printf item.label_rjust
         end
 
         before = Time.now
-        target = Time.now + warmup
+        target = Time.now + @warmup
 
         warmup_iter = 0
 
@@ -157,28 +162,28 @@ module Benchmark
 
         timing[item] = cycles_per_100ms
 
-        $stdout.printf "%10d i/100ms\n", cycles_per_100ms unless quiet
+        $stdout.printf "%10d i/100ms\n", cycles_per_100ms unless @quiet
 
-        suite.warmup_stats warmup_time, cycles_per_100ms if suite
+        @suite.warmup_stats warmup_time, cycles_per_100ms if @suite
       end
       timing
     end
 
-    def run suite, quiet, time, timing
+    def run timing
       reports = []
 
       @list.each do |item|
-        unless quiet
+        unless @quiet
           $stdout.print item.label_rjust
         end
 
         Timing.clean_env
 
-        suite.running item.label, time if suite
+        @suite.running item.label, @time if @suite
 
         iter = 0
 
-        target = Time.now + time
+        target = Time.now + @time
 
         measurements = []
 
@@ -209,9 +214,9 @@ module Benchmark
 
         rep = IPSReport.new(item.label, measured_us, iter, avg_ips, sd_ips, cycles_per_100ms)
 
-        $stdout.puts " #{rep.body}" unless quiet
+        $stdout.puts " #{rep.body}" unless @quiet
 
-        suite.add_report rep, caller(1).first if suite
+        @suite.add_report rep, caller(1).first if @suite
 
         reports << rep
       end
@@ -249,16 +254,21 @@ module Benchmark
 
     quiet = suite && !suite.quiet?
 
-    job = IPSJob.new
+    job = IPSJob.new({:suite => suite,
+                      :quiet => quiet,
+                      :warmup => warmup,
+                      :time => time
+                     })
+
     yield job
 
     $stdout.puts "Calculating -------------------------------------" unless quiet
 
-    timing = job.warmup suite, quiet, warmup
+    timing = job.warmup
 
     $stdout.puts "-------------------------------------------------" unless quiet
 
-    reports = job.run suite, quiet, time, timing
+    reports = job.run timing
 
     $stdout.sync = sync
 
