@@ -74,6 +74,14 @@ module Benchmark
 
       attr_reader :label, :action
 
+      def label_rjust
+        if @label.size > 20
+          "#{item.label}\n#{' ' * 20}"
+        else
+          @label.rjust(20)
+        end
+      end
+
       def as_action?
         @as_action
       end
@@ -163,11 +171,7 @@ module Benchmark
       Timing.clean_env
 
       unless quiet
-        if item.label.size > 20
-          $stdout.print "#{item.label}\n#{' ' * 20}"
-        else
-          $stdout.print item.label.rjust(20)
-        end
+        $stdout.pring item.label_rjust
       end
 
       before = Time.now
@@ -185,7 +189,7 @@ module Benchmark
       warmup_time = (after.to_f - before.to_f) * 1_000_000.0
 
       # calculate the time to run approx 100ms
-      
+
       cycles_per_100ms = ((100_000 / warmup_time) * warmup_iter).to_i
       cycles_per_100ms = 1 if cycles_per_100ms <= 0
 
@@ -200,11 +204,7 @@ module Benchmark
 
     job.list.each do |item|
       unless quiet
-        if item.label.size > 20
-          $stdout.print "#{item.label}\n#{' ' * 20}"
-        else
-          $stdout.print item.label.rjust(20)
-        end
+        $stdout.print item.label_rjust
       end
 
       Timing.clean_env
