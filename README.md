@@ -18,6 +18,10 @@ A iterations per second enhancement to Benchmark
 require 'benchmark/ips'
 
 Benchmark.ips do |x|
+  # Configure the number of seconds used during
+  # the warmup phase and calculation phase
+  x.config(:time => 5, :warmup => 2)
+
   # Typical mode, runs the block as many times as it can
   x.report("addition") { 1 + 2 }
 

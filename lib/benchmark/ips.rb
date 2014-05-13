@@ -115,13 +115,19 @@ module Benchmark
     end
 
     def initialize opts={}
-      @suite = opts[:suite]
-      @quiet = opts[:quiet]
-      @warmup = opts[:warmup]
-      @time = opts[:time]
-
+      @suite = opts[:suite] || nil
+      @quiet = opts[:quiet] || false
       @list = []
       @compare = false
+
+      # defaults
+      @warmup = 2
+      @time = 5
+    end
+
+    def config opts
+      @warmup = opts[:warmup] if opts[:warmup]
+      @time = opts[:time] if opts[:time]
     end
 
     attr_reader :compare
@@ -248,7 +254,7 @@ module Benchmark
     attr_reader :list
   end
 
-  def ips(time=5, warmup=2)
+  def ips(time=nil, warmup=nil)
     suite = nil
 
     sync, $stdout.sync = $stdout.sync, true
@@ -260,10 +266,14 @@ module Benchmark
     quiet = suite && !suite.quiet?
 
     job = IPSJob.new({:suite => suite,
-                      :quiet => quiet,
-                      :warmup => warmup,
-                      :time => time
+                      :quiet => quiet
                      })
+
+    job_opts = {}
+    job_opts[:time] = time unless time.nil?
+    job_opts[:warmup] = warmup unless warmup.nil?
+
+    job.config job_opts
 
     yield job
 
