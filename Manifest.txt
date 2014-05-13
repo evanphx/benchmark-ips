@@ -1,7 +1,7 @@
 .autotest
 History.txt
 Manifest.txt
-README.txt
+README.md
 Rakefile
 bin/benchmark_ips
 lib/benchmark/compare.rb
