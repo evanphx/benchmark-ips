@@ -171,7 +171,7 @@ module Benchmark
       Timing.clean_env
 
       unless quiet
-        $stdout.pring item.label_rjust
+        $stdout.printf item.label_rjust
       end
 
       before = Time.now
