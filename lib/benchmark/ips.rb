@@ -132,6 +132,10 @@ module Benchmark
       @time = opts[:time] if opts[:time]
     end
 
+    # An array of 2-element arrays, consisting of label and block pairs.
+    attr_reader :list
+
+    # Boolean determining whether to run comparison utility
     attr_reader :compare
 
     def compare?
@@ -141,6 +145,22 @@ module Benchmark
     def compare!
       @compare = true
     end
+
+    #
+    # Registers the given label and block pair in the job list.
+    #
+    def item(label="", str=nil, &blk) # :yield:
+      if blk and str
+        raise ArgumentError, "specify a block and a str, but not both"
+      end
+
+      action = str || blk
+      raise ArgumentError, "no block or string" unless action
+
+      @list.push Entry.new(label, action)
+      self
+    end
+    alias_method :report, :item
 
     def warmup
       timing = {}
@@ -235,25 +255,6 @@ module Benchmark
       reports
     end
 
-    #
-    # Registers the given label and block pair in the job list.
-    #
-    def item(label="", str=nil, &blk) # :yield:
-      if blk and str
-        raise ArgumentError, "specify a block and a str, but not both"
-      end
-
-      action = str || blk
-      raise ArgumentError, "no block or string" unless action
-
-      @list.push Entry.new(label, action)
-      self
-    end
-
-    alias_method :report, :item
-
-    # An array of 2-element arrays, consisting of label and block pairs.
-    attr_reader :list
   end
 
   def ips(time=nil, warmup=nil)
