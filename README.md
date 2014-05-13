@@ -37,6 +37,9 @@ Benchmark.ips do |x|
   # the loop that performs the iterations internally to reduce
   # overhead. Typically not needed, use the |times| form instead.
   x.report("addition3", "1 + 2")
+
+  # Compare the iterations per second of the various reports!
+  x.compare!
 end
 ```
 
