@@ -234,7 +234,7 @@ module Benchmark
     end
 
     def create_report(item, measured_us, iter, avg_ips, sd_ips, cycles)
-      IPSReport.new(item.label, measured_us, iter, avg_ips, sd_ips, cycles)
+      Benchmark::IPSReport.new(item.label, measured_us, iter, avg_ips, sd_ips, cycles)
     end
 
   end

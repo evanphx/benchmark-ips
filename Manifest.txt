@@ -7,6 +7,7 @@ bin/benchmark_ips
 lib/benchmark/compare.rb
 lib/benchmark/helpers.rb
 lib/benchmark/ips.rb
+lib/benchmark/ips_report.rb
 lib/benchmark/ips_job.rb
 lib/benchmark/timing.rb
 test/test_benchmark_ips.rb
