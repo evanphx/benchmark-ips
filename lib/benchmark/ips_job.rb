@@ -123,11 +123,11 @@ module Benchmark
       @list.each do |item|
         @suite.warming item.label, @warmup if @suite
 
-        Timing.clean_env
-
         unless @quiet
           $stdout.printf item.label_rjust
         end
+
+        Timing.clean_env
 
         before = Time.now
         target = Time.now + @warmup
@@ -161,13 +161,13 @@ module Benchmark
       reports = []
 
       @list.each do |item|
+        @suite.running item.label, @time if @suite
+
         unless @quiet
           $stdout.print item.label_rjust
         end
 
         Timing.clean_env
-
-        @suite.running item.label, @time if @suite
 
         iter = 0
 
