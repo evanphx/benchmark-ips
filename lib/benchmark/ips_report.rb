@@ -39,6 +39,20 @@ module Benchmark
     def display
       $stdout.puts to_s
     end
+  end
+
+  class IPSReportList
+
+    attr_reader :list
+
+    def initialize
+      @list = []
+    end
+
+    def add_entry label, microseconds, iters, ips, ips_sd, measurement_cycle
+      @list << Benchmark::IPSReport.new(label, microseconds, iters, ips, ips_sd, measurement_cycle)
+      @list.last
+    end
 
   end
 end

@@ -178,7 +178,7 @@ module Benchmark
     end
 
     def run
-      @reports = []
+      @reports = IPSReportList.new
 
       @list.each do |item|
         @suite.running item.label, @time if @suite
@@ -228,13 +228,11 @@ module Benchmark
         $stdout.puts " #{rep.body}" unless @quiet
 
         @suite.add_report rep, caller(1).first if @suite
-
-        @reports << rep
       end
     end
 
     def create_report(item, measured_us, iter, avg_ips, sd_ips, cycles)
-      Benchmark::IPSReport.new(item.label, measured_us, iter, avg_ips, sd_ips, cycles)
+      @reports.add_entry item.label, measured_us, iter, avg_ips, sd_ips, cycles
     end
 
   end
