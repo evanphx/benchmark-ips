@@ -72,6 +72,12 @@ module Benchmark
       end
     end
 
+    # An array of 2-element arrays, consisting of label and block pairs.
+    attr_reader :list
+
+    # Boolean determining whether to run comparison utility
+    attr_reader :compare
+
     attr_accessor :warmup, :time
     attr_reader :timing, :reports
 
@@ -82,7 +88,7 @@ module Benchmark
       @compare = false
 
       @timing = {}
-      @reports = []
+      @reports = IPSReportList.new
 
       # defaults
       @warmup = 2
@@ -93,12 +99,6 @@ module Benchmark
       @warmup = opts[:warmup] if opts[:warmup]
       @time = opts[:time] if opts[:time]
     end
-
-    # An array of 2-element arrays, consisting of label and block pairs.
-    attr_reader :list
-
-    # Boolean determining whether to run comparison utility
-    attr_reader :compare
 
     def compare?
       @compare
@@ -145,7 +145,6 @@ module Benchmark
     end
 
     def run_warmup
-      @timing = {}
       @list.each do |item|
         @suite.warming item.label, @warmup if @suite
 
@@ -178,8 +177,6 @@ module Benchmark
     end
 
     def run
-      @reports = IPSReportList.new
-
       @list.each do |item|
         @suite.running item.label, @time if @suite
 
