@@ -35,7 +35,7 @@ module Benchmark
 
       def label_rjust
         if @label.size > 20
-          "#{item.label}\n#{' ' * 20}"
+          "#{@label}\n#{' ' * 20}"
         else
           @label.rjust(20)
         end

@@ -46,6 +46,9 @@ Benchmark.ips do |x|
   # overhead. Typically not needed, use the |times| form instead.
   x.report("addition3", "1 + 2")
 
+  # Really long labels should be formatted correctly
+  x.report("addition-test-long-label") { 1 + 2 }
+
   # Compare the iterations per second of the various reports!
   x.compare!
 end
