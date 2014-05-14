@@ -69,6 +69,8 @@ After checking out the source, run:
 This task will install any missing dependencies, run the tests/specs,
 and generate the RDoc.
 
+Run the example file `bin/benchmark_ips` to test that everything is working properly.
+
 ## LICENSE:
 
 (The MIT License)
