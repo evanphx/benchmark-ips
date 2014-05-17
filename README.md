@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/evanphx/benchmark-ips.png)](http://travis-ci.org/evanphx/benchmark-ips)
+
 # benchmark-ips
 
 * http://github.com/evanphx/benchmark-ips
