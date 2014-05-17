@@ -3,6 +3,8 @@
 require 'rubygems'
 require 'hoe'
 
+Hoe.plugin :minitest
+
 Hoe.spec 'benchmark-ips' do
   developer('Evan Phoenix', 'evan@phx.io')
 

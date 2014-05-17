@@ -1,8 +1,8 @@
-require "test/unit"
+require "minitest/autorun"
 require "benchmark/ips"
 require "stringio"
 
-class TestBenchmarkIPS < Test::Unit::TestCase
+class TestBenchmarkIPS < Minitest::Test
   def setup
     @old_stdout = $stdout
     $stdout = StringIO.new
