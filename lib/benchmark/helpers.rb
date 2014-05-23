@@ -29,7 +29,7 @@ module Benchmark
         when "jruby"
           -9223372036854775808
         else
-          raise "Maximum Fixnum size now known yet for #{RUBY_ENGINE}"
+          raise "Minimum Fixnum size now known yet for #{RUBY_ENGINE}"
         end
       else
         - 2 ** (wordsize - 2)
