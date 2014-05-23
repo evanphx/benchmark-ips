@@ -20,7 +20,7 @@ module Benchmark
     module_function :fixnum_max
 
     def fixnum_min
-       if Object.const_defined?(:RUBY_ENGINE)
+      if Object.const_defined?(:RUBY_ENGINE)
         case RUBY_ENGINE
         when "ruby"
           - 2 ** (wordsize - 2)
@@ -34,7 +34,7 @@ module Benchmark
       else
         - 2 ** (wordsize - 2)
       end
-   end
+    end
     module_function :fixnum_min
 
     def wordsize
