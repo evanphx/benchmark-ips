@@ -40,12 +40,34 @@ Benchmark.ips do |x|
 end
 ```
 
+This will generate the following report:
+
+```
+Calculating -------------------------------------
+   addition    147625 i/100ms
+  addition2    151046 i/100ms
+  addition3    172914 i/100ms
+-------------------------------------------------
+   addition  9247039.5 (±13.2%) i/s -   45320875 in   5.009003s
+  addition2 26436533.8 (±22.1%) i/s -  124461904 in   4.994989s
+  addition3 32227427.9 (±13.0%) i/s -  157524654 in   5.002928s
+```
+
+Benchmark/ips will report the number of iterations per second for a given block
+of code. When analyzing the results, notice the percent of [standard
+deviation](http://en.wikipedia.org/wiki/Standard_deviation) which tells us how
+spread out our measurements are from the average. A high standard deviation
+could indicate the results having too much variability.
+
+One benefit to using this method is benchmark-ips automatically determines the
+data points for testing our code, so we can focus on the results instead of
+guessing iteration counts as we do with the traditional Benchmark library.
+
 ## REQUIREMENTS:
 
 * None!
 
 ## INSTALL:
-
 
     $ gem install benchmark-ips
 
