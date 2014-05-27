@@ -13,14 +13,14 @@ class TestBenchmarkIPS < Minitest::Test
   end
 
   def test_ips
-    reports = Benchmark.ips(1,1) do |x|
+    report = Benchmark.ips(1,1) do |x|
       x.report("sleep 0.25") { sleep(0.25) }
       x.report("sleep 0.05") { sleep(0.05) }
       x.compare!
     end
 
-    rep1 = reports[0]
-    rep2 = reports[1]
+    rep1 = report.entries[0]
+    rep2 = report.entries[1]
 
     assert_equal "sleep 0.25", rep1.label
     assert_equal 4, rep1.iterations

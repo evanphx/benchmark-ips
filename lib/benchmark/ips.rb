@@ -45,7 +45,7 @@ module Benchmark
         Benchmark.compare(*job.full_report.entries)
       end
 
-      return job.full_report.entries
+      return job.full_report
     end
   end
 
