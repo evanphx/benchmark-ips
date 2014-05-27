@@ -56,6 +56,8 @@ Benchmark.ips do |x|
 end
 ```
 
+Typical results will show addition2 & addition3 to be the most performant, and they should perform reasonably similarly. You should see addition and addition-test-long-label to perform very similarly to each other (as they are running the same test, just with different labels), and they should both run in the neighborhood of 3.5 times slower than addition2 and addition3.
+
 ## REQUIREMENTS:
 
 * None!
