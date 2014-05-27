@@ -55,6 +55,10 @@ module Benchmark
         @entries.last
       end
 
+      def run_comparison
+        Benchmark.compare(*@entries)
+      end
+
     end
   end
 end

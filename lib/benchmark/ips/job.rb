@@ -230,6 +230,10 @@ module Benchmark
         end
       end
 
+      def run_comparison
+        @full_report.run_comparison
+      end
+
       def create_report(item, measured_us, iter, avg_ips, sd_ips, cycles)
         @full_report.add_entry item.label, measured_us, iter, avg_ips, sd_ips, cycles
       end
