@@ -87,7 +87,7 @@ module Benchmark
         @compare = false
 
         @timing = {}
-        @reports = ReportList.new
+        @reports = Report.new
 
         # defaults
         @warmup = 2
