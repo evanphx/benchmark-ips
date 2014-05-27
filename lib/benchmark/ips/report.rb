@@ -44,15 +44,15 @@ module Benchmark
         end
       end
 
-      attr_reader :list
+      attr_reader :entries
 
       def initialize
-        @list = []
+        @entries = []
       end
 
       def add_entry label, microseconds, iters, ips, ips_sd, measurement_cycle
-        @list << Entry.new(label, microseconds, iters, ips, ips_sd, measurement_cycle)
-        @list.last
+        @entries << Entry.new(label, microseconds, iters, ips, ips_sd, measurement_cycle)
+        @entries.last
       end
 
     end

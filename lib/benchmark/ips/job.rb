@@ -77,8 +77,11 @@ module Benchmark
       # Boolean determining whether to run comparison utility
       attr_reader :compare
 
+      # Report object containing information about the run
+      attr_reader :full_report
+
       attr_accessor :warmup, :time
-      attr_reader :timing, :reports
+      attr_reader :timing
 
       def initialize opts={}
         @suite = opts[:suite] || nil
@@ -87,7 +90,7 @@ module Benchmark
         @compare = false
 
         @timing = {}
-        @reports = Report.new
+        @full_report = Report.new
 
         # defaults
         @warmup = 2
@@ -228,7 +231,7 @@ module Benchmark
       end
 
       def create_report(item, measured_us, iter, avg_ips, sd_ips, cycles)
-        @reports.add_entry item.label, measured_us, iter, avg_ips, sd_ips, cycles
+        @full_report.add_entry item.label, measured_us, iter, avg_ips, sd_ips, cycles
       end
 
     end

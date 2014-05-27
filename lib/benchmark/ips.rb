@@ -42,10 +42,10 @@ module Benchmark
       $stdout.sync = sync
 
       if job.compare?
-        Benchmark.compare(*job.reports.list)
+        Benchmark.compare(*job.full_report.entries)
       end
 
-      return job.reports.list
+      return job.full_report.entries
     end
   end
 
