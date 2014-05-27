@@ -6,7 +6,7 @@ require 'benchmark/ips_job'
 
 module Benchmark
   module IPS
-    VERSION = Benchmark::IPSJob::VERSION
+    VERSION = "1.1.0"
 
     def ips(time=nil, warmup=nil)
       suite = nil

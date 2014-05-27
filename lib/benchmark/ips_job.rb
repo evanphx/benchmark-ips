@@ -1,8 +1,6 @@
 module Benchmark
   class IPSJob
 
-    VERSION = "1.1.0"
-
     MICROSECONDS_PER_100MS = 100_000
     MICROSECONDS_PER_SECOND = 1_000_000
 
