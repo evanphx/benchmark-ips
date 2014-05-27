@@ -1,8 +1,8 @@
 # encoding: utf-8
 require 'benchmark/timing'
 require 'benchmark/compare'
-require 'benchmark/ips_report'
-require 'benchmark/ips_job'
+require 'benchmark/ips/report'
+require 'benchmark/ips/job'
 
 module Benchmark
   module IPS
@@ -19,8 +19,8 @@ module Benchmark
 
       quiet = suite && !suite.quiet?
 
-      job = IPSJob.new({:suite => suite,
-                        :quiet => quiet
+      job = Job.new({:suite => suite,
+                     :quiet => quiet
       })
 
       job_opts = {}
