@@ -29,7 +29,7 @@ class TestBenchmarkIPS < Minitest::Test
 
     assert_equal "sleep 0.05", rep2.label
     assert_equal 20, rep2.iterations
-    assert_in_delta 20.0, rep2.ips, 0.5
+    assert_in_delta 20.0, rep2.ips, 1.0
   end
 
   def test_ips_alternate_config
