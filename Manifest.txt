@@ -1,11 +1,13 @@
 .autotest
 History.txt
 Manifest.txt
-README.txt
+README.md
 Rakefile
 bin/benchmark_ips
 lib/benchmark/compare.rb
 lib/benchmark/helpers.rb
 lib/benchmark/ips.rb
+lib/benchmark/ips/report.rb
+lib/benchmark/ips/job.rb
 lib/benchmark/timing.rb
 test/test_benchmark_ips.rb

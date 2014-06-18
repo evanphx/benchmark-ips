@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/evanphx/benchmark-ips.png)](http://travis-ci.org/evanphx/benchmark-ips)
+
 # benchmark-ips
 
 * http://github.com/evanphx/benchmark-ips
@@ -18,6 +20,14 @@ A iterations per second enhancement to Benchmark
 require 'benchmark/ips'
 
 Benchmark.ips do |x|
+  # Configure the number of seconds used during
+  # the warmup phase and calculation phase
+  x.config(:time => 5, :warmup => 2)
+
+  # These parameters can also be configured this way
+  x.time = 5
+  x.warmup = 2
+
   # Typical mode, runs the block as many times as it can
   x.report("addition") { 1 + 2 }
 
@@ -37,6 +47,12 @@ Benchmark.ips do |x|
   # the loop that performs the iterations internally to reduce
   # overhead. Typically not needed, use the |times| form instead.
   x.report("addition3", "1 + 2")
+
+  # Really long labels should be formatted correctly
+  x.report("addition-test-long-label") { 1 + 2 }
+
+  # Compare the iterations per second of the various reports!
+  x.compare!
 end
 ```
 
@@ -55,7 +71,7 @@ Calculating -------------------------------------
 
 Benchmark/ips will report the number of iterations per second for a given block
 of code. When analyzing the results, notice the percent of [standard
-deviation](http://en.wikipedia.org/wiki/Standard_deviation) which tells us how
+deviation](http://en.wikipedia.org/wiki/Standard\_deviation) which tells us how
 spread out our measurements are from the average. A high standard deviation
 could indicate the results having too much variability.
 
@@ -79,6 +95,8 @@ After checking out the source, run:
 
 This task will install any missing dependencies, run the tests/specs,
 and generate the RDoc.
+
+Run the example file `bin/benchmark_ips` to test that everything is working properly.
 
 ## LICENSE:
 
