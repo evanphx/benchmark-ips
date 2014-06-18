@@ -1,3 +1,21 @@
+=== 2.0.0 / 2014-06-18
+
+* The 'Davy Stevenson' release!
+  * Codename: Springtime Hummingbird Dance
+
+ * Big API refactoring so the internal bits are easier to use
+ * Bump to 2.0 because return types changed to make the API better
+
+* Contributors added:
+  *  Davy Stevenson
+  *  Juanito Fatas
+  *  Benoit Daloze
+  *  Matias
+  *  Tony Arcieri
+  *  Vipul A M
+  *  Zachary Scott
+  *  schneems (Richard Schneeman)
+
 === 1.0.0 / 2012-03-23
 
 * 1 major enhancement

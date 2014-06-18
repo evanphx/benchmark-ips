@@ -3,7 +3,6 @@ History.txt
 Manifest.txt
 README.md
 Rakefile
-bin/benchmark_ips
 lib/benchmark/compare.rb
 lib/benchmark/helpers.rb
 lib/benchmark/ips.rb

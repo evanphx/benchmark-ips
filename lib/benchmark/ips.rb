@@ -6,7 +6,8 @@ require 'benchmark/ips/job'
 
 module Benchmark
   module IPS
-    VERSION = "1.1.0"
+    VERSION = "2.0.0"
+    CODENAME = "Springtime Hummingbird Dance"
 
     def ips(time=nil, warmup=nil)
       suite = nil
