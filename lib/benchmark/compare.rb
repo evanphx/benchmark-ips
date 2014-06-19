@@ -44,12 +44,12 @@ module Benchmark
 
       best = sorted.shift
 
-      STDOUT.puts "\nComparison:"
+      $stdout.puts "\nComparison:"
 
       if iter
-        STDOUT.printf "%20s: %10.1f i/s\n", best.label, best.ips
+        $stdout.printf "%20s: %10.1f i/s\n", best.label, best.ips
       else
-        STDOUT.puts "#{best.rjust(20)}: #{best.runtime}s"
+        $stdout.puts "#{best.rjust(20)}: #{best.runtime}s"
       end
 
       sorted.each do |report|
@@ -57,14 +57,14 @@ module Benchmark
 
         if iter
           x = (best.ips.to_f / report.ips.to_f)
-          STDOUT.printf "%20s: %10.1f i/s - %.2fx slower\n", name, report.ips, x
+          $stdout.printf "%20s: %10.1f i/s - %.2fx slower\n", name, report.ips, x
         else
           x = "%.2f" % (report.ips.to_f / best.ips.to_f)
-          STDOUT.puts "#{name.rjust(20)}: #{report.runtime}s - #{x}x slower"
+          $stdout.puts "#{name.rjust(20)}: #{report.runtime}s - #{x}x slower"
         end
       end
 
-      STDOUT.puts
+      $stdout.puts
     end
   end
 
