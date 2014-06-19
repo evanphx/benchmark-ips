@@ -4,11 +4,23 @@ require 'benchmark/compare'
 require 'benchmark/ips/report'
 require 'benchmark/ips/job'
 
+# Performance benchmarking library
 module Benchmark
+  # Benchmark in iterations per second, no more guessing!
+  # @see https://github.com/evanphx/benchmark-ips
   module IPS
+
+    # Benchmark-ips Gem version.
     VERSION = "2.0.0"
+
+    # CODENAME of current version.
     CODENAME = "Springtime Hummingbird Dance"
 
+    # Measure code in block, each code's benchmarked result will display in
+    # iteration per second with standard deviation in given time.
+    # @param time [Integer] Specify how long should benchmark your code in seconds.
+    # @param warmup [Integer] Specify how long should Warmup time run in seconds.
+    # @return [Report]
     def ips(time=nil, warmup=nil)
       suite = nil
 
@@ -50,5 +62,5 @@ module Benchmark
     end
   end
 
-  extend Benchmark::IPS
+  extend Benchmark::IPS # make ips available as module-level method
 end
