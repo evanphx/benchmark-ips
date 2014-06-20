@@ -1,11 +1,34 @@
 module Benchmark
   module IPS
+    # Benchmark jobs.
+    # @!attribute [r] list
+    #   @return [Array<Entry>] Two-element arrays, consisting of label and block pairs.
+    # @!attribute [r] compare
+    #   @return [Boolean] Determining whether to run comparison utility.
+    # @!attribute [r] full_report
+    #   @return [Report] Report object containing information about the run.
+    # @!attribute [r] timing
+    #   @return [Hash] Storing Iterations in time period.
+    # @!attribute warmup
+    #   @return [Integer] Warmup time (in second).
+    # @!attribute time
+    #   @return [Integer] Measurement time (in second).
     class Job
-
+      # Microseconds per 100 millisecond.
       MICROSECONDS_PER_100MS = 100_000
+      # Microseconds per second.
       MICROSECONDS_PER_SECOND = 1_000_000
 
+      # Entries in Benchmark Jobs.
+      # @!attribute [r] label
+      #   @return [String] Label of action.
+      # @!attribute [r] action
+      #   @return [String, Proc] Code to be called, could be String / Proc.
       class Entry
+        # Instantiate the Benchmark::IPS::Job::Entry.
+        # @param label [String] Label of Benchmarked code.
+        # @param action [String, Proc] Code to be benchmarked.
+        # @raise [ArgumentError] Raises when action is not String or not responding to +call+.
         def initialize(label, action)
           @label = label
 
@@ -32,6 +55,9 @@ module Benchmark
 
         attr_reader :label, :action
 
+        # Add padding to label's right if label's length < 20,
+        # Otherwise add a new line and 20 whitespaces.
+        # @return [String] Right justified label.
         def label_rjust
           if @label.size > 20
             "#{@label}\n#{' ' * 20}"
@@ -44,6 +70,9 @@ module Benchmark
           @as_action
         end
 
+        # Call action by given times, return if +@call_loop+ is present.
+        # @param times [Integer] Times to call +@action+.
+        # @return [Integer] Number of times the +@action+ has been called.
         def call_times(times)
           return @action.call(times) if @call_loop
 
@@ -56,6 +85,9 @@ module Benchmark
           end
         end
 
+        # Compile code into +call_times+ method.
+        # @param str [String] Code to be compiled.
+        # @return [Symbol] :call_times.
         def compile(str)
           m = (class << self; self; end)
           code = <<-CODE
@@ -69,20 +101,16 @@ module Benchmark
           CODE
           m.class_eval code
         end
-      end
+      end # End of Entry
 
-      # An array of 2-element arrays, consisting of label and block pairs.
-      attr_reader :list
+      # class Benchmark::IPS::Job
 
-      # Boolean determining whether to run comparison utility
-      attr_reader :compare
-
-      # Report object containing information about the run
-      attr_reader :full_report
-
+      attr_reader :list, :compare, :full_report, :timing
       attr_accessor :warmup, :time
-      attr_reader :timing
 
+      # Instantiate the Benchmark::IPS::Job.
+      # @option opts [Benchmark::Suite] (nil) :suite Specify Benchmark::Suite.
+      # @option opts [Boolean] (false) :quiet Suppress the printing of information.
       def initialize opts={}
         @suite = opts[:suite] || nil
         @quiet = opts[:quiet] || false
@@ -92,27 +120,36 @@ module Benchmark
         @timing = {}
         @full_report = Report.new
 
-        # defaults
+        # Default warmup and calculation time in seconds.
         @warmup = 2
         @time = 5
       end
 
+      # Job configuration options, set +@warmup+ and +@time+.
+      # @option opts [Integer] :warmup Warmup time.
+      # @option opts [Integer] :time Calculation time.
       def config opts
         @warmup = opts[:warmup] if opts[:warmup]
         @time = opts[:time] if opts[:time]
       end
 
+      # Return true if job needs to be compared.
+      # @return [Boolean] Need to compare?
       def compare?
         @compare
       end
 
+      # Set @compare to true.
       def compare!
         @compare = true
       end
 
-      #
       # Registers the given label and block pair in the job list.
-      #
+      # @param label [String] Label of benchmarked code.
+      # @param str [String] Code to be benchamrked.
+      # @param blk [Proc] Code to be benchamrked.
+      # @raise [ArgumentError] Raises if str and blk are both present.
+      # @raise [ArgumentError] Raises if str and blk are both absent.
       def item(label="", str=nil, &blk) # :yield:
         if blk and str
           raise ArgumentError, "specify a block and a str, but not both"
@@ -126,26 +163,35 @@ module Benchmark
       end
       alias_method :report, :item
 
-      # calculate the cycles needed to run for approx 100ms
-      # given the number of iterations to run the given time
+      # Calculate the cycles needed to run for approx 100ms,
+      # given the number of iterations to run the given time.
+      # @param [Float] time_msec Each iteration's time in ms.
+      # @param [Integer] iters Iterations.
+      # @return [Integer] Cycles per 100ms.
       def cycles_per_100ms time_msec, iters
         cycles = ((MICROSECONDS_PER_100MS / time_msec) * iters).to_i
         cycles = 1 if cycles <= 0
         cycles
       end
 
-      # calculate the difference in microseconds between
-      # before and after
+      # Calculate the time difference of before and after in microseconds.
+      # @param [Time] before time.
+      # @param [Time] after time.
+      # @return [Float] Time difference of before and after.
       def time_us before, after
         (after.to_f - before.to_f) * MICROSECONDS_PER_SECOND
       end
 
-      # calculate the interations per second given the number
-      # of cycles run and the time in microseconds that elapsed
+      # Calculate the interations per second given the number
+      # of cycles run and the time in microseconds that elapsed.
+      # @param [Integer] cycles Cycles.
+      # @param [Integer] time_us Time in microsecond.
+      # @return [Float] Iteration per second.
       def iterations_per_sec cycles, time_us
         MICROSECONDS_PER_SECOND * (cycles.to_f / time_us.to_f)
       end
 
+      # Run warmup.
       def run_warmup
         @list.each do |item|
           @suite.warming item.label, @warmup if @suite
@@ -178,6 +224,7 @@ module Benchmark
         end
       end
 
+      # Run calculation.
       def run
         @list.each do |item|
           @suite.running item.label, @time if @suite
@@ -194,7 +241,7 @@ module Benchmark
 
           measurements_us = []
 
-          # running this number of cycles should take around 100ms
+          # Running this number of cycles should take around 100ms.
           cycles = @timing[item]
 
           while Time.now < target
@@ -204,7 +251,6 @@ module Benchmark
 
             # If for some reason the timing said this took no time (O_o)
             # then ignore the iteration entirely and start another.
-            #
             iter_us = time_us before, after
             next if iter_us <= 0.0
 
@@ -230,14 +276,21 @@ module Benchmark
         end
       end
 
+      # Run comparison of entries in +@full_report+.
       def run_comparison
         @full_report.run_comparison
       end
 
+      # Create report by add entry to +@full_report+.
+      # @param item [Benchmark::IPS::Job::Entry] Report item.
+      # @param measured_us [Integer] Measured time in microsecond.
+      # @param iter [Integer] Iterations.
+      # @param avg_ips [Float] Average iterations per second.
+      # @param sd_ips [Float] Standard deviation iterations per second.
+      # @param cycles [Integer] Number of Cycles.
       def create_report(item, measured_us, iter, avg_ips, sd_ips, cycles)
         @full_report.add_entry item.label, measured_us, iter, avg_ips, sd_ips, cycles
       end
-
     end
   end
 end
