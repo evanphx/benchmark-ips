@@ -66,10 +66,6 @@ module Benchmark
           end
         end
 
-        def as_action?
-          @as_action
-        end
-
         # Call action by given times, return if +@call_loop+ is present.
         # @param times [Integer] Times to call +@action+.
         # @return [Integer] Number of times the +@action+ has been called.
