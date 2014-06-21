@@ -5,16 +5,9 @@ module Benchmark
 
     # Report contains benchamrking entries.
     # Perform operations like add new entry, run comparison between entries.
-    # @attr_reader entries [Array<Entry>] Entries in Report.
     class Report
 
       # Represents benchmarking code data for Report.
-      # @attr_reader label [String] Label of entry.
-      # @attr_reader microseconds [Integer] Measured time in microsecond.
-      # @attr_reader iterations [Integer] Iterations.
-      # @attr_reader ips [Float] Iteration per second.
-      # @attr_reader ips_sd [Float] Standard deviation of iteration per second.
-      # @attr_reader measurement_cycle [Integer] Cycles.
       class Entry
         # Instantiate the Benchmark::IPS::Report::Entry.
         # @param [String] label Label of entry.
@@ -32,7 +25,29 @@ module Benchmark
           @measurement_cycle = cycles
         end
 
-        attr_reader :label, :microseconds, :iterations, :ips, :ips_sd, :measurement_cycle
+        # Label of entry.
+        # @return [String] the label of entry.
+        attr_reader :label
+
+        # Measured time in microsecond.
+        # @return [Integer] number of microseconds.
+        attr_reader :microseconds
+
+        # Number of Iterations.
+        # @return [Integer] number of iterations.
+        attr_reader :iterations
+
+        # Iterations per second.
+        # @return [Float] number of iterations per second.
+        attr_reader :ips
+
+        # Standard deviation of iteration per second.
+        # @return [Float] standard deviation of iteration per second.
+        attr_reader :ips_sd
+
+        # Number of Cycles.
+        # @return [Integer] number of cycles.
+        attr_reader :measurement_cycle
 
         # Return entry's microseconds in seconds.
         # @return [Float] +@microseconds+ in seconds.
@@ -73,8 +88,12 @@ module Benchmark
         def display
           $stdout.puts to_s
         end
-      end
+      end # End of Entry
 
+      # class Report
+
+      # Entry to represent each benchamarked code in Report.
+      # @return [Array<Entry>] Entries in Report.
       attr_reader :entries
 
       # Instantiate the Report.

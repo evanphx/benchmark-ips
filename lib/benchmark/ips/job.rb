@@ -1,12 +1,6 @@
 module Benchmark
   module IPS
     # Benchmark jobs.
-    # @attr_reader list [Array<Entry>] Two-element arrays, consisting of label and block pairs.
-    # @attr_reader compare [Boolean] Determining whether to run comparison utility.
-    # @attr_reader full_report [Report] Report object containing information about the run.
-    # @attr_reader timing [Hash] Storing Iterations in time period.
-    # @attr warmup [Integer] Warmup time (in second).
-    # @attr time [Integer] Calculation time (in second).
     class Job
       # Microseconds per 100 millisecond.
       MICROSECONDS_PER_100MS = 100_000
@@ -14,8 +8,6 @@ module Benchmark
       MICROSECONDS_PER_SECOND = 1_000_000
 
       # Entries in Benchmark Jobs.
-      # @attr_reader label [String] Label of action.
-      # @attr_reader action [String, Proc] Code to be called, could be String / Proc.
       class Entry
         # Instantiate the Benchmark::IPS::Job::Entry.
         # @param label [String] Label of Benchmarked code.
@@ -45,7 +37,13 @@ module Benchmark
           end
         end
 
-        attr_reader :label, :action
+        # The label of benchmarking action.
+        # @return [String] Label of action.
+        attr_reader :label
+
+        # The benchmarking action.
+        # @return [String, Proc] Code to be called, could be String / Proc.
+        attr_reader :action
 
         # Add padding to label's right if label's length < 20,
         # Otherwise add a new line and 20 whitespaces.
@@ -89,10 +87,33 @@ module Benchmark
           CODE
           m.class_eval code
         end
-      end
+      end # End of Entry
 
-      attr_reader :list, :compare, :full_report, :timing
-      attr_accessor :warmup, :time
+      # class Job
+
+      # Two-element arrays, consisting of label and block pairs.
+      # @return [Array<Entry>] list of entries
+      attr_reader :list
+
+      # Determining whether to run comparison utility.
+      # @return [Boolean] true if needs to run compare.
+      attr_reader :compare
+
+      # Report object containing information about the run.
+      # @return [Report] the report object.
+      attr_reader :full_report
+
+      # Storing Iterations in time period.
+      # @return [Hash]
+      attr_reader :timing
+
+      # Warmup time setter and getter (in seconds).
+      # @return [Integer]
+      attr_accessor :warmup
+
+      # Calculation time setter and getter (in seconds).
+      # @return [Integer]
+      attr_accessor :time
 
       # Instantiate the Benchmark::IPS::Job.
       # @option opts [Benchmark::Suite] (nil) :suite Specify Benchmark::Suite.
