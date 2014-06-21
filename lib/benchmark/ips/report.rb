@@ -5,23 +5,16 @@ module Benchmark
 
     # Report contains benchamrking entries.
     # Perform operations like add new entry, run comparison between entries.
-    # @!attribute [r] entries
-    #   @return [Array<Entry>] Entries.
+    # @attr_reader entries [Array<Entry>] Entries in Report.
     class Report
 
       # Represents benchmarking code data for Report.
-      # @!attribute [r] label
-      #   @return [String] Label of entry.
-      # @!attribute [r] microseconds
-      #   @return [Integer] Measured time in microsecond.
-      # @!attribute [r] iterations
-      #   @return [Integer] Iterations.
-      # @!attribute [r] ips
-      #   @return [Float] Iteration per second.
-      # @!attribute [r] ips_sd
-      #   @return [Float] Standard deviation of iteration per second.
-      # @!attribute [r] measurement_cycle
-      #   @return [Integer] Cycles.
+      # @attr_reader label [String] Label of entry.
+      # @attr_reader microseconds [Integer] Measured time in microsecond.
+      # @attr_reader iterations [Integer] Iterations.
+      # @attr_reader ips [Float] Iteration per second.
+      # @attr_reader ips_sd [Float] Standard deviation of iteration per second.
+      # @attr_reader measurement_cycle [Integer] Cycles.
       class Entry
         # Instantiate the Benchmark::IPS::Report::Entry.
         # @param [String] label Label of entry.
@@ -80,9 +73,8 @@ module Benchmark
         def display
           $stdout.puts to_s
         end
-      end # End of Entry
+      end
 
-      # class Benchmark::IPS::Report
       attr_reader :entries
 
       # Instantiate the Report.

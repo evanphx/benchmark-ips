@@ -1,18 +1,12 @@
 module Benchmark
   module IPS
     # Benchmark jobs.
-    # @!attribute [r] list
-    #   @return [Array<Entry>] Two-element arrays, consisting of label and block pairs.
-    # @!attribute [r] compare
-    #   @return [Boolean] Determining whether to run comparison utility.
-    # @!attribute [r] full_report
-    #   @return [Report] Report object containing information about the run.
-    # @!attribute [r] timing
-    #   @return [Hash] Storing Iterations in time period.
-    # @!attribute warmup
-    #   @return [Integer] Warmup time (in second).
-    # @!attribute time
-    #   @return [Integer] Measurement time (in second).
+    # @attr_reader list [Array<Entry>] Two-element arrays, consisting of label and block pairs.
+    # @attr_reader compare [Boolean] Determining whether to run comparison utility.
+    # @attr_reader full_report [Report] Report object containing information about the run.
+    # @attr_reader timing [Hash] Storing Iterations in time period.
+    # @attr warmup [Integer] Warmup time (in second).
+    # @attr time [Integer] Calculation time (in second).
     class Job
       # Microseconds per 100 millisecond.
       MICROSECONDS_PER_100MS = 100_000
@@ -20,10 +14,8 @@ module Benchmark
       MICROSECONDS_PER_SECOND = 1_000_000
 
       # Entries in Benchmark Jobs.
-      # @!attribute [r] label
-      #   @return [String] Label of action.
-      # @!attribute [r] action
-      #   @return [String, Proc] Code to be called, could be String / Proc.
+      # @attr_reader label [String] Label of action.
+      # @attr_reader action [String, Proc] Code to be called, could be String / Proc.
       class Entry
         # Instantiate the Benchmark::IPS::Job::Entry.
         # @param label [String] Label of Benchmarked code.
@@ -97,9 +89,7 @@ module Benchmark
           CODE
           m.class_eval code
         end
-      end # End of Entry
-
-      # class Benchmark::IPS::Job
+      end
 
       attr_reader :list, :compare, :full_report, :timing
       attr_accessor :warmup, :time
