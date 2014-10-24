@@ -1,12 +1,16 @@
-[![Build Status](https://secure.travis-ci.org/evanphx/benchmark-ips.png)](http://travis-ci.org/evanphx/benchmark-ips)
+[![Gem Version](https://badge.fury.io/rb/benchmark-ips.svg)](http://badge.fury.io/rb/benchmark-ips)
+[![Build Status](https://secure.travis-ci.org/evanphx/benchmark-ips.svg)](http://travis-ci.org/evanphx/benchmark-ips)
+[![Inline docs](http://inch-ci.org/github/evanphx/benchmark-ips.svg)](http://inch-ci.org/github/evanphx/benchmark-ips)
 
 # benchmark-ips
 
-* http://github.com/evanphx/benchmark-ips
+* https://github.com/evanphx/benchmark-ips
+
+* [documentation](http://rubydoc.info/gems/benchmark-ips)
 
 ## DESCRIPTION:
 
-A iterations per second enhancement to Benchmark
+A iterations per second enhancement to Benchmark.
 
 ## FEATURES/PROBLEMS:
 
@@ -60,13 +64,23 @@ This will generate the following report:
 
 ```
 Calculating -------------------------------------
-   addition    147625 i/100ms
-  addition2    151046 i/100ms
-  addition3    172914 i/100ms
+            addition     71254 i/100ms
+           addition2     68658 i/100ms
+           addition3     83079 i/100ms
+addition-test-long-label
+                         70129 i/100ms
 -------------------------------------------------
-   addition  9247039.5 (±13.2%) i/s -   45320875 in   5.009003s
-  addition2 26436533.8 (±22.1%) i/s -  124461904 in   4.994989s
-  addition3 32227427.9 (±13.0%) i/s -  157524654 in   5.002928s
+            addition  4955278.9 (±8.7%) i/s -   24155106 in   5.002163s
+           addition2 24011974.8 (±9.5%) i/s -  114246912 in   4.995446s
+           addition3 23958619.8 (±9.9%) i/s -  115064415 in   4.996349s
+addition-test-long-label
+                      5014756.0 (±9.1%) i/s -   24545150 in   5.009754s
+
+Comparison:
+           addition2: 24011974.8 i/s
+           addition3: 23958619.8 i/s - 1.00x slower
+addition-test-long-label:  5014756.0 i/s - 4.79x slower
+            addition:  4955278.9 i/s - 4.85x slower
 ```
 
 Benchmark/ips will report the number of iterations per second for a given block
