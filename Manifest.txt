@@ -4,7 +4,6 @@ Manifest.txt
 README.md
 Rakefile
 lib/benchmark/compare.rb
-lib/benchmark/helpers.rb
 lib/benchmark/ips.rb
 lib/benchmark/ips/report.rb
 lib/benchmark/ips/job.rb
