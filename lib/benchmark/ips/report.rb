@@ -68,8 +68,8 @@ module Benchmark
         # percentage of standard deviation, iterations in runtime.
         # @return [String] Left justified body.
         def body
-          left = "%10.1f (±%.1f%%) i/s" % [ips, stddev_percentage]
-          left.ljust(20) + (" - %10d in %10.6fs" % [@iterations, runtime])
+          left = "%s (±%4.1f%%) i/s" % [Helpers.scale(ips), stddev_percentage]
+          left.ljust(20) + (" - %s in %10.3fs" % [Helpers.scale(@iterations), runtime])
         end
 
         # Return header with padding if +@label+ is < length of 20.

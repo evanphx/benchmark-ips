@@ -60,6 +60,25 @@ module Benchmark
 
       return job.full_report
     end
+
+    module Helpers
+      def scale(value)
+        scale = (Math.log10(value) / 3).to_i
+        suffix = case scale
+        when 1; 'k'
+        when 2; 'M'
+        when 3; 'B'
+        when 4; 'T'
+        when 5; 'Q'
+        else
+          # < 1000 or > 10^15, no scale or suffix
+          scale = 0
+          ' '
+        end
+        "%10.3f#{suffix}" % (value.to_f / (1000 ** scale))
+      end
+      module_function :scale
+    end
   end
 
   extend Benchmark::IPS # make ips available as module-level method
