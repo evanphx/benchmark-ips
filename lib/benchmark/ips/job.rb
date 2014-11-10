@@ -228,7 +228,7 @@ module Benchmark
 
           @timing[item] = cycles_per_100ms warmup_time_us, warmup_iter
 
-          $stdout.printf "%10d i/100ms\n", @timing[item] unless @quiet
+          $stdout.printf "%s i/100ms\n", Helpers.scale(@timing[item]) unless @quiet
 
           @suite.warmup_stats warmup_time_us, @timing[item] if @suite
         end

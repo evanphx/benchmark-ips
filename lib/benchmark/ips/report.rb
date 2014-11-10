@@ -76,12 +76,13 @@ module Benchmark
         # percentage of standard deviation, iterations in runtime.
         # @return [String] Left justified body.
         def body
-          left = "%10.1f (±%.1f%%) i/s" % [ips, stddev_percentage]
+          left = "%s (±%4.1f%%) i/s" % [Helpers.scale(ips), stddev_percentage]
 
+          iters = Helpers.scale(@iterations)
           if @show_total_time
-            left.ljust(20) + (" - %10d in %10.6fs" % [@iterations, runtime])
+            left.ljust(20) + (" - %10d in %10.6fs" % [iters, runtime])
           else
-            left.ljust(20) + (" - %10d" % @iterations)
+            left.ljust(20) + (" - %10d" % iters)
           end
         end
 
