@@ -6,6 +6,9 @@ module Benchmark
       MICROSECONDS_PER_100MS = 100_000
       # Microseconds per second.
       MICROSECONDS_PER_SECOND = 1_000_000
+      # The percentage of the expected runtime to allow
+      # before reporting a weird runtime
+      MAX_TIME_SKEW = 0.05
 
       # Entries in Benchmark Jobs.
       class Entry
@@ -266,6 +269,8 @@ module Benchmark
             measurements_us << iter_us
           end
 
+          final_time = Time.now
+
           measured_us = measurements_us.inject(0) { |a,i| a + i }
 
           all_ips = measurements_us.map { |time_us|
@@ -276,6 +281,10 @@ module Benchmark
           sd_ips =  Timing.stddev(all_ips).round
 
           rep = create_report(item, measured_us, iter, avg_ips, sd_ips, cycles)
+
+          if (final_time - target).abs >= (@time.to_f * MAX_TIME_SKEW)
+            rep.show_total_time!
+          end
 
           $stdout.puts " #{rep.body}" unless @quiet
 

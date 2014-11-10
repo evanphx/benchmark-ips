@@ -28,7 +28,7 @@ class TestBenchmarkIPS < Minitest::Test
     assert_in_delta 4.0, rep1.ips, 0.2
 
     assert_equal "sleep 0.05", rep2.label
-    assert_equal 20, rep2.iterations
+    assert_in_delta 20.0, rep2.iterations.to_f, 1.0
     assert_in_delta 20.0, rep2.ips, 1.0
   end
 

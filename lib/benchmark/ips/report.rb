@@ -23,6 +23,7 @@ module Benchmark
           @ips = ips
           @ips_sd = ips_sd
           @measurement_cycle = cycles
+          @show_total_time = false
         end
 
         # Label of entry.
@@ -49,6 +50,13 @@ module Benchmark
         # @return [Integer] number of cycles.
         attr_reader :measurement_cycle
 
+        # Control if the total time the job took is reported.
+        # Typically this value is not significant because it's very
+        # close to the expected time, so it's supressed by default.
+        def show_total_time!
+          @show_total_time = true
+        end
+
         # Return entry's microseconds in seconds.
         # @return [Float] +@microseconds+ in seconds.
         def seconds
@@ -69,7 +77,12 @@ module Benchmark
         # @return [String] Left justified body.
         def body
           left = "%10.1f (±%.1f%%) i/s" % [ips, stddev_percentage]
-          left.ljust(20) + (" - %10d in %10.6fs" % [@iterations, runtime])
+
+          if @show_total_time
+            left.ljust(20) + (" - %10d in %10.6fs" % [@iterations, runtime])
+          else
+            left.ljust(20) + (" - %10d" % @iterations)
+          end
         end
 
         # Return header with padding if +@label+ is < length of 20.
