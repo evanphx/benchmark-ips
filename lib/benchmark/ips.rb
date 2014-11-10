@@ -34,6 +34,7 @@ module Benchmark
 
       job = Job.new({:suite => suite,
                      :quiet => quiet
+   
       })
 
       job_opts = {}
@@ -59,6 +60,14 @@ module Benchmark
       end
 
       return job.full_report
+    end
+
+    # Set options for running the benchmarks.
+    # :format => [:human, :raw]
+    #    :human format narrows precision and scales results for readability
+    #    :raw format displays 6 places of precision and exact iteration counts
+    def self.options
+      @options ||= {:format => :human}
     end
 
     module Helpers
