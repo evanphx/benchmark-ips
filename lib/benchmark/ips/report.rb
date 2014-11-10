@@ -76,13 +76,24 @@ module Benchmark
         # percentage of standard deviation, iterations in runtime.
         # @return [String] Left justified body.
         def body
-          left = "%s (±%4.1f%%) i/s" % [Helpers.scale(ips), stddev_percentage]
+          case Benchmark::IPS.options[:format]
+          when :human
+            left = "%s (±%4.1f%%) i/s" % [Helpers.scale(ips), stddev_percentage]
+            iters = Helpers.scale(@iterations)
 
-          iters = Helpers.scale(@iterations)
-          if @show_total_time
-            left.ljust(20) + (" - %10d in %10.6fs" % [iters, runtime])
+            if @show_total_time
+              left.ljust(20) + (" - %s in %10.6fs" % [iters, runtime])
+            else
+              left.ljust(20) + (" - %s" % iters)
+            end
           else
-            left.ljust(20) + (" - %10d" % iters)
+            left = "%10.1f (±%.1f%%) i/s" % [ips, stddev_percentage]
+
+            if @show_total_time
+              left.ljust(20) + (" - %10d in %10.6fs" % [@iterations, runtime])
+            else
+              left.ljust(20) + (" - %10d" % @iterations)
+            end
           end
         end
 

@@ -61,6 +61,14 @@ module Benchmark
       return job.full_report
     end
 
+    # Set options for running the benchmarks.
+    # :format => [:human, :raw]
+    #    :human format narrows precision and scales results for readability
+    #    :raw format displays 6 places of precision and exact iteration counts
+    def self.options
+      @options ||= {:format => :human}
+    end
+
     module Helpers
       def scale(value)
         scale = (Math.log10(value) / 3).to_i

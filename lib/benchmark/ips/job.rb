@@ -228,7 +228,12 @@ module Benchmark
 
           @timing[item] = cycles_per_100ms warmup_time_us, warmup_iter
 
-          $stdout.printf "%s i/100ms\n", Helpers.scale(@timing[item]) unless @quiet
+          case Benchmark::IPS.options[:format]
+          when :human
+            $stdout.printf "%s i/100ms\n", Helpers.scale(@timing[item]) unless @quiet
+          else
+            $stdout.printf "%10d i/100ms\n", @timing[item] unless @quiet
+          end
 
           @suite.warmup_stats warmup_time_us, @timing[item] if @suite
         end
