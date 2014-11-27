@@ -64,17 +64,17 @@ This will generate the following report:
 
 ```
 Calculating -------------------------------------
-            addition     71254 i/100ms
-           addition2     68658 i/100ms
-           addition3     83079 i/100ms
+            addition    71.254k i/100ms
+           addition2    68.658k i/100ms
+           addition3    83.079k i/100ms
 addition-test-long-label
-                         70129 i/100ms
+                        70.129k i/100ms
 -------------------------------------------------
-            addition  4955278.9 (±8.7%) i/s -   24155106 in   5.002163s
-           addition2 24011974.8 (±9.5%) i/s -  114246912 in   4.995446s
-           addition3 23958619.8 (±9.9%) i/s -  115064415 in   4.996349s
+            addition     4.955M (± 8.7%) i/s -     24.155M
+           addition2    24.011M (± 9.5%) i/s -    114.246M
+           addition3    23.958M (±10.1%) i/s -    115.064M
 addition-test-long-label
-                      5014756.0 (±9.1%) i/s -   24545150 in   5.009754s
+                         5.014M (± 9.1%) i/s -     24.545M
 
 Comparison:
            addition2: 24011974.8 i/s
