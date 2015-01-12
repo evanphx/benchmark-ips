@@ -1,3 +1,17 @@
+=== 2.1.1 / 2015-01-12
+
+* 1 minor fix:
+  * Don't send label through printf so that % work directly
+
+* 1 documenation changes:
+  * Use HEREDOC and wrap at 80 chars for example result description
+
+* 1 usage fix:
+  * Add gemspec for use via bundler git
+
+* 1 PR merged:
+  * Merge pull request #24 from zzak/simple-format-result-description
+
 === 2.1.0 / 2014-11-10
 
 * Documentation changes:
