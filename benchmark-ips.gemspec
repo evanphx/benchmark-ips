@@ -1,9 +1,16 @@
 # -*- encoding: utf-8 -*-
 # stub: benchmark-ips 2.1.0 ruby lib
 
+d = File.read(File.expand_path("../lib/benchmark/ips.rb", __FILE__))
+if d =~ /VERSION = "(\d+\.\d+\.\d+)"/
+  version = $1
+else
+  version = "0.0.1"
+end
+
 Gem::Specification.new do |s|
   s.name = "benchmark-ips"
-  s.version = "2.1.0"
+  s.version = version
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
