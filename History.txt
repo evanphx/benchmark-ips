@@ -1,3 +1,14 @@
+=== 2.1.0 / 2014-11-10
+
+* Documentation changes:
+  * Many documentation fixes by Juanito Fatas!
+  * Minor readme fix by Will Leinweber
+
+* 2 minor features:
+  * Displaying the total runtime for a job is suppressed unless interesting
+  * Formatting of large values improved (human vs raw mode)
+    * Contributed by Charles Oliver Nutter
+
 === 2.0.0 / 2014-06-18
 
 * The 'Davy Stevenson' release!
