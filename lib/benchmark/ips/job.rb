@@ -207,7 +207,7 @@ module Benchmark
           @suite.warming item.label, @warmup if @suite
 
           unless @quiet
-            $stdout.printf item.label_rjust
+            $stdout.print item.label_rjust
           end
 
           Timing.clean_env
