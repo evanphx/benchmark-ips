@@ -12,6 +12,22 @@ class TestBenchmarkIPS < Minitest::Test
     $stdout = @old_stdout
   end
 
+  def test_output
+    Benchmark.ips(1) do |x|
+      x.report("operation") { 100 * 100 }
+    end
+
+    assert $stdout.string.size > 0
+  end
+
+  def test_quiet
+    Benchmark.ips(1, nil, true) do |x|
+      x.report("operation") { 100 * 100 }
+    end
+
+    assert $stdout.string.size.zero?
+  end
+
   def test_ips
     report = Benchmark.ips do |x|
       x.config(:time => 1, :warmup => 1)
