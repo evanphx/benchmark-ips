@@ -10,14 +10,14 @@ module Benchmark
       # Represents benchmarking code data for Report.
       class Entry
         # Instantiate the Benchmark::IPS::Report::Entry.
-        # @param [String] label Label of entry.
+        # @param [#to_s] label Label of entry.
         # @param [Integer] us Measured time in microsecond.
         # @param [Integer] iters Iterations.
         # @param [Float] ips Iterations per second.
         # @param [Float] ips_sd Standard deviation of iterations per second.
         # @param [Integer] cycles Number of Cycles.
         def initialize(label, us, iters, ips, ips_sd, cycles)
-          @label = label
+          @label = label.to_s
           @microseconds = us
           @iterations = iters
           @ips = ips
