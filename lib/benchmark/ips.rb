@@ -21,7 +21,7 @@ module Benchmark
     # @param time [Integer] Specify how long should benchmark your code in seconds.
     # @param warmup [Integer] Specify how long should Warmup time run in seconds.
     # @return [Report]
-    def ips(time=nil, warmup=nil)
+    def ips(time=nil, warmup=nil, &block)
       suite = nil
 
       sync, $stdout.sync = $stdout.sync, true
@@ -42,7 +42,7 @@ module Benchmark
 
       job.config job_opts
 
-      yield job
+      job.instance_eval(&block)
 
       $stdout.puts "Calculating -------------------------------------" unless quiet
 
