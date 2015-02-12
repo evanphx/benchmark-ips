@@ -69,4 +69,16 @@ class TestBenchmarkIPS < Minitest::Test
     assert_equal 4*5, rep.iterations
     assert_in_delta 4.0, rep.ips, 0.2
   end
+
+  def test_ips_report_using_symbol
+    report = Benchmark.ips do |x|
+      x.report(:sleep_a_quarter_second) { sleep(0.25) }
+    end
+
+    rep = report.entries.first
+
+    assert_equal "sleep_a_quarter_second", rep.label
+    assert_equal 4*5, rep.iterations
+    assert_in_delta 4.0, rep.ips, 0.2
+  end
 end

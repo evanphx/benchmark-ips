@@ -13,11 +13,11 @@ module Benchmark
       # Entries in Benchmark Jobs.
       class Entry
         # Instantiate the Benchmark::IPS::Job::Entry.
-        # @param label [String] Label of Benchmarked code.
+        # @param label [#to_s] Label of Benchmarked code.
         # @param action [String, Proc] Code to be benchmarked.
         # @raise [ArgumentError] Raises when action is not String or not responding to +call+.
         def initialize(label, action)
-          @label = label
+          @label = label.to_s
 
           if action.kind_of? String
             compile action
