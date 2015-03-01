@@ -81,4 +81,36 @@ class TestBenchmarkIPS < Minitest::Test
     assert_equal 4*5, rep.iterations
     assert_in_delta 4.0, rep.ips, 0.2
   end
+
+  def test_ips_default_data
+    report = Benchmark.ips do |x|
+      x.report("sleep 0.25") { sleep(0.25) }
+    end
+
+    all_data = report.data
+
+    assert all_data
+    assert_equal "sleep 0.25", all_data[0][:name]
+    assert all_data[0][:ips]
+    assert all_data[0][:stddev]
+  end
+
+  def test_json_output
+    json_file = Tempfile.new("data.json")
+
+    Benchmark.ips do |x|
+      x.report("sleep 0.25") { sleep(0.25) }
+      x.json! json_file.path
+    end
+
+    json_data = json_file.read
+    assert json_data
+
+    data = JSON.parse json_data
+    assert data
+    assert_equal 1, data.size
+    assert_equal "sleep 0.25", data[0]["name"]
+    assert data[0]["ips"]
+    assert data[0]["stddev"]
+  end
 end

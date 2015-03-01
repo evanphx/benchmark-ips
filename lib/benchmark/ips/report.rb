@@ -124,6 +124,7 @@ module Benchmark
       # Instantiate the Report.
       def initialize
         @entries = []
+        @data = nil
       end
 
       # Add entry to report.
@@ -139,9 +140,34 @@ module Benchmark
         @entries.last
       end
 
+      # Entries data in array for generate json.
+      # Each entry is a hash, consists of:
+      #   name:   Entry#label
+      #   ips:    Entry#ips
+      #   stddev: Entry#ips_sd
+      # @return [Array] Array of entries
+      def data
+        @data ||= @entries.collect do |entry|
+          {
+            name: entry.label,
+            ips: entry.ips,
+            stddev: entry.ips_sd
+          }
+        end
+      end
+
       # Run comparison of entries.
       def run_comparison
         Benchmark.compare(*@entries)
+      end
+
+      # Generate json from Report#data to given path.
+      # @param path [String] path to generate json.
+      def generate_json(path)
+        File.open path, "w" do |f|
+          require "json"
+          f.write JSON.pretty_generate(data)
+        end
       end
     end
   end

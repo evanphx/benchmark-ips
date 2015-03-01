@@ -58,6 +58,10 @@ module Benchmark
         job.run_comparison
       end
 
+      if job.json?
+        job.generate_json
+      end
+
       return job.full_report
     end
 
