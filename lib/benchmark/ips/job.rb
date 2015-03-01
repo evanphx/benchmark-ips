@@ -126,6 +126,7 @@ module Benchmark
         @quiet = opts[:quiet] || false
         @list = []
         @compare = false
+        @json_path = false
 
         @timing = {}
         @full_report = Report.new
@@ -152,6 +153,18 @@ module Benchmark
       # Set @compare to true.
       def compare!
         @compare = true
+      end
+
+
+      # Return true if job needs to generate json.
+      # @return [Boolean] Need to generate json?
+      def json?
+        !!@json_path
+      end
+
+      # Set @json_path to given path, defaults to "data.json".
+      def json!(path="data.json")
+        @json_path = path
       end
 
       # Registers the given label and block pair in the job list.
@@ -300,6 +313,11 @@ module Benchmark
       # Run comparison of entries in +@full_report+.
       def run_comparison
         @full_report.run_comparison
+      end
+
+      # Generate json from +@full_report+.
+      def generate_json
+        @full_report.generate_json @json_path
       end
 
       # Create report by add entry to +@full_report+.
