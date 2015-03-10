@@ -30,7 +30,7 @@ module Benchmark
         suite = Benchmark::Suite.current
       end
 
-      quiet = suite && !suite.quiet?
+      quiet = suite && suite.quiet?
 
       job = Job.new({:suite => suite,
                      :quiet => quiet
