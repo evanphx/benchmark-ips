@@ -142,6 +142,7 @@ module Benchmark
       def config opts
         @warmup = opts[:warmup] if opts[:warmup]
         @time = opts[:time] if opts[:time]
+        @suite = opts[:suite] if opts[:suite]
       end
 
       # Return true if job needs to be compared.

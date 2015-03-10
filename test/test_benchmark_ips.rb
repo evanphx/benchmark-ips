@@ -58,6 +58,21 @@ class TestBenchmarkIPS < Minitest::Test
     assert_in_delta 4.0, rep.ips, 0.2
   end
 
+  def test_ips_config_suite
+    suite = Struct.new(:calls) do
+      def method_missing(method, *args)
+        calls << method
+      end
+    end.new([])
+
+    Benchmark.ips(0.1, 0.1) do |x|
+      x.config(:suite => suite)
+      x.report("job") {}
+    end
+
+    assert_equal [:warming, :warmup_stats, :running, :add_report], suite.calls
+  end
+
   def test_ips_defaults
     report = Benchmark.ips do |x|
       x.report("sleep 0.25") { sleep(0.25) }
