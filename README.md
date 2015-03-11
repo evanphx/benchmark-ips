@@ -93,6 +93,49 @@ One benefit to using this method is benchmark-ips automatically determines the
 data points for testing our code, so we can focus on the results instead of
 guessing iteration counts as we do with the traditional Benchmark library.
 
+### Custom Suite
+
+Pass a custom suite to to disable garbage collection during benchmark:
+
+```ruby
+require 'benchmark/ips'
+
+# Enable and start GC before each job run. Disable GC afterwards.
+#
+# Inspired by https://www.omniref.com/ruby/2.2.1/symbols/Benchmark/bm?#annotation=4095926&line=182
+class GCSuite
+  def warming(*)
+    run_gc
+  end
+
+  def running(*)
+    run_gc
+  end
+
+  def warmup_stats(*)
+  end
+
+  def add_report(*)
+  end
+
+  private
+
+  def run_gc
+    GC.enable
+    GC.start
+    GC.disable
+  end
+end
+
+suite = GCSuite.new
+
+Benchmark.ips do |x|
+  x.config(:suite => suite)
+  x.report("job1") { ... }
+  x.report("job2") { ... }
+end
+```
+
 ## REQUIREMENTS:
 
 * None!
