@@ -95,7 +95,7 @@ guessing iteration counts as we do with the traditional Benchmark library.
 
 ### Custom Suite
 
-Pass a custom suite to to disable garbage collection during benchmark:
+Pass a custom suite to disable garbage collection during benchmark:
 
 ```ruby
 require 'benchmark/ips'
