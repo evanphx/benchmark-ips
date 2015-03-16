@@ -21,7 +21,7 @@ module Benchmark
     # @param time [Integer] Specify how long should benchmark your code in seconds.
     # @param warmup [Integer] Specify how long should Warmup time run in seconds.
     # @return [Report]
-    def ips(time=nil, warmup=nil)
+    def ips(time=nil, warmup=nil, quiet=false)
       suite = nil
 
       sync, $stdout.sync = $stdout.sync, true
@@ -30,7 +30,7 @@ module Benchmark
         suite = Benchmark::Suite.current
       end
 
-      quiet = suite && suite.quiet?
+      quiet ||= (suite && suite.quiet?)
 
       job = Job.new({:suite => suite,
                      :quiet => quiet
