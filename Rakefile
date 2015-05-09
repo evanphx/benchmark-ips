@@ -4,6 +4,7 @@ require 'rubygems'
 require 'hoe'
 
 Hoe.plugin :minitest
+Hoe.plugin :git
 
 hoe = Hoe.spec 'benchmark-ips' do
   developer('Evan Phoenix', 'evan@phx.io')

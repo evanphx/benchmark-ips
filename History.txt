@@ -1,3 +1,27 @@
+=== 2.2.0 / 2015-05-09
+
+* 1 minor features:
+  * Fix quiet mode
+  * Allow passing a custom suite via config
+  * Silent a job if a suite was passed and is quiet
+  * Export report to json file.
+  * Accept symbol as report's argument.
+
+* 2 doc fixes:
+  * Squish duplicate `to` in README
+  * Update copyright to 2015. [ci skip]
+
+* 9 PRs merged:
+  * Merge pull request #37 from splattael/patch-1
+  * Merge pull request #36 from kirs/quiet-mode
+  * Merge pull request #35 from JuanitoFatas/doc/suite
+  * Merge pull request #34 from splattael/config-suite
+  * Merge pull request #33 from splattael/suite-quiet
+  * Merge pull request #32 from O-I/remove-gemfile-lock
+  * Merge pull request #31 from JuanitoFatas/doc/bump-copyright-year
+  * Merge pull request #29 from JuanitoFatas/feature/json-export
+  * Merge pull request #26 from JuanitoFatas/feature/takes-symbol-as-report-parameter
+
 === 2.1.1 / 2015-01-12
 
 * 1 minor fix:
