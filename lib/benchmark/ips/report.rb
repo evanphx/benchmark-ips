@@ -149,9 +149,9 @@ module Benchmark
       def data
         @data ||= @entries.collect do |entry|
           {
-            name: entry.label,
-            ips: entry.ips,
-            stddev: entry.ips_sd
+            :name => entry.label,
+            :ips =>  entry.ips,
+            :stddev => entry.ips_sd
           }
         end
       end
