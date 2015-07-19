@@ -59,7 +59,7 @@ module Benchmark
           x = (best.ips.to_f / report.ips.to_f)
           $stdout.printf "%20s: %10.1f i/s - %.2fx slower\n", name, report.ips, x
         else
-          x = "%.2f" % (report.ips.to_f / best.ips.to_f)
+          x = "%.2f" % ((report.runtime.to_f - best.runtime.to_f) / best.runtime.to_f)
           $stdout.puts "#{name.rjust(20)}: #{report.runtime}s - #{x}x slower"
         end
       end
