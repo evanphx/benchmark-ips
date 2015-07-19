@@ -19,7 +19,7 @@ Benchmark.ips do |x|
   # and the block must run the code the specific number of times.
   # Used for when the workload is very small and any overhead
   # introduces incorrectable errors.
-  x.report("addition2") do |times|
+  x.report(:addition2) do |times|
     i = 0
     while i < times
       1 + 2

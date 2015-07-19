@@ -17,7 +17,7 @@ module Benchmark
         # @param [Float] ips_sd Standard deviation of iterations per second.
         # @param [Integer] cycles Number of Cycles.
         def initialize(label, us, iters, ips, ips_sd, cycles)
-          @label = label.to_s
+          @label = label
           @microseconds = us
           @iterations = iters
           @ips = ips
@@ -100,7 +100,7 @@ module Benchmark
         # Return header with padding if +@label+ is < length of 20.
         # @return [String] Right justified header (+@label+).
         def header
-          @label.rjust(20)
+          @label.to_s.rjust(20)
         end
 
         # Return string repesentation of Entry object.
