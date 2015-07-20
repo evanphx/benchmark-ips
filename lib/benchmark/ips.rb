@@ -21,7 +21,13 @@ module Benchmark
     # @param time [Integer] Specify how long should benchmark your code in seconds.
     # @param warmup [Integer] Specify how long should Warmup time run in seconds.
     # @return [Report]
-    def ips(time=nil, warmup=nil, quiet=false)
+    def ips(*args)
+      if args[0].is_a?(Hash)
+        time, warmup, quiet = args[0].values_at(:time, :warmup, :quiet)
+      else
+        time, warmup, quiet = args
+      end
+
       suite = nil
 
       sync, $stdout.sync = $stdout.sync, true
