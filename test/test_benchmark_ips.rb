@@ -108,7 +108,7 @@ class TestBenchmarkIPS < Minitest::Test
 
     rep = report.entries.first
 
-    assert_equal "sleep_a_quarter_second", rep.label
+    assert_equal :sleep_a_quarter_second, rep.label
     assert_equal 4*5, rep.iterations
     assert_in_delta 4.0, rep.ips, 0.2
   end

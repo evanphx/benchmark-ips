@@ -53,7 +53,7 @@ module Benchmark
       end
 
       sorted.each do |report|
-        name = report.label
+        name = report.label.to_s
 
         if iter
           x = (best.ips.to_f / report.ips.to_f)

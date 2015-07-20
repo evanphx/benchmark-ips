@@ -17,7 +17,7 @@ module Benchmark
         # @param action [String, Proc] Code to be benchmarked.
         # @raise [ArgumentError] Raises when action is not String or not responding to +call+.
         def initialize(label, action)
-          @label = label.to_s
+          @label = label
 
           if action.kind_of? String
             compile action
@@ -41,7 +41,7 @@ module Benchmark
         end
 
         # The label of benchmarking action.
-        # @return [String] Label of action.
+        # @return [#to_s] Label of action.
         attr_reader :label
 
         # The benchmarking action.
@@ -52,10 +52,11 @@ module Benchmark
         # Otherwise add a new line and 20 whitespaces.
         # @return [String] Right justified label.
         def label_rjust
-          if @label.size > 20
-            "#{@label}\n#{' ' * 20}"
+          label = @label.to_s
+          if label.size > 20
+            "#{label}\n#{' ' * 20}"
           else
-            @label.rjust(20)
+            label.rjust(20)
           end
         end
 
