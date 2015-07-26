@@ -2,6 +2,10 @@ module Benchmark
   module IPS
     class Job
       class StdoutReport
+        def start_warming
+          $stdout.puts "Calculating -------------------------------------"
+        end
+
         def warming(label, _warmup)
           $stdout.print rjust(label)
         end
@@ -16,6 +20,7 @@ module Benchmark
         end
 
         alias_method :running, :warming
+        alias_method :start_running, :start_warming
 
         def add_report(item, caller)
           $stdout.puts " #{item.body}"

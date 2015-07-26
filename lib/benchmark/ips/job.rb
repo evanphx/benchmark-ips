@@ -133,6 +133,7 @@ module Benchmark
 
       # Run warmup.
       def run_warmup
+        @stdout.start_warming if @stdout
         @list.each do |item|
           @suite.warming item.label, @warmup if @suite
           @stdout.warming item.label, @warmup if @stdout
@@ -162,6 +163,7 @@ module Benchmark
 
       # Run calculation.
       def run
+        @stdout.start_running if @stdout
         @list.each do |item|
           @suite.running item.label, @time if @suite
           @stdout.running item.label, @time if @stdout
@@ -216,12 +218,12 @@ module Benchmark
 
       # Run comparison of entries in +@full_report+.
       def run_comparison
-        @full_report.run_comparison
+        @full_report.run_comparison if compare?
       end
 
       # Generate json from +@full_report+.
       def generate_json
-        @full_report.generate_json @json_path
+        @full_report.generate_json @json_path if json?
       end
 
       # Create report by add entry to +@full_report+.

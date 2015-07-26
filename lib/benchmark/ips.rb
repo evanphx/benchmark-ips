@@ -52,25 +52,14 @@ module Benchmark
 
       yield job
 
-      $stdout.puts "Calculating -------------------------------------" unless quiet
-
       job.run_warmup
-
-      $stdout.puts "-------------------------------------------------" unless quiet
-
       job.run
 
       $stdout.sync = sync
+      job.run_comparison
+      job.generate_json
 
-      if job.compare?
-        job.run_comparison
-      end
-
-      if job.json?
-        job.generate_json
-      end
-
-      return job.full_report
+      job.full_report
     end
 
     # Set options for running the benchmarks.
