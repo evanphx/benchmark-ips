@@ -39,7 +39,7 @@ module Benchmark
       # @option opts [Boolean] (false) :quiet Suppress the printing of information.
       def initialize opts={}
         @suite = opts[:suite] || nil
-        @quiet = opts[:quiet] || false
+        @stdout = opts[:quiet] ? nil : StdoutReport.new
         @list = []
         @compare = false
         @json_path = false
@@ -135,10 +135,7 @@ module Benchmark
       def run_warmup
         @list.each do |item|
           @suite.warming item.label, @warmup if @suite
-
-          unless @quiet
-            $stdout.print item.label_rjust
-          end
+          @stdout.warming item.label, @warmup if @stdout
 
           Timing.clean_env
 
@@ -158,13 +155,7 @@ module Benchmark
 
           @timing[item] = cycles_per_100ms warmup_time_us, warmup_iter
 
-          case Benchmark::IPS.options[:format]
-          when :human
-            $stdout.printf "%s i/100ms\n", Helpers.scale(@timing[item]) unless @quiet
-          else
-            $stdout.printf "%10d i/100ms\n", @timing[item] unless @quiet
-          end
-
+          @stdout.warmup_stats warmup_time_us, @timing[item] if @stdout
           @suite.warmup_stats warmup_time_us, @timing[item] if @suite
         end
       end
@@ -173,10 +164,7 @@ module Benchmark
       def run
         @list.each do |item|
           @suite.running item.label, @time if @suite
-
-          unless @quiet
-            $stdout.print item.label_rjust
-          end
+          @stdout.running item.label, @time if @stdout
 
           Timing.clean_env
 
@@ -221,8 +209,7 @@ module Benchmark
             rep.show_total_time!
           end
 
-          $stdout.puts " #{rep.body}" unless @quiet
-
+          @stdout.add_report rep, caller(1).first if @stdout
           @suite.add_report rep, caller(1).first if @suite
         end
       end

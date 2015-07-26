@@ -40,18 +40,6 @@ module Benchmark
         # @return [String, Proc] Code to be called, could be String / Proc.
         attr_reader :action
 
-        # Add padding to label's right if label's length < 20,
-        # Otherwise add a new line and 20 whitespaces.
-        # @return [String] Right justified label.
-        def label_rjust
-          label = @label.to_s
-          if label.size > 20
-            "#{label}\n#{' ' * 20}"
-          else
-            label.rjust(20)
-          end
-        end
-
         # Call action by given times, return if +@call_loop+ is present.
         # @param times [Integer] Times to call +@action+.
         # @return [Integer] Number of times the +@action+ has been called.

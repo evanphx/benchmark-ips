@@ -3,6 +3,7 @@ require 'benchmark/timing'
 require 'benchmark/compare'
 require 'benchmark/ips/report'
 require 'benchmark/ips/job/entry'
+require 'benchmark/ips/job/stdout_report'
 require 'benchmark/ips/job'
 
 # Performance benchmarking library
