@@ -3,6 +3,7 @@ require 'benchmark/timing'
 require 'benchmark/compare'
 require 'benchmark/ips/report'
 require 'benchmark/ips/job/entry'
+require 'benchmark/ips/job/stdout_report'
 require 'benchmark/ips/job'
 
 # Performance benchmarking library
@@ -51,25 +52,14 @@ module Benchmark
 
       yield job
 
-      $stdout.puts "Calculating -------------------------------------" unless quiet
-
       job.run_warmup
-
-      $stdout.puts "-------------------------------------------------" unless quiet
-
       job.run
 
       $stdout.sync = sync
+      job.run_comparison
+      job.generate_json
 
-      if job.compare?
-        job.run_comparison
-      end
-
-      if job.json?
-        job.generate_json
-      end
-
-      return job.full_report
+      job.full_report
     end
 
     # Set options for running the benchmarks.
