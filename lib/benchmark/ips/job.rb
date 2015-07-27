@@ -213,7 +213,7 @@ module Benchmark
           }
 
           avg_ips = Timing.mean(all_ips)
-          sd_ips =  Timing.stddev(all_ips).round
+          sd_ips =  Timing.stddev(all_ips, avg_ips).round
 
           rep = create_report(item, measured_us, iter, avg_ips, sd_ips, cycles)
 
