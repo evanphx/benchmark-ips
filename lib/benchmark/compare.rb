@@ -15,13 +15,13 @@ module Benchmark
   #   Calculating -------------------------------------
   #       Reduce using tag     19216 i/100ms
   #   Reduce using to_proc     17437 i/100ms
-  #   -------------------------------------------------
+  #   Calculating -------------------------------------
   #       Reduce using tag   278950.0 (±8.5%) i/s -    1402768 in   5.065112s
   #   Reduce using to_proc   247295.4 (±8.0%) i/s -    1238027 in   5.037299s
   #
   #   Comparison:
   #       Reduce using tag:   278950.0 i/s
-  #   Reduce using to_proc:   247295.4 i/s - 1.13x slower
+  #   Reduce using to_proc:   247295.4 i/s - 0.11x slower
   #
   # Besides regular Calculating report, this will also indicates which one is slower.
   module Compare

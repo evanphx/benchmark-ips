@@ -69,7 +69,7 @@ Calculating -------------------------------------
            addition3    83.079k i/100ms
 addition-test-long-label
                         70.129k i/100ms
--------------------------------------------------
+Calculating -------------------------------------
             addition     4.955M (± 8.7%) i/s -     24.155M
            addition2    24.011M (± 9.5%) i/s -    114.246M
            addition3    23.958M (±10.1%) i/s -    115.064M
@@ -78,9 +78,9 @@ addition-test-long-label
 
 Comparison:
            addition2: 24011974.8 i/s
-           addition3: 23958619.8 i/s - 1.00x slower
-addition-test-long-label:  5014756.0 i/s - 4.79x slower
-            addition:  4955278.9 i/s - 4.85x slower
+           addition3: 23958619.8 i/s - 0.00x slower
+addition-test-long-label:  5014756.0 i/s - 0.79x slower
+            addition:  4955278.9 i/s - 0.79x slower
 ```
 
 Benchmark/ips will report the number of iterations per second for a given block
