@@ -32,36 +32,21 @@ module Benchmark
     def compare(*reports)
       return if reports.size < 2
 
-      iter = false
       sorted = reports.sort do |a,b|
-        if a.respond_to? :ips
-          iter = true
-          b.ips <=> a.ips
-        else
-          a.runtime <=> b.runtime
-        end
+        b.ips <=> a.ips
       end
 
       best = sorted.shift
 
       $stdout.puts "\nComparison:"
 
-      if iter
-        $stdout.printf "%20s: %10.1f i/s\n", best.label, best.ips
-      else
-        $stdout.printf "%20s: #{best.runtime}s\n", best.label
-      end
+      $stdout.printf "%20s: %10.1f i/s\n", best.label, best.ips
 
       sorted.each do |report|
         name = report.label.to_s
 
-        if iter
-          x = (best.ips.to_f / report.ips.to_f)
-          $stdout.printf "%20s: %10.1f i/s - %.2fx slower\n", name, report.ips, x
-        else
-          x = "%.2f" % ((report.runtime.to_f - best.runtime.to_f) / best.runtime.to_f)
-          $stdout.puts "#{name.rjust(20)}: #{report.runtime}s - #{x}x slower"
-        end
+        x = (best.ips.to_f / report.ips.to_f)
+        $stdout.printf "%20s: %10.1f i/s - %.2fx slower\n", name, report.ips, x
       end
 
       $stdout.puts
