@@ -49,7 +49,7 @@ module Benchmark
       if iter
         $stdout.printf "%20s: %10.1f i/s\n", best.label, best.ips
       else
-        $stdout.puts "#{best.rjust(20)}: #{best.runtime}s"
+        $stdout.printf "%20s: #{best.runtime}s\n", best.label
       end
 
       sorted.each do |report|
