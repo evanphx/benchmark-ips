@@ -43,7 +43,7 @@ module Benchmark
       sorted.each do |report|
         name = report.label.to_s
 
-        x = (best.ips.to_f / report.ips.to_f)
+        x = (best.ips - report.ips) / best.ips.to_f
         $stdout.printf "%20s: %10.1f i/s - %.2fx slower\n", name, report.ips, x
       end
 
