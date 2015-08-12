@@ -28,7 +28,7 @@ module Benchmark
 
     # Compare between reports, prints out facts of each report:
     # runtime, comparative speed difference.
-    # @param reports [Array<Report>] Reports to compare.
+    # @param reports [Array<Report::Entry>] Reports to compare.
     def compare(*reports)
       return if reports.size < 2
 
@@ -43,10 +43,19 @@ module Benchmark
       sorted.each do |report|
         name = report.label.to_s
 
-        x = (best.ips.to_f / report.ips.to_f)
-        $stdout.printf "%20s: %10.1f i/s - %.2fx slower\n", name, report.ips, x
+        diff = best.ips - report.ips
+
+        if diff < report.ips_sd
+          $stdout.printf "%20s: %10.1f i/s - same\n", name, report.ips
+        else
+          x = (best.ips.to_f / report.ips.to_f)
+          s = (diff.to_f / best.ips.to_f) * 100.0
+
+          $stdout.printf "%20s: %10.1f i/s - %.2fx (%.2f%% slower)\n", name, report.ips, x, s
+        end
       end
 
+      $stdout.puts "\n<num>x indicates how much more work an entry took versus the fastest one"
       $stdout.puts
     end
   end
