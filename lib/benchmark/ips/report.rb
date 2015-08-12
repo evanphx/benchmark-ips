@@ -3,7 +3,7 @@
 module Benchmark
   module IPS
 
-    # Report contains benchamrking entries.
+    # Report contains benchmarking entries.
     # Perform operations like add new entry, run comparison between entries.
     class Report
 
@@ -117,7 +117,7 @@ module Benchmark
 
       # class Report
 
-      # Entry to represent each benchamarked code in Report.
+      # Entry to represent each benchmarked code in Report.
       # @return [Array<Entry>] Entries in Report.
       attr_reader :entries
 

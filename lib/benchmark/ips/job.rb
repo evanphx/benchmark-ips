@@ -86,8 +86,8 @@ module Benchmark
 
       # Registers the given label and block pair in the job list.
       # @param label [String] Label of benchmarked code.
-      # @param str [String] Code to be benchamrked.
-      # @param blk [Proc] Code to be benchamrked.
+      # @param str [String] Code to be benchmarked.
+      # @param blk [Proc] Code to be benchmarked.
       # @raise [ArgumentError] Raises if str and blk are both present.
       # @raise [ArgumentError] Raises if str and blk are both absent.
       def item(label="", str=nil, &blk) # :yield:
