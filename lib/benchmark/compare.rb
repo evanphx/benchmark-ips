@@ -32,7 +32,7 @@ module Benchmark
     def compare(*reports)
       return if reports.size < 2
 
-      sorted = reports.sort_by(&:ips).reverse
+      sorted = reports.sort_by { |x| x.ips }.reverse
 
       best = sorted.shift
 
