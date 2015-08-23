@@ -205,7 +205,7 @@ module Benchmark
           avg_ips = Timing.mean(all_ips)
           sd_ips =  Timing.stddev(all_ips, avg_ips).round
 
-          rep = create_report(item, measured_us, iter, avg_ips, sd_ips, cycles)
+          rep = create_report(item.label, measured_us, iter, avg_ips, sd_ips, cycles)
 
           if (final_time - target).abs >= (@time.to_f * MAX_TIME_SKEW)
             rep.show_total_time!
@@ -227,14 +227,15 @@ module Benchmark
       end
 
       # Create report by add entry to +@full_report+.
-      # @param item [Benchmark::IPS::Job::Entry] Report item.
+      # @param label [String] Report item label.
       # @param measured_us [Integer] Measured time in microsecond.
       # @param iter [Integer] Iterations.
       # @param avg_ips [Float] Average iterations per second.
       # @param sd_ips [Float] Standard deviation iterations per second.
       # @param cycles [Integer] Number of Cycles.
-      def create_report(item, measured_us, iter, avg_ips, sd_ips, cycles)
-        @full_report.add_entry item.label, measured_us, iter, avg_ips, sd_ips, cycles
+      # @return [Report::Entry] Entry with data.
+      def create_report(label, measured_us, iter, avg_ips, sd_ips, cycles)
+        @full_report.add_entry label, measured_us, iter, avg_ips, sd_ips, cycles
       end
     end
   end
