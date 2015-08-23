@@ -28,11 +28,11 @@ module Benchmark
 
     # Compare between reports, prints out facts of each report:
     # runtime, comparative speed difference.
-    # @param reports [Array<Report>] Reports to compare.
-    def compare(*reports)
-      return if reports.size < 2
+    # @param entries [Array<Report::Entry>] Reports to compare.
+    def compare(*entries)
+      return if entries.size < 2
 
-      sorted = reports.sort_by(&:ips).reverse
+      sorted = entries.sort_by(&:ips).reverse
 
       best = sorted.shift
 

@@ -118,7 +118,7 @@ module Benchmark
       # class Report
 
       # Entry to represent each benchmarked code in Report.
-      # @return [Array<Entry>] Entries in Report.
+      # @return [Array<Report::Entry>] Entries in Report.
       attr_reader :entries
 
       # Instantiate the Report.
@@ -134,10 +134,11 @@ module Benchmark
       # @param ips [Float] Average Iterations per second.
       # @param ips_sd [Float] Standard deviation of iterations per second.
       # @param measurement_cycle [Integer] Number of cycles.
-      # @return [Entry] Last added entry.
+      # @return [Report::Entry] Last added entry.
       def add_entry label, microseconds, iters, ips, ips_sd, measurement_cycle
-        @entries << Entry.new(label, microseconds, iters, ips, ips_sd, measurement_cycle)
-        @entries.last
+        entry = Entry.new(label, microseconds, iters, ips, ips_sd, measurement_cycle)
+        @entries << entry
+        entry
       end
 
       # Entries data in array for generate json.
@@ -145,7 +146,7 @@ module Benchmark
       #   name:   Entry#label
       #   ips:    Entry#ips
       #   stddev: Entry#ips_sd
-      # @return [Array] Array of entries
+      # @return [Array<Hash<Symbol,String|Float>] Array of hashes with :label, :ips, :stddev
       def data
         @data ||= @entries.collect do |entry|
           {
