@@ -43,7 +43,7 @@ module Benchmark
       resamples
     end
 
-    # Recycle unsed objects by starting Garbage Collector.
+    # Recycle used objects by starting Garbage Collector.
     def self.clean_env
       # rbx
       if GC.respond_to? :run
