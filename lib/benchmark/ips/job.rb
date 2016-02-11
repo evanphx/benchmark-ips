@@ -18,6 +18,10 @@ module Benchmark
       # @return [Boolean] true if needs to run compare.
       attr_reader :compare
 
+      # Determining whether to hold results between Ruby invocations
+      # @return [Boolean]
+      attr_accessor :hold
+
       # Report object containing information about the run.
       # @return [Report] the report object.
       attr_reader :full_report
@@ -34,6 +38,10 @@ module Benchmark
       # @return [Integer]
       attr_accessor :time
 
+      # The hash of the benchmark source.
+      # @return [String]
+      attr_accessor :source_hash
+
       # Instantiate the Benchmark::IPS::Job.
       # @option opts [Benchmark::Suite] (nil) :suite Specify Benchmark::Suite.
       # @option opts [Boolean] (false) :quiet Suppress the printing of information.
@@ -43,6 +51,7 @@ module Benchmark
         @list = []
         @compare = false
         @json_path = false
+        @source_hash = nil
 
         @timing = {}
         @full_report = Report.new
@@ -72,6 +81,16 @@ module Benchmark
         @compare = true
       end
 
+      # Return true if results are held while multiple Ruby invocations
+      # @return [Boolean] Need to hold results between multiple Ruby invocations?
+      def hold?
+        @hold
+      end
+
+      # Set @hold to true.
+      def hold!
+        @hold = true
+      end
 
       # Return true if job needs to generate json.
       # @return [Boolean] Need to generate json?
@@ -135,6 +154,8 @@ module Benchmark
       def run_warmup
         @stdout.start_warming if @stdout
         @list.each do |item|
+          next if hold? && item.held_results?(self)
+          
           @suite.warming item.label, @warmup if @suite
           @stdout.warming item.label, @warmup if @stdout
 
@@ -158,6 +179,8 @@ module Benchmark
 
           @stdout.warmup_stats warmup_time_us, @timing[item] if @stdout
           @suite.warmup_stats warmup_time_us, @timing[item] if @suite
+          
+          break if hold?
         end
       end
 
@@ -165,6 +188,13 @@ module Benchmark
       def run
         @stdout.start_running if @stdout
         @list.each do |item|
+          if hold? && item.held_results?(self)
+            result = item.held_results(self)
+            create_report(item, result['measured_us'], result['iter'],
+              result['avg_ips'], result['sd_ips'], result['cycles'])
+            next
+          end
+          
           @suite.running item.label, @time if @suite
           @stdout.running item.label, @time if @stdout
 
@@ -213,6 +243,25 @@ module Benchmark
 
           @stdout.add_report rep, caller(1).first if @stdout
           @suite.add_report rep, caller(1).first if @suite
+          
+          if hold? && item != @list.last
+            item.hold_results self, measured_us, iter, avg_ips, sd_ips, cycles
+            puts
+            puts 'Pausing here -- run Ruby again to measure the next benchmark...'
+            break
+          end
+        end
+        
+        if hold? && @full_report.entries.size == @list.size
+          tidy_up_held_results
+        end
+      end
+      
+      def tidy_up_held_results
+        @list.each do |item|
+          if item.held_results?(self)
+            File.delete item.held_filename(self)
+          end
         end
       end
 

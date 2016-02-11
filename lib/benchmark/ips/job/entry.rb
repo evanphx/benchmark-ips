@@ -71,6 +71,32 @@ module Benchmark
           CODE
           m.class_eval code
         end
+        
+        def held_filename(job)
+          @held_filename ||= ".#{label}.#{job.source_hash}.json"
+        end
+        
+        def held_results?(job)
+          File.exist?(held_filename(job))
+        end
+        
+        def held_results(job)
+          require "json"
+          JSON.parse(File.read(held_filename(job)))
+        end
+        
+        def hold_results(job, measured_us, iter, avg_ips, sd_ips, cycles)
+          File.open held_filename(job), "w" do |f|
+            require "json"
+            f.write JSON.pretty_generate({
+              measured_us: measured_us,
+              iter: iter,
+              avg_ips: avg_ips,
+              sd_ips: sd_ips,
+              cycles: cycles
+            })
+          end
+        end
       end
     end
   end

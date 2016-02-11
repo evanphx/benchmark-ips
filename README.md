@@ -136,6 +136,29 @@ Benchmark.ips do |x|
 end
 ```
 
+### Independent benchmarking
+
+If you are comparing multiple implementations of a piece of code you may want
+to benchmark them in separate invocations of Ruby so that the measurements
+are independent of each other. You can do this with the `hold!` command.
+
+```ruby
+Benchmark.ips do |x|
+  
+  ...
+  
+  # Hold results between multiple invocations of Ruby
+  x.hold!
+  
+end
+```
+
+This will run only one benchmarks each time you run the command, storing
+results in files in the current directory between invocations. These files are
+named with the hash of benchmark file so will be invalidated if the benchmark
+is changed, but you'll need to manually delete them if you change other files
+between invocations.
+
 ## REQUIREMENTS:
 
 * None!
