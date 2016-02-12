@@ -42,9 +42,21 @@ module Benchmark
 
       sorted.each do |report|
         name = report.label.to_s
-
-        x = (best.ips.to_f / report.ips.to_f)
-        $stdout.printf "%20s: %10.1f i/s - %.2fx slower\n", name, report.ips, x
+        
+        $stdout.printf "%20s: %10.1f i/s - ", name, report.ips
+        
+        best_low = best.ips - best.ips_sd
+        report_high = report.ips + report.ips_sd
+        overlaps = report_high > best_low 
+        
+        if overlaps
+          $stdout.print "can't tell if faster, slower, or the same"
+        else
+          x = (best.ips.to_f / report.ips.to_f)
+          $stdout.printf "%.2fx slower", x
+        end
+        
+        $stdout.puts
       end
 
       $stdout.puts
