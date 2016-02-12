@@ -3,6 +3,10 @@ module Benchmark
     class Job
       class StdoutReport
         def start_warming
+          $stdout.puts "Warming up --------------------------------------"
+        end
+        
+        def start_running
           $stdout.puts "Calculating -------------------------------------"
         end
 
@@ -20,7 +24,6 @@ module Benchmark
         end
 
         alias_method :running, :warming
-        alias_method :start_running, :start_warming
 
         def add_report(item, caller)
           $stdout.puts " #{item.body}"
