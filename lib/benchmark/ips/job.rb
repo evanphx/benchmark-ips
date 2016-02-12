@@ -172,13 +172,13 @@ module Benchmark
 
           iter = 0
 
-          target = Time.now + @time
-
           measurements_us = []
 
           # Running this number of cycles should take around 100ms.
           cycles = @timing[item]
 
+          target = Time.now + @time
+          
           while Time.now < target
             before = Time.now
             item.call_times cycles
