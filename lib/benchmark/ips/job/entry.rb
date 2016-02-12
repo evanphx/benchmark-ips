@@ -89,11 +89,11 @@ module Benchmark
           File.open held_filename(job), "w" do |f|
             require "json"
             f.write JSON.pretty_generate({
-              measured_us: measured_us,
-              iter: iter,
-              avg_ips: avg_ips,
-              sd_ips: sd_ips,
-              cycles: cycles
+              :measured_us => measured_us,
+              :iter => iter,
+              :avg_ips => avg_ips,
+              :sd_ips => sd_ips,
+              :cycles => cycles
             })
           end
         end
