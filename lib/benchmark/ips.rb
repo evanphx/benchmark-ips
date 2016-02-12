@@ -51,6 +51,8 @@ module Benchmark
       job.config job_opts
 
       yield job
+      
+      job.load_held_results if job.hold? && job.held_results?
 
       job.run_warmup
       job.run
