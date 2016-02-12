@@ -145,8 +145,6 @@ are independent of each other. You can do this with the `hold!` command.
 ```ruby
 Benchmark.ips do |x|
   
-  ...
-  
   # Hold results between multiple invocations of Ruby
   x.hold! 'filename'
   
@@ -156,6 +154,29 @@ end
 This will run only one benchmarks each time you run the command, storing
 results in the specified file. The file is deleted when all results have been
 gathered and the report is shown.
+
+### Multiple iterations
+
+In some cases you may want to run multiple iterations of the warmup and
+calculation stages and take only the last result for comparison. This is useful
+if you are benchmarking with an implementation of Ruby that optimizes using
+tracing or on-stack-replacement, because to those implementations the
+calculation phase may appear as new, unoptimized code.
+
+You can do this with the `iterations` option, which by default is `1`. The
+total time spent will then be `iterations * warmup + iterations * time` seconds.
+
+```ruby
+Benchmark.ips do |x|
+
+  x.config(:iterations => 3)
+
+    # or
+  
+  x.iterations = 3
+  
+end
+```
 
 ## REQUIREMENTS:
 

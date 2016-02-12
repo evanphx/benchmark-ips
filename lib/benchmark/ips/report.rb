@@ -137,6 +137,7 @@ module Benchmark
       # @return [Report::Entry] Last added entry.
       def add_entry label, microseconds, iters, ips, ips_sd, measurement_cycle
         entry = Entry.new(label, microseconds, iters, ips, ips_sd, measurement_cycle)
+        @entries.delete_if { |e| e.label == label }
         @entries << entry
         entry
       end
