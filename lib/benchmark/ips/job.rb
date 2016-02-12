@@ -207,15 +207,15 @@ module Benchmark
         @stdout.start_running if @stdout
         @iterations.times do |n|
           @list.each do |item|
-            @suite.running item.label, @time if @suite
-            @stdout.running item.label, @time if @stdout
-            
             if hold? && @held_results && @held_results.key?(item.label)
              result = @held_results[item.label]
               create_report(item.label, result['measured_us'], result['iter'],
                 result['avg_ips'], result['sd_ips'], result['cycles'])
               next
             end
+            
+            @suite.running item.label, @time if @suite
+            @stdout.running item.label, @time if @stdout
 
             Timing.clean_env
 
@@ -277,8 +277,11 @@ module Benchmark
                 f.write "\n"
               end
               
-              puts
-              puts 'Pausing here -- run Ruby again to measure the next benchmark...'
+              if n == @iterations-1
+                puts
+                puts 'Pausing here -- run Ruby again to measure the next benchmark...'
+              end
+              
               break
             end
           end
