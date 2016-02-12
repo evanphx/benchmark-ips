@@ -1,3 +1,38 @@
+=== 2.4.0 / 2016-02-12
+
+* 1 minor features
+  * Add support for hold! and independent invocations.
+
+* 6 bug fixes
+  * Separate messages for warming up and calculating.
+  * Tighten timing loop.
+  * Pass simple types into Job#create_report
+  * More concise sorting
+  * Fix runtime comparison
+  * Use runtime if ips is not available
+
+* 5 doc fixes
+  * Fix typo unsed --> used
+  * Better document Report::Entry
+  * Fix some typos in docs
+  * Don't calculate mean 2 times
+  * Add more tolerance to tests
+
+* 13 merged PRs
+  * Merge pull request #44 from kbrock/job_extract
+  * Merge pull request #45 from kbrock/runtime_only
+  * Merge pull request #47 from kbrock/use_avg
+  * Merge pull request #46 from kbrock/report_stdout
+  * Merge pull request #48 from bquorning/fix-label-for-runtime-comparison
+  * Merge pull request #50 from tjschuck/fix_typo
+  * Merge pull request #51 from bquorning/all-reports-respond-to-ips
+  * Merge pull request #52 from kbrock/document_reports
+  * Merge pull request #53 from kbrock/interface_create_report
+  * Merge pull request #54 from PragTob/patch-2
+  * Merge pull request #55 from chrisseaton/messages
+  * Merge pull request #56 from chrisseaton/independence
+  * Merge pull request #57 from chrisseaton/tighten-loop
+
 === 2.3.0 / 2015-07-20
 
 * 2 minor features:

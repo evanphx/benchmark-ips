@@ -13,10 +13,10 @@ module Benchmark
   module IPS
 
     # Benchmark-ips Gem version.
-    VERSION = "2.3.0"
+    VERSION = "2.4.0"
 
     # CODENAME of current version.
-    CODENAME = "Monsoon BBQ"
+    CODENAME = "Nonlinear Rollercoaster"
 
     # Measure code in block, each code's benchmarked result will display in
     # iteration per second with standard deviation in given time.
