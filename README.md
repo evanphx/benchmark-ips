@@ -148,16 +148,14 @@ Benchmark.ips do |x|
   ...
   
   # Hold results between multiple invocations of Ruby
-  x.hold!
+  x.hold! 'filename'
   
 end
 ```
 
 This will run only one benchmarks each time you run the command, storing
-results in files in the current directory between invocations. These files are
-named with the hash of benchmark file so will be invalidated if the benchmark
-is changed, but you'll need to manually delete them if you change other files
-between invocations.
+results in the specified file. The file is deleted when all results have been
+gathered and the report is shown.
 
 ## REQUIREMENTS:
 

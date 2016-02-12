@@ -23,7 +23,7 @@ module Benchmark
     # @param time [Integer] Specify how long should benchmark your code in seconds.
     # @param warmup [Integer] Specify how long should Warmup time run in seconds.
     # @return [Report]
-    def ips(*args, &block)
+    def ips(*args)
       if args[0].is_a?(Hash)
         time, warmup, quiet = args[0].values_at(:time, :warmup, :quiet)
       else
@@ -50,12 +50,9 @@ module Benchmark
 
       job.config job_opts
 
-      block.call job
+      yield job
       
-      if job.hold?
-        require 'digest/sha1'
-        job.source_hash = Digest::SHA1.hexdigest(File.read(block.source_location.first))[0..12]
-      end
+      job.load_held_results if job.hold? && job.held_results?
 
       job.run_warmup
       job.run

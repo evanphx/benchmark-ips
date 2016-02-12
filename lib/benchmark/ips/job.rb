@@ -38,10 +38,6 @@ module Benchmark
       # @return [Integer]
       attr_accessor :time
 
-      # The hash of the benchmark source.
-      # @return [String]
-      attr_accessor :source_hash
-
       # Instantiate the Benchmark::IPS::Job.
       # @option opts [Benchmark::Suite] (nil) :suite Specify Benchmark::Suite.
       # @option opts [Boolean] (false) :quiet Suppress the printing of information.
@@ -51,7 +47,8 @@ module Benchmark
         @list = []
         @compare = false
         @json_path = false
-        @source_hash = nil
+        @held_path = nil
+        @held_results = nil
 
         @timing = {}
         @full_report = Report.new
@@ -84,12 +81,12 @@ module Benchmark
       # Return true if results are held while multiple Ruby invocations
       # @return [Boolean] Need to hold results between multiple Ruby invocations?
       def hold?
-        @hold
+        !!@held_path
       end
 
       # Set @hold to true.
-      def hold!
-        @hold = true
+      def hold!(held_path)
+        @held_path = held_path
       end
 
       # Return true if job needs to generate json.
@@ -149,12 +146,24 @@ module Benchmark
       def iterations_per_sec cycles, time_us
         MICROSECONDS_PER_SECOND * (cycles.to_f / time_us.to_f)
       end
+      
+      def held_results?
+        File.exist?(@held_path)
+      end
+      
+      def load_held_results
+        require "json"
+        @held_results = Hash[File.open(@held_path).map { |line|
+          result = JSON.parse(line)
+          [result['item'], result]
+        }]
+      end
 
       # Run warmup.
       def run_warmup
         @stdout.start_warming if @stdout
         @list.each do |item|
-          next if hold? && item.held_results?(self)
+          next if hold? && @held_results && @held_results.key?(item.label)
           
           @suite.warming item.label, @warmup if @suite
           @stdout.warming item.label, @warmup if @stdout
@@ -188,9 +197,9 @@ module Benchmark
       def run
         @stdout.start_running if @stdout
         @list.each do |item|
-          if hold? && item.held_results?(self)
-            result = item.held_results(self)
-            create_report(item, result['measured_us'], result['iter'],
+          if hold? && @held_results && @held_results.key?(item.label)
+           result = @held_results[item.label]
+            create_report(item.label, result['measured_us'], result['iter'],
               result['avg_ips'], result['sd_ips'], result['cycles'])
             next
           end
@@ -245,7 +254,19 @@ module Benchmark
           @suite.add_report rep, caller(1).first if @suite
           
           if hold? && item != @list.last
-            item.hold_results self, measured_us, iter, avg_ips, sd_ips, cycles
+            File.open @held_path, "a" do |f|
+              require "json"
+              f.write JSON.generate({
+                :item => item.label,
+                :measured_us => measured_us,
+                :iter => iter,
+                :avg_ips => avg_ips,
+                :sd_ips => sd_ips,
+                :cycles => cycles
+              })
+              f.write "\n"
+            end
+            
             puts
             puts 'Pausing here -- run Ruby again to measure the next benchmark...'
             break
@@ -253,15 +274,7 @@ module Benchmark
         end
         
         if hold? && @full_report.entries.size == @list.size
-          tidy_up_held_results
-        end
-      end
-      
-      def tidy_up_held_results
-        @list.each do |item|
-          if item.held_results?(self)
-            File.delete item.held_filename(self)
-          end
+          File.delete @held_path if File.exist?(@held_path)
         end
       end
 
