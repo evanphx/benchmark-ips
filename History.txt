@@ -1,3 +1,8 @@
+=== 2.4.1 / 2016-02-12
+
+* 1 bug fix:
+  * Add missing files to gem
+
 === 2.4.0 / 2016-02-12
 
 * 1 minor features
