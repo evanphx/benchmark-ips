@@ -165,131 +165,142 @@ module Benchmark
           [result['item'], result]
         }]
       end
+      
+      def run
+        @stdout.start_warming if @stdout
+        @iterations.times do
+          run_warmup
+        end
+        
+        @stdout.start_running if @stdout
+        
+        held = nil
+        
+        @iterations.times do |n|
+          held = run_benchmark
+        end
+        
+        if held
+          puts
+          puts 'Pausing here -- run Ruby again to measure the next benchmark...'
+        end
+      end
 
       # Run warmup.
       def run_warmup
-        @stdout.start_warming if @stdout
-        @iterations.times do
-          @list.each do |item|
-            next if hold? && @held_results && @held_results.key?(item.label)
+        @list.each do |item|
+          next if hold? && @held_results && @held_results.key?(item.label)
           
-            @suite.warming item.label, @warmup if @suite
-            @stdout.warming item.label, @warmup if @stdout
+          @suite.warming item.label, @warmup if @suite
+          @stdout.warming item.label, @warmup if @stdout
 
-            Timing.clean_env
+          Timing.clean_env
 
-            before = Time.now
-            target = Time.now + @warmup
+          before = Time.now
+          target = Time.now + @warmup
 
-            warmup_iter = 0
+          warmup_iter = 0
 
-            while Time.now < target
-              item.call_times(1)
-              warmup_iter += 1
-            end
-
-            after = Time.now
-
-            warmup_time_us = time_us before, after
-
-            @timing[item] = cycles_per_100ms warmup_time_us, warmup_iter
-
-            @stdout.warmup_stats warmup_time_us, @timing[item] if @stdout
-            @suite.warmup_stats warmup_time_us, @timing[item] if @suite
-          
-            break if hold?
+          while Time.now < target
+            item.call_times(1)
+            warmup_iter += 1
           end
+
+          after = Time.now
+
+          warmup_time_us = time_us before, after
+
+          @timing[item] = cycles_per_100ms warmup_time_us, warmup_iter
+
+          @stdout.warmup_stats warmup_time_us, @timing[item] if @stdout
+          @suite.warmup_stats warmup_time_us, @timing[item] if @suite
+          
+          break if hold?
         end
       end
 
       # Run calculation.
-      def run
-        @stdout.start_running if @stdout
-        @iterations.times do |n|
-          @list.each do |item|
-            if hold? && @held_results && @held_results.key?(item.label)
-             result = @held_results[item.label]
-              create_report(item.label, result['measured_us'], result['iter'],
-                result['avg_ips'], result['sd_ips'], result['cycles'])
-              next
-            end
-            
-            @suite.running item.label, @time if @suite
-            @stdout.running item.label, @time if @stdout
-
-            Timing.clean_env
-
-            iter = 0
-
-            measurements_us = []
-
-            # Running this number of cycles should take around 100ms.
-            cycles = @timing[item]
-
-            target = Time.now + @time
-            
-            while Time.now < target
-              before = Time.now
-              item.call_times cycles
-              after = Time.now
-
-              # If for some reason the timing said this took no time (O_o)
-              # then ignore the iteration entirely and start another.
-              iter_us = time_us before, after
-              next if iter_us <= 0.0
-
-              iter += cycles
-
-              measurements_us << iter_us
-            end
-
-            final_time = Time.now
-
-            measured_us = measurements_us.inject(0) { |a,i| a + i }
-
-            all_ips = measurements_us.map { |time_us|
-              iterations_per_sec cycles, time_us
-            }
-
-            avg_ips = Timing.mean(all_ips)
-            sd_ips =  Timing.stddev(all_ips, avg_ips).round
-
-            rep = create_report(item.label, measured_us, iter, avg_ips, sd_ips, cycles)
-
-            if (final_time - target).abs >= (@time.to_f * MAX_TIME_SKEW)
-              rep.show_total_time!
-            end
-
-            @stdout.add_report rep, caller(1).first if @stdout
-            @suite.add_report rep, caller(1).first if @suite
-            
-            if hold? && item != @list.last
-              File.open @held_path, "a" do |f|
-                require "json"
-                f.write JSON.generate({
-                  :item => item.label,
-                  :measured_us => measured_us,
-                  :iter => iter,
-                  :avg_ips => avg_ips,
-                  :sd_ips => sd_ips,
-                  :cycles => cycles
-                })
-                f.write "\n"
-              end
-              
-              if n == @iterations-1
-                puts
-                puts 'Pausing here -- run Ruby again to measure the next benchmark...'
-              end
-              
-              break
-            end
+      def run_benchmark
+        @list.each do |item|
+          if hold? && @held_results && @held_results.key?(item.label)
+           result = @held_results[item.label]
+            create_report(item.label, result['measured_us'], result['iter'],
+              result['avg_ips'], result['sd_ips'], result['cycles'])
+            next
           end
           
-          if hold? && @full_report.entries.size == @list.size
-            File.delete @held_path if File.exist?(@held_path)
+          @suite.running item.label, @time if @suite
+          @stdout.running item.label, @time if @stdout
+
+          Timing.clean_env
+
+          iter = 0
+
+          measurements_us = []
+
+          # Running this number of cycles should take around 100ms.
+          cycles = @timing[item]
+
+          target = Time.now + @time
+          
+          while Time.now < target
+            before = Time.now
+            item.call_times cycles
+            after = Time.now
+
+            # If for some reason the timing said this took no time (O_o)
+            # then ignore the iteration entirely and start another.
+            iter_us = time_us before, after
+            next if iter_us <= 0.0
+
+            iter += cycles
+
+            measurements_us << iter_us
+          end
+
+          final_time = Time.now
+
+          measured_us = measurements_us.inject(0) { |a,i| a + i }
+
+          all_ips = measurements_us.map { |time_us|
+            iterations_per_sec cycles, time_us
+          }
+
+          avg_ips = Timing.mean(all_ips)
+          sd_ips =  Timing.stddev(all_ips, avg_ips).round
+
+          rep = create_report(item.label, measured_us, iter, avg_ips, sd_ips, cycles)
+
+          if (final_time - target).abs >= (@time.to_f * MAX_TIME_SKEW)
+            rep.show_total_time!
+          end
+
+          @stdout.add_report rep, caller(1).first if @stdout
+          @suite.add_report rep, caller(1).first if @suite
+          
+          if hold? && item != @list.last
+            File.open @held_path, "a" do |f|
+              require "json"
+              f.write JSON.generate({
+                :item => item.label,
+                :measured_us => measured_us,
+                :iter => iter,
+                :avg_ips => avg_ips,
+                :sd_ips => sd_ips,
+                :cycles => cycles
+              })
+              f.write "\n"
+            end
+            
+            return true
           end
         end
+        
+        if hold? && @full_report.entries.size == @list.size
+          File.delete @held_path if File.exist?(@held_path)
+        end
+        
+        false
       end
 
       # Run comparison of entries in +@full_report+.
