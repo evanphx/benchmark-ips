@@ -1,0 +1,7 @@
+.git/
+.travis.yml
+.hoeignore
+.gitignore
+Gemfile
+*.gemspec
+examples/

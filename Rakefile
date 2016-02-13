@@ -5,6 +5,7 @@ require 'hoe'
 
 Hoe.plugin :minitest
 Hoe.plugin :git
+Hoe.plugin :ignore
 
 hoe = Hoe.spec 'benchmark-ips' do
   developer('Evan Phoenix', 'evan@phx.io')
