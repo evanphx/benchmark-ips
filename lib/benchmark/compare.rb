@@ -50,7 +50,7 @@ module Benchmark
         overlaps = report_high > best_low 
         
         if overlaps
-          $stdout.print "can't tell if faster, slower, or the same"
+          $stdout.print "same-ish: difference falls within error"
         else
           x = (best.ips.to_f / report.ips.to_f)
           $stdout.printf "%.2fx slower", x
