@@ -38,6 +38,10 @@ module Benchmark
       # @return [Integer]
       attr_accessor :time
 
+      # Warmup and calculation iterations.
+      # @return [Integer]
+      attr_accessor :iterations
+
       # Instantiate the Benchmark::IPS::Job.
       # @option opts [Benchmark::Suite] (nil) :suite Specify Benchmark::Suite.
       # @option opts [Boolean] (false) :quiet Suppress the printing of information.
@@ -56,15 +60,18 @@ module Benchmark
         # Default warmup and calculation time in seconds.
         @warmup = 2
         @time = 5
+        @iterations = 1
       end
 
       # Job configuration options, set +@warmup+ and +@time+.
       # @option opts [Integer] :warmup Warmup time.
       # @option opts [Integer] :time Calculation time.
+      # @option iterations [Integer] :time Warmup and calculation iterations.
       def config opts
         @warmup = opts[:warmup] if opts[:warmup]
         @time = opts[:time] if opts[:time]
         @suite = opts[:suite] if opts[:suite]
+        @iterations = opts[:iterations] if opts[:iterations]
       end
 
       # Return true if job needs to be compared.
@@ -158,10 +165,29 @@ module Benchmark
           [result['item'], result]
         }]
       end
+      
+      def run
+        @stdout.start_warming if @stdout
+        @iterations.times do
+          run_warmup
+        end
+        
+        @stdout.start_running if @stdout
+        
+        held = nil
+        
+        @iterations.times do |n|
+          held = run_benchmark
+        end
+        
+        if held
+          puts
+          puts 'Pausing here -- run Ruby again to measure the next benchmark...'
+        end
+      end
 
       # Run warmup.
       def run_warmup
-        @stdout.start_warming if @stdout
         @list.each do |item|
           next if hold? && @held_results && @held_results.key?(item.label)
           
@@ -194,8 +220,7 @@ module Benchmark
       end
 
       # Run calculation.
-      def run
-        @stdout.start_running if @stdout
+      def run_benchmark
         @list.each do |item|
           if hold? && @held_results && @held_results.key?(item.label)
            result = @held_results[item.label]
@@ -267,15 +292,15 @@ module Benchmark
               f.write "\n"
             end
             
-            puts
-            puts 'Pausing here -- run Ruby again to measure the next benchmark...'
-            break
+            return true
           end
         end
         
         if hold? && @full_report.entries.size == @list.size
           File.delete @held_path if File.exist?(@held_path)
         end
+        
+        false
       end
 
       # Run comparison of entries in +@full_report+.
