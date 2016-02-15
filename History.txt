@@ -1,3 +1,15 @@
+=== 2.5.0 / 2016-02-14
+
+* 1 minor feature:
+  * Add iterations option.
+
+* 1 bug fixes:
+  * Don't tell people something is slower if it's within the error.
+
+* 2 merged PRs:
+  * Merge pull request #58 from chrisseaton/iterations
+  * Merge pull request #60 from chrisseaton/significance
+
 === 2.4.1 / 2016-02-12
 
 * 1 bug fix:
