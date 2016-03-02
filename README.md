@@ -10,7 +10,7 @@
 
 ## DESCRIPTION:
 
-A iterations per second enhancement to Benchmark.
+An iterations per second enhancement to Benchmark.
 
 ## FEATURES/PROBLEMS:
 
