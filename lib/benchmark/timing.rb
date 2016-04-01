@@ -1,6 +1,8 @@
 module Benchmark
   # Perform caclulations on Timing results.
   module Timing
+    # Microseconds per second.
+    MICROSECONDS_PER_SECOND = 1_000_000
 
     # Calculate (arithmetic) mean of given samples.
     # @param [Array] samples Samples to calculate mean.
@@ -50,6 +52,22 @@ module Benchmark
         GC.run(true)
       else
         GC.start
+      end
+    end
+
+    begin
+      Process.clock_gettime Process::CLOCK_MONOTONIC, :float_microsecond
+
+      # Get a time that represents microseconds from some offset (which is not
+      # necessarily the epoch!!!!)
+      def self.now_us
+        Process.clock_gettime Process::CLOCK_MONOTONIC, :float_microsecond
+      end
+    rescue NameError
+      # Get a time that represents microseconds from some offset (which is not
+      # necessarily the epoch!!!!)
+      def self.now_us
+        Time.now.to_f * 1_0000
       end
     end
   end
