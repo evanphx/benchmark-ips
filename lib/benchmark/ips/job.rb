@@ -5,7 +5,7 @@ module Benchmark
       # Microseconds per 100 millisecond.
       MICROSECONDS_PER_100MS = 100_000
       # Microseconds per second.
-      MICROSECONDS_PER_SECOND = 1_000_000
+      MICROSECONDS_PER_SECOND = Timing::MICROSECONDS_PER_SECOND
       # The percentage of the expected runtime to allow
       # before reporting a weird runtime
       MAX_TIME_SKEW = 0.05
@@ -196,19 +196,19 @@ module Benchmark
 
           Timing.clean_env
 
-          before = Time.now
-          target = Time.now + @warmup
+          before = Timing.now_us
+          target = before + (@warmup * MICROSECONDS_PER_SECOND)
 
           warmup_iter = 0
 
-          while Time.now < target
+          while Timing.now_us < target
             item.call_times(1)
             warmup_iter += 1
           end
 
-          after = Time.now
+          after = Timing.now_us
 
-          warmup_time_us = time_us before, after
+          warmup_time_us = after - before
 
           @timing[item] = cycles_per_100ms warmup_time_us, warmup_iter
 
@@ -241,16 +241,16 @@ module Benchmark
           # Running this number of cycles should take around 100ms.
           cycles = @timing[item]
 
-          target = Time.now + @time
+          target = Timing.now_us + (@time * MICROSECONDS_PER_SECOND)
           
-          while Time.now < target
-            before = Time.now
+          while Timing.now_us < target
+            before = Timing.now_us
             item.call_times cycles
-            after = Time.now
+            after = Timing.now_us
 
             # If for some reason the timing said this took no time (O_o)
             # then ignore the iteration entirely and start another.
-            iter_us = time_us before, after
+            iter_us = after - before
             next if iter_us <= 0.0
 
             iter += cycles
@@ -258,7 +258,7 @@ module Benchmark
             measurements_us << iter_us
           end
 
-          final_time = Time.now
+          final_time = Timing.now_us
 
           measured_us = measurements_us.inject(0) { |a,i| a + i }
 
