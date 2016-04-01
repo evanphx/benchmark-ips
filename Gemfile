@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
-gem 'hoe'
+gem 'rake', '~> 10.5'
+gem 'hoe', '~> 3.14'
 
 gem 'minitest', :group => :test
 
