@@ -5,7 +5,7 @@ module Benchmark
       # Microseconds per 100 millisecond.
       MICROSECONDS_PER_100MS = 100_000
       # Microseconds per second.
-      MICROSECONDS_PER_SECOND = 1_000_000
+      MICROSECONDS_PER_SECOND = Timing::MICROSECONDS_PER_SECOND
       # The percentage of the expected runtime to allow
       # before reporting a weird runtime
       MAX_TIME_SKEW = 0.05
@@ -196,19 +196,19 @@ module Benchmark
 
           Timing.clean_env
 
-          before = Time.now
-          target = Time.now + @warmup
+          before = Timing.now
+          target = Timing.add_second before, @warmup
 
           warmup_iter = 0
 
-          while Time.now < target
+          while Timing.now < target
             item.call_times(1)
             warmup_iter += 1
           end
 
-          after = Time.now
+          after = Timing.now
 
-          warmup_time_us = time_us before, after
+          warmup_time_us = Timing.time_us(before, after)
 
           @timing[item] = cycles_per_100ms warmup_time_us, warmup_iter
 
@@ -241,16 +241,16 @@ module Benchmark
           # Running this number of cycles should take around 100ms.
           cycles = @timing[item]
 
-          target = Time.now + @time
+          target = Timing.add_second Timing.now, @time
           
-          while Time.now < target
-            before = Time.now
+          while Timing.now < target
+            before = Timing.now
             item.call_times cycles
-            after = Time.now
+            after = Timing.now
 
             # If for some reason the timing said this took no time (O_o)
             # then ignore the iteration entirely and start another.
-            iter_us = time_us before, after
+            iter_us = Timing.time_us before, after
             next if iter_us <= 0.0
 
             iter += cycles
@@ -258,7 +258,7 @@ module Benchmark
             measurements_us << iter_us
           end
 
-          final_time = Time.now
+          final_time = Timing.now
 
           measured_us = measurements_us.inject(0) { |a,i| a + i }
 
