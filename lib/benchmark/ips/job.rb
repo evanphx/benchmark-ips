@@ -258,7 +258,7 @@ module Benchmark
             measurements_us << iter_us
           end
 
-          final_time = Timing.now
+          final_time = before
 
           measured_us = measurements_us.inject(0) { |a,i| a + i }
 
