@@ -243,8 +243,7 @@ module Benchmark
 
           target = Timing.add_second Timing.now, @time
           
-          while Timing.now < target
-            before = Timing.now
+          while (before = Timing.now) < target
             item.call_times cycles
             after = Timing.now
 
