@@ -259,7 +259,7 @@ module Benchmark
 
           final_time = before
 
-          measured_us = measurements_us.inject(0) { |a,i| a + i }
+          measured_us = measurements_us.inject(:+)
 
           all_ips = measurements_us.map { |time_us|
             iterations_per_sec cycles, time_us

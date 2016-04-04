@@ -8,7 +8,7 @@ module Benchmark
     # @param [Array] samples Samples to calculate mean.
     # @return [Float] Mean of given samples.
     def self.mean(samples)
-      sum = samples.inject(0) { |acc, i| acc + i }
+      sum = samples.inject(:+)
       sum / samples.size
     end
 
