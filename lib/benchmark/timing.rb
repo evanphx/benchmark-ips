@@ -66,7 +66,7 @@ module Benchmark
 
       # Add one second to the time represenetation
       def self.add_second(t, s)
-        return t + (s * MICROSECONDS_PER_SECOND)
+        t + (s * MICROSECONDS_PER_SECOND)
       end
 
       # Return the number of microseconds between the 2 moments
@@ -81,7 +81,7 @@ module Benchmark
 
       # Add one second to the time represenetation
       def self.add_second(t, s)
-        return t + s
+        t + s
       end
 
       # Return the number of microseconds between the 2 moments
