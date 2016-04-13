@@ -1,4 +1,5 @@
 .autotest
+Gemfile.lock
 History.txt
 Manifest.txt
 README.md
@@ -9,5 +10,6 @@ lib/benchmark/ips/job.rb
 lib/benchmark/ips/job/entry.rb
 lib/benchmark/ips/job/stdout_report.rb
 lib/benchmark/ips/report.rb
+lib/benchmark/ips/share.rb
 lib/benchmark/timing.rb
 test/test_benchmark_ips.rb
