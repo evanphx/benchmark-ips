@@ -51,7 +51,7 @@ module Benchmark
       job.config job_opts
 
       yield job
-      
+
       job.load_held_results if job.hold? && job.held_results?
 
       job.run
@@ -60,7 +60,15 @@ module Benchmark
       job.run_comparison
       job.generate_json
 
-      job.full_report
+      report = job.full_report
+
+      if ENV['SHARE'] || ENV['SHARE_URL']
+        require 'benchmark/ips/share'
+        share = Share.new report, job
+        share.share
+      end
+
+      report
     end
 
     # Set options for running the benchmarks.

@@ -147,13 +147,19 @@ module Benchmark
       #   name:   Entry#label
       #   ips:    Entry#ips
       #   stddev: Entry#ips_sd
-      # @return [Array<Hash<Symbol,String|Float>] Array of hashes with :label, :ips, :stddev
+      #   microseconds: Entry#microseconds
+      #   iterations:   Entry#iterations
+      #   cycles:       Entry#measurement_cycles
+      # @return [Array<Hash<Symbol,String|Float|Integer>] Array of hashes
       def data
         @data ||= @entries.collect do |entry|
           {
             :name => entry.label,
             :ips =>  entry.ips,
-            :stddev => entry.ips_sd
+            :stddev => entry.ips_sd,
+            :microseconds => entry.microseconds,
+            :iterations => entry.iterations,
+            :cycles => entry.measurement_cycle,
           }
         end
       end
