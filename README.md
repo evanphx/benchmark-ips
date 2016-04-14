@@ -144,10 +144,10 @@ are independent of each other. You can do this with the `hold!` command.
 
 ```ruby
 Benchmark.ips do |x|
-  
+
   # Hold results between multiple invocations of Ruby
   x.hold! 'filename'
-  
+
 end
 ```
 
@@ -172,11 +172,19 @@ Benchmark.ips do |x|
   x.config(:iterations => 3)
 
     # or
-  
+
   x.iterations = 3
-  
+
 end
 ```
+
+### Online sharing
+
+If you want to share quickly your benchmark result with others. Run you benchmark
+with `SHARE=1` argument. I.e.: `SHARE=1 ruby my_benchmark.rb`.
+Result will be sent to [benchmark.fyi](https://benchmark.fyi/) and benchmark-ips
+will display the link to share the benchmark's result.
+
 
 ## REQUIREMENTS:
 
