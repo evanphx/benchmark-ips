@@ -32,27 +32,27 @@ module Benchmark
     def compare(*entries)
       return if entries.size < 2
 
-      sorted = entries.sort_by(&:ips).reverse
+      sorted = entries.sort_by{ |e| e.stats.central_tendency }.reverse
 
       best = sorted.shift
 
       $stdout.puts "\nComparison:"
 
-      $stdout.printf "%20s: %10.1f i/s\n", best.label, best.ips
+      $stdout.printf "%20s: %10.1f i/s\n", best.label, best.stats.central_tendency
 
       sorted.each do |report|
         name = report.label.to_s
         
-        $stdout.printf "%20s: %10.1f i/s - ", name, report.ips
+        $stdout.printf "%20s: %10.1f i/s - ", name, report.stats.central_tendency
         
-        best_low = best.ips - best.ips_sd
-        report_high = report.ips + report.ips_sd
+        best_low = best.stats.central_tendency - best.stats.error
+        report_high = report.stats.central_tendency + report.stats.error
         overlaps = report_high > best_low 
         
         if overlaps
           $stdout.print "same-ish: difference falls within error"
         else
-          x = (best.ips.to_f / report.ips.to_f)
+          x = (best.stats.central_tendency.to_f / report.stats.central_tendency.to_f)
           $stdout.printf "%.2fx slower", x
         end
         

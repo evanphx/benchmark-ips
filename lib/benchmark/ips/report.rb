@@ -13,17 +13,16 @@ module Benchmark
         # @param [#to_s] label Label of entry.
         # @param [Integer] us Measured time in microsecond.
         # @param [Integer] iters Iterations.
-        # @param [Float] ips Iterations per second.
-        # @param [Float] ips_sd Standard deviation of iterations per second.
+        # @param [Float] samples Sampled iterations per second.
         # @param [Integer] cycles Number of Cycles.
-        def initialize(label, us, iters, ips, ips_sd, cycles)
+        def initialize(label, us, iters, samples, cycles)
           @label = label
           @microseconds = us
           @iterations = iters
-          @ips = ips
-          @ips_sd = ips_sd
+          @samples = samples
           @measurement_cycle = cycles
           @show_total_time = false
+          @stats = Stats::SD.new(samples)
         end
 
         # Label of entry.
@@ -38,13 +37,13 @@ module Benchmark
         # @return [Integer] number of iterations.
         attr_reader :iterations
 
-        # Iterations per second.
-        # @return [Float] number of iterations per second.
-        attr_reader :ips
+        # Sampled iterations per second.
+        # @return [Array<Float>] sampled iterations per second.
+        attr_reader :samples
 
-        # Standard deviation of iteration per second.
-        # @return [Float] standard deviation of iteration per second.
-        attr_reader :ips_sd
+        # Statistical summary of samples.
+        # @return [Object] statisical summary.
+        attr_reader :stats
 
         # Number of Cycles.
         # @return [Integer] number of cycles.
@@ -66,7 +65,7 @@ module Benchmark
         # Return entry's standard deviation of iteration per second in percentage.
         # @return [Float] +@ips_sd+ in percentage.
         def stddev_percentage
-          100.0 * (@ips_sd.to_f / @ips.to_f)
+          100.0 * (@stats.error.to_f / @stats.central_tendency)
         end
 
         alias_method :runtime, :seconds
@@ -78,7 +77,7 @@ module Benchmark
         def body
           case Benchmark::IPS.options[:format]
           when :human
-            left = "%s (±%4.1f%%) i/s" % [Helpers.scale(ips), stddev_percentage]
+            left = "%s (±%4.1f%%) i/s" % [Helpers.scale(@stats.central_tendency), stddev_percentage]
             iters = Helpers.scale(@iterations)
 
             if @show_total_time
@@ -87,7 +86,7 @@ module Benchmark
               left.ljust(20) + (" - %s" % iters)
             end
           else
-            left = "%10.1f (±%.1f%%) i/s" % [ips, stddev_percentage]
+            left = "%10.1f (±%.1f%%) i/s" % [@stats.central_tendency, stddev_percentage]
 
             if @show_total_time
               left.ljust(20) + (" - %10d in %10.6fs" % [@iterations, runtime])
@@ -131,12 +130,11 @@ module Benchmark
       # @param label [String] Entry label.
       # @param microseconds [Integer] Measured time in microsecond.
       # @param iters [Integer] Iterations.
-      # @param ips [Float] Average Iterations per second.
-      # @param ips_sd [Float] Standard deviation of iterations per second.
+      # @param samples [Float<Float>] Sampled iterations per second.
       # @param measurement_cycle [Integer] Number of cycles.
       # @return [Report::Entry] Last added entry.
-      def add_entry label, microseconds, iters, ips, ips_sd, measurement_cycle
-        entry = Entry.new(label, microseconds, iters, ips, ips_sd, measurement_cycle)
+      def add_entry label, microseconds, iters, samples, measurement_cycle
+        entry = Entry.new(label, microseconds, iters, samples, measurement_cycle)
         @entries.delete_if { |e| e.label == label }
         @entries << entry
         entry

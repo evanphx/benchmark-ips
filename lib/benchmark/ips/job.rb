@@ -225,7 +225,7 @@ module Benchmark
           if hold? && @held_results && @held_results.key?(item.label)
            result = @held_results[item.label]
             create_report(item.label, result['measured_us'], result['iter'],
-              result['avg_ips'], result['sd_ips'], result['cycles'])
+              result['samples'], result['cycles'])
             next
           end
           
@@ -261,14 +261,11 @@ module Benchmark
 
           measured_us = measurements_us.inject(0) { |a,i| a + i }
 
-          all_ips = measurements_us.map { |time_us|
+          samples = measurements_us.map { |time_us|
             iterations_per_sec cycles, time_us
           }
 
-          avg_ips = Timing.mean(all_ips)
-          sd_ips =  Timing.stddev(all_ips, avg_ips).round
-
-          rep = create_report(item.label, measured_us, iter, avg_ips, sd_ips, cycles)
+          rep = create_report(item.label, measured_us, iter, samples, cycles)
 
           if (final_time - target).abs >= (@time.to_f * MAX_TIME_SKEW)
             rep.show_total_time!
@@ -284,8 +281,7 @@ module Benchmark
                 :item => item.label,
                 :measured_us => measured_us,
                 :iter => iter,
-                :avg_ips => avg_ips,
-                :sd_ips => sd_ips,
+                :samples => samples,
                 :cycles => cycles
               })
               f.write "\n"
@@ -316,12 +312,11 @@ module Benchmark
       # @param label [String] Report item label.
       # @param measured_us [Integer] Measured time in microsecond.
       # @param iter [Integer] Iterations.
-      # @param avg_ips [Float] Average iterations per second.
-      # @param sd_ips [Float] Standard deviation iterations per second.
+      # @param samples [Array<Float>] Sampled iterations per second.
       # @param cycles [Integer] Number of Cycles.
       # @return [Report::Entry] Entry with data.
-      def create_report(label, measured_us, iter, avg_ips, sd_ips, cycles)
-        @full_report.add_entry label, measured_us, iter, avg_ips, sd_ips, cycles
+      def create_report(label, measured_us, iter, samples, cycles)
+        @full_report.add_entry label, measured_us, iter, samples, cycles
       end
     end
   end
