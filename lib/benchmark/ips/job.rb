@@ -42,6 +42,14 @@ module Benchmark
       # @return [Integer]
       attr_accessor :iterations
 
+      # Statistics model.
+      # @return [Object]
+      attr_accessor :stats
+
+      # Confidence.
+      # @return [Integer]
+      attr_accessor :confidence
+
       # Instantiate the Benchmark::IPS::Job.
       # @option opts [Benchmark::Suite] (nil) :suite Specify Benchmark::Suite.
       # @option opts [Boolean] (false) :quiet Suppress the printing of information.
@@ -61,6 +69,10 @@ module Benchmark
         @warmup = 2
         @time = 5
         @iterations = 1
+
+        # Default statistical model
+        @stats = :sd
+        @confidence = 95
       end
 
       # Job configuration options, set +@warmup+ and +@time+.
@@ -72,6 +84,8 @@ module Benchmark
         @time = opts[:time] if opts[:time]
         @suite = opts[:suite] if opts[:suite]
         @iterations = opts[:iterations] if opts[:iterations]
+        @stats = opts[:stats] if opts[:stats]
+        @confidence = opts[:confidence] if opts[:confidence]
       end
 
       # Return true if job needs to be compared.
@@ -225,7 +239,7 @@ module Benchmark
           if hold? && @held_results && @held_results.key?(item.label)
            result = @held_results[item.label]
             create_report(item.label, result['measured_us'], result['iter'],
-              result['samples'], result['cycles'])
+                          create_stats(result['samples']), result['cycles'])
             next
           end
           
@@ -265,7 +279,7 @@ module Benchmark
             iterations_per_sec cycles, time_us
           }
 
-          rep = create_report(item.label, measured_us, iter, samples, cycles)
+          rep = create_report(item.label, measured_us, iter, create_stats(samples), cycles)
 
           if (final_time - target).abs >= (@time.to_f * MAX_TIME_SKEW)
             rep.show_total_time!
@@ -296,6 +310,17 @@ module Benchmark
         end
         
         false
+      end
+
+      def create_stats(samples)
+        case @stats
+          when :sd
+            Stats::SD.new(samples)
+          when :bootstrap
+            Stats::Bootstrap.new(samples, @confidence)
+          else
+            raise "unknown stats #{@stats}"
+        end
       end
 
       # Run comparison of entries in +@full_report+.

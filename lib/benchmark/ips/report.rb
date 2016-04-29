@@ -13,16 +13,15 @@ module Benchmark
         # @param [#to_s] label Label of entry.
         # @param [Integer] us Measured time in microsecond.
         # @param [Integer] iters Iterations.
-        # @param [Float] samples Sampled iterations per second.
+        # @param [Object] stats Statistics.
         # @param [Integer] cycles Number of Cycles.
-        def initialize(label, us, iters, samples, cycles)
+        def initialize(label, us, iters, stats, cycles)
           @label = label
           @microseconds = us
           @iterations = iters
-          @samples = samples
+          @stats = stats
           @measurement_cycle = cycles
           @show_total_time = false
-          @stats = Stats::SD.new(samples)
         end
 
         # Label of entry.
@@ -36,10 +35,6 @@ module Benchmark
         # Number of Iterations.
         # @return [Integer] number of iterations.
         attr_reader :iterations
-
-        # Sampled iterations per second.
-        # @return [Array<Float>] sampled iterations per second.
-        attr_reader :samples
 
         # Statistical summary of samples.
         # @return [Object] statisical summary.
@@ -130,11 +125,11 @@ module Benchmark
       # @param label [String] Entry label.
       # @param microseconds [Integer] Measured time in microsecond.
       # @param iters [Integer] Iterations.
-      # @param samples [Float<Float>] Sampled iterations per second.
+      # @param stats [Object] Statistical results.
       # @param measurement_cycle [Integer] Number of cycles.
       # @return [Report::Entry] Last added entry.
-      def add_entry label, microseconds, iters, samples, measurement_cycle
-        entry = Entry.new(label, microseconds, iters, samples, measurement_cycle)
+      def add_entry label, microseconds, iters, stats, measurement_cycle
+        entry = Entry.new(label, microseconds, iters, stats, measurement_cycle)
         @entries.delete_if { |e| e.label == label }
         @entries << entry
         entry
@@ -153,8 +148,8 @@ module Benchmark
         @data ||= @entries.collect do |entry|
           {
             :name => entry.label,
-            :ips =>  entry.ips,
-            :stddev => entry.ips_sd,
+            :ips =>  entry.stats.central_tendency,
+            :error => entry.stats.error,
             :microseconds => entry.microseconds,
             :iterations => entry.iterations,
             :cycles => entry.measurement_cycle,

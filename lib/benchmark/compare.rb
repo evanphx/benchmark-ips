@@ -52,7 +52,7 @@ module Benchmark
         if overlaps
           $stdout.print "same-ish: difference falls within error"
         else
-          slowdown = report.stats.slowdown(best)
+          slowdown = report.stats.slowdown(best.stats)
           $stdout.printf "%.2fx slower", slowdown
         end
         
