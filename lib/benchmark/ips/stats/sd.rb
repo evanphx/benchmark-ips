@@ -16,6 +16,10 @@ module Benchmark
         def error
           @error
         end
+
+        def slowdown(baseline)
+          baseline.central_tendency.to_f / central_tendency
+        end
         
       end
     
