@@ -7,7 +7,7 @@ module Benchmark
         attr_reader :data
 
         def initialize(samples, confidence)
-          require 'kalibera'
+          dependencies
           @iterations = 10_000
           @confidence = (confidence / 100.0).to_s
           @data = Kalibera::Data.new({[0] => samples}, [1, samples.size])
@@ -28,6 +28,16 @@ module Benchmark
           low, slowdown, high = baseline.data.bootstrap_quotient(@data, @iterations, @confidence)
           error = Timing.mean([slowdown - low, high - slowdown])
           [slowdown, error]
+        end
+
+        def dependencies
+          require 'kaliberax'
+        rescue LoadError
+          puts
+          puts "Can't load the kalibera gem - this is required to use the :bootstrap stats options."
+          puts "It's optional, so we don't formally depend on it and it isn't installed along with benchmark-ips."
+          puts "You probably want to do something like 'gem install kalibera' to fix this."
+          abort
         end
 
       end
