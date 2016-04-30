@@ -18,7 +18,8 @@ module Benchmark
         end
 
         def slowdown(baseline)
-          baseline.central_tendency.to_f / central_tendency
+          slowdown = baseline.central_tendency.to_f / central_tendency
+          [slowdown, nil]
         end
         
       end

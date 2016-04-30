@@ -4,10 +4,14 @@ module Benchmark
 
       class Bootstrap
 
+        attr_reader :data
+
         def initialize(samples, confidence)
           require 'kalibera'
-          data = Kalibera::Data.new({[0] => samples}, [1, samples.size])
-          interval = data.bootstrap_confidence_interval(10000, (confidence / 100.0).to_s)
+          @iterations = 10_000
+          @confidence = (confidence / 100.0).to_s
+          @data = Kalibera::Data.new({[0] => samples}, [1, samples.size])
+          interval = @data.bootstrap_confidence_interval(@iterations, @confidence)
           @median = interval.median
           @error = interval.error
         end
@@ -21,7 +25,9 @@ module Benchmark
         end
 
         def slowdown(baseline)
-          baseline.central_tendency.to_f / central_tendency
+          low, slowdown, high = baseline.data.bootstrap_quotient(@data, @iterations, @confidence)
+          error = Timing.mean([slowdown - low, high - slowdown])
+          [slowdown, error]
         end
 
       end
