@@ -2,8 +2,8 @@ module Benchmark
   module IPS
     # Benchmark jobs.
     class Job
-      # Microseconds per 100 millisecond.
-      MICROSECONDS_PER_100MS = 100_000
+      # Default sample duration.
+      DEFAULT_SAMPLE_DURATION = 0.1
       # Microseconds per second.
       MICROSECONDS_PER_SECOND = Timing::MICROSECONDS_PER_SECOND
       # The percentage of the expected runtime to allow
@@ -42,6 +42,10 @@ module Benchmark
       # @return [Integer]
       attr_accessor :iterations
 
+      # Intended sample duration (in seconds).
+      # @return [Float]
+      attr_accessor :sample_duration
+
       # Instantiate the Benchmark::IPS::Job.
       # @option opts [Benchmark::Suite] (nil) :suite Specify Benchmark::Suite.
       # @option opts [Boolean] (false) :quiet Suppress the printing of information.
@@ -55,12 +59,13 @@ module Benchmark
         @held_results = nil
 
         @timing = {}
-        @full_report = Report.new
+        @full_report = Report.new(self)
 
         # Default warmup and calculation time in seconds.
         @warmup = 2
         @time = 5
         @iterations = 1
+        @sample_duration = DEFAULT_SAMPLE_DURATION
       end
 
       # Job configuration options, set +@warmup+ and +@time+.
@@ -72,6 +77,7 @@ module Benchmark
         @time = opts[:time] if opts[:time]
         @suite = opts[:suite] if opts[:suite]
         @iterations = opts[:iterations] if opts[:iterations]
+        @sample_duration = opts[:sample_duration] if opts[:sample_duration]
       end
 
       # Return true if job needs to be compared.
@@ -126,13 +132,15 @@ module Benchmark
       end
       alias_method :report, :item
 
-      # Calculate the cycles needed to run for approx 100ms,
-      # given the number of iterations to run the given time.
+      # Calculate the cycles needed to run for targeted sample duration
+      # (100ms by default), given the number of iterations to run
+      # the given time.
       # @param [Float] time_msec Each iteration's time in ms.
       # @param [Integer] iters Iterations.
-      # @return [Integer] Cycles per 100ms.
-      def cycles_per_100ms time_msec, iters
-        cycles = ((MICROSECONDS_PER_100MS / time_msec) * iters).to_i
+      # @return [Integer] Cycles per sample.
+      def cycles_per_sample time_msec, iters
+        sample_in_msec = @sample_duration * MICROSECONDS_PER_SECOND
+        cycles = ((sample_in_msec / time_msec) * iters).to_i
         cycles = 1 if cycles <= 0
         cycles
       end
@@ -210,7 +218,7 @@ module Benchmark
 
           warmup_time_us = Timing.time_us(before, after)
 
-          @timing[item] = cycles_per_100ms warmup_time_us, warmup_iter
+          @timing[item] = cycles_per_sample warmup_time_us, warmup_iter
 
           @stdout.warmup_stats warmup_time_us, @timing[item] if @stdout
           @suite.warmup_stats warmup_time_us, @timing[item] if @suite
