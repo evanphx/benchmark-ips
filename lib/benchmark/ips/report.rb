@@ -122,7 +122,9 @@ module Benchmark
       attr_reader :entries
 
       # Instantiate the Report.
-      def initialize
+      # @param job [Job] This report's Job.
+      def initialize(job)
+        @job = job
         @entries = []
         @data = nil
       end
@@ -166,7 +168,7 @@ module Benchmark
 
       # Run comparison of entries.
       def run_comparison
-        Benchmark.compare(*@entries)
+        Benchmark.compare(@job, *@entries)
       end
 
       # Generate json from Report#data to given path.

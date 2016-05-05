@@ -59,7 +59,7 @@ module Benchmark
         @held_results = nil
 
         @timing = {}
-        @full_report = Report.new
+        @full_report = Report.new(self)
 
         # Default warmup and calculation time in seconds.
         @warmup = 2
