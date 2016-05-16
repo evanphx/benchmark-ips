@@ -193,14 +193,23 @@ can be calculated instead. A bootstrap confidence interval has the advantages of
 arguably being more mathematically sound for this application than a standard
 deviation, it additionally produces an error for relative slowdowns, which the
 standard deviation does not, and it is arguably more intuitive and actionable.
-W
-hen a bootstrap confidence interval is used, a median of the interval is used
+
+When a bootstrap confidence interval is used, a median of the interval is used
 rather than the mean of the samples, which is what you get with the default
 standard deviation.
+
+The bootstrap confidence interval used is the one described by Tomas Kalibera.
+Note that for this technique to be valid your benchmark should have reached a
+non-periodic steady state with statistically independent samples (it should
+have warmed up) by the time measurements start.
 
 Using a bootstrap confidence internal requires that the 'kalibera' gem is
 installed separately. This gem is not a formal dependency, as by default it is
 not needed.
+
+```
+gem install kalibera
+```
 
 ```ruby
 Benchmark.ips do |x|
