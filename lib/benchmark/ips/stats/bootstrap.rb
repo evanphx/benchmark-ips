@@ -31,7 +31,7 @@ module Benchmark
         end
 
         def dependencies
-          require 'kaliberax'
+          require 'kalibera'
         rescue LoadError
           puts
           puts "Can't load the kalibera gem - this is required to use the :bootstrap stats options."
