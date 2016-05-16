@@ -148,8 +148,10 @@ module Benchmark
         @data ||= @entries.collect do |entry|
           {
             :name => entry.label,
-            :ips =>  entry.stats.central_tendency,
+            :central_tendency =>  entry.stats.central_tendency,
+            :ips =>  entry.stats.central_tendency, # for backwards compatibility
             :error => entry.stats.error,
+            :stddev => entry.stats.error, # for backwards compatibility
             :microseconds => entry.microseconds,
             :iterations => entry.iterations,
             :cycles => entry.measurement_cycle,

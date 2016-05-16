@@ -194,7 +194,7 @@ module Benchmark
           held = run_benchmark
         end
 
-        @stdout.footer
+        @stdout.footer if @stdout
         
         if held
           puts
