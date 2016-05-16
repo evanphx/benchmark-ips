@@ -63,6 +63,9 @@ module Benchmark
         $stdout.puts
       end
 
+      footer = best.stats.footer
+      $stdout.puts footer.rjust(40) if footer
+
       $stdout.puts
     end
   end

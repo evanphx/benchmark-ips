@@ -193,6 +193,8 @@ module Benchmark
         @iterations.times do |n|
           held = run_benchmark
         end
+
+        @stdout.footer
         
         if held
           puts

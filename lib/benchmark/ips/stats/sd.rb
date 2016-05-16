@@ -21,6 +21,10 @@ module Benchmark
           slowdown = baseline.central_tendency.to_f / central_tendency
           [slowdown, nil]
         end
+
+        def footer
+          nil
+        end
         
       end
     

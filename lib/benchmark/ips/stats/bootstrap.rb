@@ -30,6 +30,10 @@ module Benchmark
           [slowdown, error]
         end
 
+        def footer
+          "with #{(@confidence.to_f * 100).round(1)}% confidence"
+        end
+
         def dependencies
           require 'kalibera'
         rescue LoadError
