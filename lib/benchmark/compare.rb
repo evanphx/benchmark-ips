@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 module Benchmark
   # Functionality of performaing comparison between reports.
   #
