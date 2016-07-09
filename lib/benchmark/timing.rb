@@ -8,7 +8,7 @@ module Benchmark
     # @param [Array] samples Samples to calculate mean.
     # @return [Float] Mean of given samples.
     def self.mean(samples)
-      sum = samples.inject(0) { |acc, i| acc + i }
+      sum = samples.inject(:+)
       sum / samples.size
     end
 
@@ -35,14 +35,9 @@ module Benchmark
     # @param [Integer] resample_times Resample times, defaults to 100.
     # @return [Array] Resampled samples.
     def self.resample_mean(samples, resample_times=100)
-      resamples = []
-
-      resample_times.times do
-        resample = samples.map { samples[rand(samples.size)] }
-        resamples << Timing.mean(resample)
-      end
-
-      resamples
+      resample_times.times.map {
+        Timing.mean(samples.map { samples[rand(samples.size)] })
+      }
     end
 
     # Recycle used objects by starting Garbage Collector.
@@ -66,7 +61,7 @@ module Benchmark
 
       # Add one second to the time represenetation
       def self.add_second(t, s)
-        return t + (s * MICROSECONDS_PER_SECOND)
+        t + (s * MICROSECONDS_PER_SECOND)
       end
 
       # Return the number of microseconds between the 2 moments
@@ -81,7 +76,7 @@ module Benchmark
 
       # Add one second to the time represenetation
       def self.add_second(t, s)
-        return t + s
+        t + s
       end
 
       # Return the number of microseconds between the 2 moments
