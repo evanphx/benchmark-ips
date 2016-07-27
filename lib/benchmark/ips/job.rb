@@ -147,8 +147,7 @@ module Benchmark
       # @return [Integer] Cycles per 100ms.
       def cycles_per_100ms time_msec, iters
         cycles = ((MICROSECONDS_PER_100MS / time_msec) * iters).to_i
-        cycles = 1 if cycles <= 0
-        cycles
+        cycles <= 0 ? 1 : cycles
       end
 
       # Calculate the time difference of before and after in microseconds.
@@ -275,7 +274,7 @@ module Benchmark
 
           final_time = before
 
-          measured_us = measurements_us.inject(0) { |a,i| a + i }
+          measured_us = measurements_us.inject(:+)
 
           samples = measurements_us.map { |time_us|
             iterations_per_sec cycles, time_us
