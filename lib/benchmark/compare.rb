@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 module Benchmark
   # Functionality of performaing comparison between reports.
   #
@@ -32,32 +34,39 @@ module Benchmark
     def compare(*entries)
       return if entries.size < 2
 
-      sorted = entries.sort_by(&:ips).reverse
+      sorted = entries.sort_by{ |e| e.stats.central_tendency }.reverse
 
       best = sorted.shift
 
       $stdout.puts "\nComparison:"
 
-      $stdout.printf "%20s: %10.1f i/s\n", best.label, best.ips
+      $stdout.printf "%20s: %10.1f i/s\n", best.label, best.stats.central_tendency
 
       sorted.each do |report|
         name = report.label.to_s
         
-        $stdout.printf "%20s: %10.1f i/s - ", name, report.ips
+        $stdout.printf "%20s: %10.1f i/s - ", name, report.stats.central_tendency
         
-        best_low = best.ips - best.ips_sd
-        report_high = report.ips + report.ips_sd
+        best_low = best.stats.central_tendency - best.stats.error
+        report_high = report.stats.central_tendency + report.stats.error
         overlaps = report_high > best_low 
         
         if overlaps
           $stdout.print "same-ish: difference falls within error"
         else
-          x = (best.ips.to_f / report.ips.to_f)
-          $stdout.printf "%.2fx slower", x
+          slowdown, error = report.stats.slowdown(best.stats)
+          $stdout.printf "%.2fx ", slowdown
+          if error
+            $stdout.printf " (± %.2f)", error
+          end
+          $stdout.print " slower"
         end
         
         $stdout.puts
       end
+
+      footer = best.stats.footer
+      $stdout.puts footer.rjust(40) if footer
 
       $stdout.puts
     end

@@ -42,6 +42,14 @@ module Benchmark
       # @return [Integer]
       attr_accessor :iterations
 
+      # Statistics model.
+      # @return [Object]
+      attr_accessor :stats
+
+      # Confidence.
+      # @return [Integer]
+      attr_accessor :confidence
+
       # Instantiate the Benchmark::IPS::Job.
       # @option opts [Benchmark::Suite] (nil) :suite Specify Benchmark::Suite.
       # @option opts [Boolean] (false) :quiet Suppress the printing of information.
@@ -61,6 +69,10 @@ module Benchmark
         @warmup = 2
         @time = 5
         @iterations = 1
+
+        # Default statistical model
+        @stats = :sd
+        @confidence = 95
       end
 
       # Job configuration options, set +@warmup+ and +@time+.
@@ -72,6 +84,8 @@ module Benchmark
         @time = opts[:time] if opts[:time]
         @suite = opts[:suite] if opts[:suite]
         @iterations = opts[:iterations] if opts[:iterations]
+        @stats = opts[:stats] if opts[:stats]
+        @confidence = opts[:confidence] if opts[:confidence]
       end
 
       # Return true if job needs to be compared.
@@ -178,6 +192,8 @@ module Benchmark
         @iterations.times do |n|
           held = run_benchmark
         end
+
+        @stdout.footer if @stdout
         
         if held
           puts
@@ -224,7 +240,7 @@ module Benchmark
           if hold? && @held_results && @held_results.key?(item.label)
            result = @held_results[item.label]
             create_report(item.label, result['measured_us'], result['iter'],
-              result['avg_ips'], result['sd_ips'], result['cycles'])
+                          create_stats(result['samples']), result['cycles'])
             next
           end
           
@@ -260,14 +276,11 @@ module Benchmark
 
           measured_us = measurements_us.inject(:+)
 
-          all_ips = measurements_us.map { |time_us|
+          samples = measurements_us.map { |time_us|
             iterations_per_sec cycles, time_us
           }
 
-          avg_ips = Timing.mean(all_ips)
-          sd_ips =  Timing.stddev(all_ips, avg_ips).round
-
-          rep = create_report(item.label, measured_us, iter, avg_ips, sd_ips, cycles)
+          rep = create_report(item.label, measured_us, iter, create_stats(samples), cycles)
 
           if (final_time - target).abs >= (@time.to_f * MAX_TIME_SKEW)
             rep.show_total_time!
@@ -283,8 +296,7 @@ module Benchmark
                 :item => item.label,
                 :measured_us => measured_us,
                 :iter => iter,
-                :avg_ips => avg_ips,
-                :sd_ips => sd_ips,
+                :samples => samples,
                 :cycles => cycles
               })
               f.write "\n"
@@ -301,6 +313,17 @@ module Benchmark
         false
       end
 
+      def create_stats(samples)
+        case @stats
+          when :sd
+            Stats::SD.new(samples)
+          when :bootstrap
+            Stats::Bootstrap.new(samples, @confidence)
+          else
+            raise "unknown stats #{@stats}"
+        end
+      end
+
       # Run comparison of entries in +@full_report+.
       def run_comparison
         @full_report.run_comparison if compare?
@@ -315,12 +338,11 @@ module Benchmark
       # @param label [String] Report item label.
       # @param measured_us [Integer] Measured time in microsecond.
       # @param iter [Integer] Iterations.
-      # @param avg_ips [Float] Average iterations per second.
-      # @param sd_ips [Float] Standard deviation iterations per second.
+      # @param samples [Array<Float>] Sampled iterations per second.
       # @param cycles [Integer] Number of Cycles.
       # @return [Report::Entry] Entry with data.
-      def create_report(label, measured_us, iter, avg_ips, sd_ips, cycles)
-        @full_report.add_entry label, measured_us, iter, avg_ips, sd_ips, cycles
+      def create_report(label, measured_us, iter, samples, cycles)
+        @full_report.add_entry label, measured_us, iter, samples, cycles
       end
     end
   end

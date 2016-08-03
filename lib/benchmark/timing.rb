@@ -31,15 +31,6 @@ module Benchmark
       Math.sqrt variance(samples, m)
     end
 
-    # Resample mean of given samples.
-    # @param [Integer] resample_times Resample times, defaults to 100.
-    # @return [Array] Resampled samples.
-    def self.resample_mean(samples, resample_times=100)
-      resample_times.times.map {
-        Timing.mean(samples.map { samples[rand(samples.size)] })
-      }
-    end
-
     # Recycle used objects by starting Garbage Collector.
     def self.clean_env
       # rbx

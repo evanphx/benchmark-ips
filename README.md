@@ -185,6 +185,47 @@ with `SHARE=1` argument. I.e.: `SHARE=1 ruby my_benchmark.rb`.
 Result will be sent to [benchmark.fyi](https://benchmark.fyi/) and benchmark-ips
 will display the link to share the benchmark's result.
 
+### Advanced Statistics
+
+By default, the margin of error shown is plus-minus one standard deviation. If
+a more advanced statistical test is wanted, a bootstrap confidence interval
+can be calculated instead. A bootstrap confidence interval has the advantages of
+arguably being more mathematically sound for this application than a standard
+deviation, it additionally produces an error for relative slowdowns, which the
+standard deviation does not, and it is arguably more intuitive and actionable.
+
+When a bootstrap confidence interval is used, a median of the interval is used
+rather than the mean of the samples, which is what you get with the default
+standard deviation.
+
+The bootstrap confidence interval used is the one described by Tomas Kalibera.
+Note that for this technique to be valid your benchmark should have reached a
+non-periodic steady state with statistically independent samples (it should
+have warmed up) by the time measurements start.
+
+Using a bootstrap confidence internal requires that the 'kalibera' gem is
+installed separately. This gem is not a formal dependency, as by default it is
+not needed.
+
+```
+gem install kalibera
+```
+
+```ruby
+Benchmark.ips do |x|
+
+  # The default is :stats => :sd, which doesn't have a configurable confidence
+  x.config(:stats => :bootstrap, :confidence => 95)
+
+    # or
+
+  x.stats = :bootstrap
+  x.confidence = 95
+  
+  # confidence is 95% by default, so it can be omitted
+
+end
+```
 
 ## REQUIREMENTS:
 

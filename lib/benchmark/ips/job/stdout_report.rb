@@ -27,6 +27,12 @@ module Benchmark
 
         def add_report(item, caller)
           $stdout.puts " #{item.body}"
+          @last_item = item
+        end
+
+        def footer
+          footer = @last_item.stats.footer
+          $stdout.puts footer.rjust(40) if footer
         end
 
         private
