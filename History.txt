@@ -1,3 +1,22 @@
+=== 2.7.0 / 2016-08-05
+
+* 1 minor features:
+  * Add support for confidence intervals
+
+* 1 bug fixes:
+  * Cleanup a few coding patterns
+
+* 2 doc fixes:
+  * Add infos about benchark.fyi to Readme
+  * Remove ancient releases
+
+* 3 merged PRs:
+  * Merge pull request #65 from kbrock/fixup_inject
+  * Merge pull request #67 from benoittgt/master
+  * Merge pull request #69 from chrisseaton/kalibera-confidence-intervals
+
+=== MISSING 2.6.0 and 2.6.1
+
 === 2.5.0 / 2016-02-14
 
 * 1 minor feature:
