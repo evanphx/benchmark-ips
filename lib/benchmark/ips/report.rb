@@ -40,6 +40,18 @@ module Benchmark
         # @return [Object] statisical summary.
         attr_reader :stats
 
+        # LEGACY: Iterations per second.
+        # @return [Float] number of iterations per second.
+        def ips
+          @stats.central_tendency
+        end
+
+        # LEGACY: Standard deviation of iteration per second.
+        # @return [Float] standard deviation of iteration per second.
+        def ips_sd
+          @stats.error
+        end
+
         # Number of Cycles.
         # @return [Integer] number of cycles.
         attr_reader :measurement_cycle

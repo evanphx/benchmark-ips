@@ -55,11 +55,11 @@ class TestBenchmarkIPS < Minitest::Test
 
     assert_equal "sleep 0.25", rep1.label
     assert_equal 4, rep1.iterations
-    assert_in_delta 4.0, rep1.stats.central_tendency, 0.2
+    assert_in_delta 4.0, rep1.ips, 0.2
 
     assert_equal "sleep 0.05", rep2.label
     assert_in_delta 20.0, rep2.iterations.to_f, 1.0
-    assert_in_delta 20.0, rep2.stats.central_tendency, 2.0
+    assert_in_delta 20.0, rep2.ips, 2.0
   end
 
   def test_ips_alternate_config
@@ -73,7 +73,7 @@ class TestBenchmarkIPS < Minitest::Test
 
     assert_equal "sleep 0.25", rep.label
     assert_equal 4, rep.iterations
-    assert_in_delta 4.0, rep.stats.central_tendency, 0.4
+    assert_in_delta 4.0, rep.ips, 0.4
   end
 
   def test_ips_old_config
@@ -85,7 +85,7 @@ class TestBenchmarkIPS < Minitest::Test
 
     assert_equal "sleep 0.25", rep.label
     assert_equal 4, rep.iterations
-    assert_in_delta 4.0, rep.stats.central_tendency, 0.2
+    assert_in_delta 4.0, rep.ips, 0.2
   end
 
   def test_ips_config_suite
@@ -112,7 +112,7 @@ class TestBenchmarkIPS < Minitest::Test
 
     assert_equal "sleep 0.25", rep.label
     assert_equal 4*5, rep.iterations
-    assert_in_delta 4.0, rep.stats.central_tendency, 0.2
+    assert_in_delta 4.0, rep.ips, 0.2
   end
 
   def test_ips_report_using_symbol
@@ -124,7 +124,7 @@ class TestBenchmarkIPS < Minitest::Test
 
     assert_equal :sleep_a_quarter_second, rep.label
     assert_equal 4*5, rep.iterations
-    assert_in_delta 4.0, rep.stats.central_tendency, 0.2
+    assert_in_delta 4.0, rep.ips, 0.2
   end
 
   def test_ips_default_data
