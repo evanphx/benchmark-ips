@@ -15,7 +15,7 @@ module Benchmark
   module IPS
 
     # Benchmark-ips Gem version.
-    VERSION = "2.7.1"
+    VERSION = "2.7.2"
 
     # CODENAME of current version.
     CODENAME = "Cultivating Confidence"
