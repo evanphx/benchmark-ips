@@ -20,6 +20,19 @@ class TestBenchmarkIPS < Minitest::Test
     assert $stdout.string.size > 0
   end
 
+  def test_warmup0
+    $stdout = @old_stdout
+
+    out, err = capture_io do
+      Benchmark.ips(:time => 1, :warmup => 0, :quiet => false) do |x|
+        x.report("sleep 0.25") { sleep(0.25) }
+      end
+    end
+
+    refute_match(/Warming up -+/, out)
+    assert_empty err
+  end
+
   def test_output
     Benchmark.ips(1) do |x|
       x.report("operation") { 100 * 100 }
