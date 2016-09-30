@@ -5,7 +5,7 @@ module Benchmark
         def start_warming
           $stdout.puts "Warming up --------------------------------------"
         end
-        
+
         def start_running
           $stdout.puts "Calculating -------------------------------------"
         end

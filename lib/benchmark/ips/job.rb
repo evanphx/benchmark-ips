@@ -166,11 +166,11 @@ module Benchmark
       def iterations_per_sec cycles, time_us
         MICROSECONDS_PER_SECOND * (cycles.to_f / time_us.to_f)
       end
-      
+
       def held_results?
         File.exist?(@held_path)
       end
-      
+
       def load_held_results
         require "json"
         @held_results = Hash[File.open(@held_path).map { |line|
@@ -178,23 +178,23 @@ module Benchmark
           [result['item'], result]
         }]
       end
-      
+
       def run
         @stdout.start_warming if @stdout
         @iterations.times do
           run_warmup
         end
-        
+
         @stdout.start_running if @stdout
-        
+
         held = nil
-        
+
         @iterations.times do |n|
           held = run_benchmark
         end
 
         @stdout.footer if @stdout
-        
+
         if held
           puts
           puts 'Pausing here -- run Ruby again to measure the next benchmark...'
@@ -205,7 +205,7 @@ module Benchmark
       def run_warmup
         @list.each do |item|
           next if hold? && @held_results && @held_results.key?(item.label)
-          
+
           @suite.warming item.label, @warmup if @suite
           @stdout.warming item.label, @warmup if @stdout
 
@@ -229,7 +229,7 @@ module Benchmark
 
           @stdout.warmup_stats warmup_time_us, @timing[item] if @stdout
           @suite.warmup_stats warmup_time_us, @timing[item] if @suite
-          
+
           break if hold?
         end
       end
@@ -243,7 +243,7 @@ module Benchmark
                           create_stats(result['samples']), result['cycles'])
             next
           end
-          
+
           @suite.running item.label, @time if @suite
           @stdout.running item.label, @time if @stdout
 
@@ -257,7 +257,7 @@ module Benchmark
           cycles = @timing[item]
 
           target = Timing.add_second Timing.now, @time
-          
+
           while (before = Timing.now) < target
             item.call_times cycles
             after = Timing.now
@@ -288,7 +288,7 @@ module Benchmark
 
           @stdout.add_report rep, caller(1).first if @stdout
           @suite.add_report rep, caller(1).first if @suite
-          
+
           if hold? && item != @list.last
             File.open @held_path, "a" do |f|
               require "json"
@@ -301,15 +301,15 @@ module Benchmark
               })
               f.write "\n"
             end
-            
+
             return true
           end
         end
-        
+
         if hold? && @full_report.entries.size == @list.size
           File.delete @held_path if File.exist?(@held_path)
         end
-        
+
         false
       end
 
