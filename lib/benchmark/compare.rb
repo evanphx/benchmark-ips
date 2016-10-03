@@ -44,13 +44,13 @@ module Benchmark
 
       sorted.each do |report|
         name = report.label.to_s
-        
+
         $stdout.printf "%20s: %10.1f i/s - ", name, report.stats.central_tendency
-        
+
         best_low = best.stats.central_tendency - best.stats.error
         report_high = report.stats.central_tendency + report.stats.error
-        overlaps = report_high > best_low 
-        
+        overlaps = report_high > best_low
+
         if overlaps
           $stdout.print "same-ish: difference falls within error"
         else
@@ -61,7 +61,7 @@ module Benchmark
           end
           $stdout.print " slower"
         end
-        
+
         $stdout.puts
       end
 
