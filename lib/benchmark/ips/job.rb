@@ -62,7 +62,7 @@ module Benchmark
         @held_path = nil
         @held_results = nil
 
-        @timing = {}
+        @timing = Hash.new 1 # default to 1 in case warmup isn't run
         @full_report = Report.new
 
         # Default warmup and calculation time in seconds.
@@ -180,9 +180,11 @@ module Benchmark
       end
       
       def run
-        @stdout.start_warming if @stdout
-        @iterations.times do
-          run_warmup
+        if @warmup && @warmup != 0 then
+          @stdout.start_warming if @stdout
+          @iterations.times do
+            run_warmup
+          end
         end
         
         @stdout.start_running if @stdout
