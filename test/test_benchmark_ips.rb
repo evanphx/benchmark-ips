@@ -153,6 +153,17 @@ class TestBenchmarkIPS < Minitest::Test
     assert all_data[0][:stddev]
   end
 
+  def test_ips_empty
+    report = Benchmark.ips do |_x|
+
+    end
+
+    all_data = report.data
+
+    assert all_data
+    assert_equal [], all_data
+  end
+
   def test_json_output
     json_file = Tempfile.new("data.json")
 

@@ -2,6 +2,10 @@ module Benchmark
   module IPS
     class Job
       class StdoutReport
+        def initialize
+          @last_item = nil
+        end
+
         def start_warming
           $stdout.puts "Warming up --------------------------------------"
         end
@@ -31,6 +35,7 @@ module Benchmark
         end
 
         def footer
+          return unless @last_item
           footer = @last_item.stats.footer
           $stdout.puts footer.rjust(40) if footer
         end
