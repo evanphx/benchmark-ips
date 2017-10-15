@@ -101,5 +101,68 @@ module Benchmark
     end
   end
 
+  ##
+  # :singleton-method: ips
+  #
+  #     require 'benchmark/ips'
+  #
+  #     Benchmark.ips do |x|
+  #       # Configure the number of seconds used during
+  #       # the warmup phase (default 2) and calculation phase (default 5)
+  #       x.config(:time => 5, :warmup => 2)
+  #
+  #       # These parameters can also be configured this way
+  #       x.time = 5
+  #       x.warmup = 2
+  #
+  #       # Typical mode, runs the block as many times as it can
+  #       x.report("addition") { 1 + 2 }
+  #
+  #       # To reduce overhead, the number of iterations is passed in
+  #       # and the block must run the code the specific number of times.
+  #       # Used for when the workload is very small and any overhead
+  #       # introduces incorrectable errors.
+  #       x.report("addition2") do |times|
+  #         i = 0
+  #         while i < times
+  #           1 + 2
+  #           i += 1
+  #         end
+  #       end
+  #
+  #       # To reduce overhead even more, grafts the code given into
+  #       # the loop that performs the iterations internally to reduce
+  #       # overhead. Typically not needed, use the |times| form instead.
+  #       x.report("addition3", "1 + 2")
+  #
+  #       # Really long labels should be formatted correctly
+  #       x.report("addition-test-long-label") { 1 + 2 }
+  #
+  #       # Compare the iterations per second of the various reports!
+  #       x.compare!
+  #     end
+  #
+  # This will generate the following report:
+  #
+  #     Calculating -------------------------------------
+  #                 addition    71.254k i/100ms
+  #                addition2    68.658k i/100ms
+  #                addition3    83.079k i/100ms
+  #     addition-test-long-label
+  #                             70.129k i/100ms
+  #     -------------------------------------------------
+  #                 addition     4.955M (± 8.7%) i/s -     24.155M
+  #                addition2    24.011M (± 9.5%) i/s -    114.246M
+  #                addition3    23.958M (±10.1%) i/s -    115.064M
+  #     addition-test-long-label
+  #                              5.014M (± 9.1%) i/s -     24.545M
+  #
+  #     Comparison:
+  #                addition2: 24011974.8 i/s
+  #                addition3: 23958619.8 i/s - 1.00x slower
+  #     addition-test-long-label:  5014756.0 i/s - 4.79x slower
+  #                 addition:  4955278.9 i/s - 4.85x slower
+  #
+  # See also Benchmark::IPS
   extend Benchmark::IPS # make ips available as module-level method
 end
