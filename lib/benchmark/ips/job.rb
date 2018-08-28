@@ -14,10 +14,6 @@ module Benchmark
       # @return [Array<Entry>] list of entries
       attr_reader :list
 
-      # Determining whether to run comparison utility.
-      # @return [Boolean] true if needs to run compare.
-      attr_reader :compare
-
       # Determining whether to hold results between Ruby invocations
       # @return [Boolean]
       attr_accessor :hold
@@ -50,6 +46,10 @@ module Benchmark
       # @return [Integer]
       attr_accessor :confidence
 
+      # Helper Modules
+      # @return [Hash{Symbol=>Object}] Instance of helper class implementing `run`
+      attr_accessor :helpers
+
       # Instantiate the Benchmark::IPS::Job.
       # @option opts [Benchmark::Suite] (nil) :suite Specify Benchmark::Suite.
       # @option opts [Boolean] (false) :quiet Suppress the printing of information.
@@ -57,9 +57,8 @@ module Benchmark
         @suite = opts[:suite] || nil
         @stdout = opts[:quiet] ? nil : StdoutReport.new
         @list = []
-        @compare = false
         @run_single = false
-        @json_path = false
+        @helpers = {}
         @held_path = nil
         @held_results = nil
 
@@ -89,15 +88,16 @@ module Benchmark
         @confidence = opts[:confidence] if opts[:confidence]
       end
 
-      # Return true if job needs to be compared.
-      # @return [Boolean] Need to compare?
-      def compare?
-        @compare
-      end
-
       # Run comparison utility.
       def compare!
-        @compare = true
+        require 'benchmark/compare'
+        add_helper :compare, Benchmark::Compare.new
+      end
+
+      # Determining whether to run comparison utility.
+      # @param [Boolean] value true if needs to run compare.
+      def compare= value
+        value ? compare! : @helpers.delete(:compare)
       end
 
       # Return true if results are held while multiple Ruby invocations
@@ -129,15 +129,10 @@ module Benchmark
         @run_single
       end
 
-      # Return true if job needs to generate json.
-      # @return [Boolean] Need to generate json?
-      def json?
-        !!@json_path
-      end
-
       # Generate json to given path, defaults to "data.json".
       def json!(path="data.json")
-        @json_path = path
+        require 'benchmark/ips/json_report'
+        add_helper :json, Benchmark::IPS::JsonReport.new(path)
       end
 
       # Registers the given label and block pair in the job list.
@@ -220,28 +215,21 @@ module Benchmark
         File.delete @held_path if File.exist?(@held_path)
       end
 
-      def pre_run
-        load_held_results if hold? && held_results?
+      def add_helper(name, helper)
+        @helpers[name] = helper
       end
 
-      def post_run
-        if compare?
-          require 'benchmark/compare'
-          compare = Compare.new
-          compare.post_run(full_report)
-        end
-
-        if json?
-          require 'benchmark/ips/json_report'
-          json = JsonReport.new @json_path
-          json.post_run(full_report)
-        end
+      def pre_run
+        load_held_results if hold? && held_results?
 
         if ENV['SHARE'] || ENV['SHARE_URL']
           require 'benchmark/ips/share'
-          share = Share.new compare?
-          share.post_run(full_report)
+          add_helper :share, Share.new(!!@helpers[:compare])
         end
+      end
+
+      def post_run
+        @helpers.values.each { |helper| helper.post_run(full_report) }
       end
 
       def run
