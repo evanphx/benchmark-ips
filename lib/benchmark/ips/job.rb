@@ -220,6 +220,21 @@ module Benchmark
         File.delete @held_path if File.exist?(@held_path)
       end
 
+      def pre_run
+        load_held_results if hold? && held_results?
+      end
+
+      def post_run
+        run_comparison
+        generate_json
+
+        if ENV['SHARE'] || ENV['SHARE_URL']
+          require 'benchmark/ips/share'
+          share = Share.new full_report, self
+          share.share
+        end
+      end
+
       def run
         if @warmup && @warmup != 0 then
           @stdout.start_warming if @stdout
@@ -337,12 +352,16 @@ module Benchmark
 
       # Run comparison of entries in +@full_report+.
       def run_comparison
-        @full_report.run_comparison if compare?
+        Benchmark.compare(*@full_report.entries) if compare?
       end
 
       # Generate json from +@full_report+.
       def generate_json
-        @full_report.generate_json @json_path if json?
+        return unless json?
+        File.open @json_path , "w" do |f|
+          require "json"
+          f.write JSON.pretty_generate(@full_report.data)
+        end
       end
 
       # Create report by add entry to +@full_report+.

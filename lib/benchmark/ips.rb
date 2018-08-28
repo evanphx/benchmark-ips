@@ -55,7 +55,7 @@ module Benchmark
 
       yield job
 
-      job.load_held_results
+      job.pre_run
 
       job.run
 
@@ -67,18 +67,9 @@ module Benchmark
       end
 
       $stdout.sync = sync
-      job.run_comparison
-      job.generate_json
+      job.post_run
 
-      report = job.full_report
-
-      if ENV['SHARE'] || ENV['SHARE_URL']
-        require 'benchmark/ips/share'
-        share = Share.new report, job
-        share.share
-      end
-
-      report
+      job.full_report
     end
 
     # Set options for running the benchmarks.
