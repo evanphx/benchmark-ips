@@ -6,21 +6,23 @@ module Benchmark
   module IPS
     class Share
       DEFAULT_URL = "https://benchmark.fyi"
-      def initialize(report, job)
-        @report = report
-        @job = job
+      def initialize(job_compare)
+        @job_compare = job_compare
       end
 
-      def share
+      def run(job)
+      end
+
+      def post_run(report)
         base = (ENV['SHARE_URL'] || DEFAULT_URL)
         url = URI(File.join(base, "reports"))
 
         req = Net::HTTP::Post.new(url)
 
         data = {
-          "entries" => @report.data,
+          "entries" => report.data,
           "options" => {
-            "compare" => @job.compare?
+            "compare" => @job_compare
           }
         }
 

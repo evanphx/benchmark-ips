@@ -225,13 +225,22 @@ module Benchmark
       end
 
       def post_run
-        run_comparison
-        generate_json
+        if compare?
+          require 'benchmark/compare'
+          compare = Compare.new
+          compare.post_run(full_report)
+        end
+
+        if json?
+          require 'benchmark/ips/json_report'
+          json = JsonReport.new @json_path
+          json.post_run(full_report)
+        end
 
         if ENV['SHARE'] || ENV['SHARE_URL']
           require 'benchmark/ips/share'
-          share = Share.new full_report, self
-          share.share
+          share = Share.new compare?
+          share.post_run(full_report)
         end
       end
 
@@ -347,20 +356,6 @@ module Benchmark
             Stats::Bootstrap.new(samples, @confidence)
           else
             raise "unknown stats #{@stats}"
-        end
-      end
-
-      # Run comparison of entries in +@full_report+.
-      def run_comparison
-        Benchmark.compare(*@full_report.entries) if compare?
-      end
-
-      # Generate json from +@full_report+.
-      def generate_json
-        return unless json?
-        File.open @json_path , "w" do |f|
-          require "json"
-          f.write JSON.pretty_generate(@full_report.data)
         end
       end
 

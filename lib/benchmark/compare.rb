@@ -26,12 +26,17 @@ module Benchmark
   #   Reduce using to_proc:   247295.4 i/s - 1.13x slower
   #
   # Besides regular Calculating report, this will also indicates which one is slower.
-  module Compare
+  class Compare
+
+    # currently the core of the run is part of job#run and job#run_benchmark
+    def run(job)
+    end
 
     # Compare between reports, prints out facts of each report:
     # runtime, comparative speed difference.
-    # @param entries [Array<Report::Entry>] Reports to compare.
-    def compare(*entries)
+    # @param entries [Benchmark::IPS::Report] Report to compare.
+    def post_run(full_report)
+      entries = full_report.entries
       return if entries.size < 2
 
       sorted = entries.sort_by{ |e| e.stats.central_tendency }.reverse
@@ -67,6 +72,4 @@ module Benchmark
       $stdout.puts
     end
   end
-
-  extend Benchmark::Compare
 end
