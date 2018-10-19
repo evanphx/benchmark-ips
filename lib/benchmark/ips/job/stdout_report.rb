@@ -2,42 +2,43 @@ module Benchmark
   module IPS
     class Job
       class StdoutReport
-        def initialize
+        def initialize(stream = $stdout)
           @last_item = nil
+          @out = stream
         end
 
         def start_warming
-          $stdout.puts "Warming up --------------------------------------"
+          @out.puts "Warming up --------------------------------------"
         end
 
         def start_running
-          $stdout.puts "Calculating -------------------------------------"
+          @out.puts "Calculating -------------------------------------"
         end
 
         def warming(label, _warmup)
-          $stdout.print rjust(label)
+          @out.print rjust(label)
         end
 
         def warmup_stats(_warmup_time_us, timing)
           case format
           when :human
-            $stdout.printf "%s i/100ms\n", Helpers.scale(timing)
+            @out.printf "%s i/100ms\n", Helpers.scale(timing)
           else
-            $stdout.printf "%10d i/100ms\n", timing
+            @out.printf "%10d i/100ms\n", timing
           end
         end
 
         alias_method :running, :warming
 
         def add_report(item, caller)
-          $stdout.puts " #{item.body}"
+          @out.puts " #{item.body}"
           @last_item = item
         end
 
         def footer
           return unless @last_item
           footer = @last_item.stats.footer
-          $stdout.puts footer.rjust(40) if footer
+          @out.puts footer.rjust(40) if footer
         end
 
         private
