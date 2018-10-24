@@ -7,6 +7,7 @@ require 'benchmark/ips/stats/bootstrap'
 require 'benchmark/ips/report'
 require 'benchmark/ips/job/entry'
 require 'benchmark/ips/job/stdout_report'
+require 'benchmark/ips/job/multi_report'
 require 'benchmark/ips/job'
 
 # Performance benchmarking library

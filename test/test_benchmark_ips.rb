@@ -113,7 +113,7 @@ class TestBenchmarkIPS < Minitest::Test
       x.report("job") {}
     end
 
-    assert_equal [:warming, :warmup_stats, :running, :add_report], suite.calls
+    assert_equal [:start_warming, :warming, :warmup_stats, :start_running, :running, :add_report, :footer], suite.calls
   end
 
   def test_ips_defaults
