@@ -52,6 +52,10 @@ module Benchmark
           @stats.error
         end
 
+        def samples
+          @stats.samples
+        end
+
         # Number of Cycles.
         # @return [Integer] number of cycles.
         attr_reader :measurement_cycle
@@ -72,7 +76,7 @@ module Benchmark
         # Return entry's standard deviation of iteration per second in percentage.
         # @return [Float] +@ips_sd+ in percentage.
         def error_percentage
-          100.0 * (@stats.error.to_f / @stats.central_tendency)
+          @stats.error_percentage
         end
 
         alias_method :runtime, :seconds
@@ -84,7 +88,7 @@ module Benchmark
         def body
           case Benchmark::IPS.options[:format]
           when :human
-            left = "%s (±%4.1f%%) i/s" % [Helpers.scale(@stats.central_tendency), error_percentage]
+            left = "%s (±%4.1f%%) i/s" % [Helpers.scale(@stats.central_tendency), @stats.error_percentage]
             iters = Helpers.scale(@iterations)
 
             if @show_total_time
@@ -93,7 +97,7 @@ module Benchmark
               left.ljust(20) + (" - %s" % iters)
             end
           else
-            left = "%10.1f (±%.1f%%) i/s" % [@stats.central_tendency, error_percentage]
+            left = "%10.1f (±%.1f%%) i/s" % [@stats.central_tendency, @stats.error_percentage]
 
             if @show_total_time
               left.ljust(20) + (" - %10d in %10.6fs" % [@iterations, runtime])
