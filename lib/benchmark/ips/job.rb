@@ -94,7 +94,7 @@ module Benchmark
         @compare
       end
 
-      # Set @compare to true.
+      # Run comparison utility.
       def compare!
         @compare = true
       end
@@ -105,7 +105,8 @@ module Benchmark
         !!@held_path
       end
 
-      # Set @hold to true.
+      # Hold after each iteration.
+      # @param held_path [String] File name to store hold file.
       def hold!(held_path)
         @held_path = held_path
       end
@@ -116,7 +117,7 @@ module Benchmark
         !!@json_path
       end
 
-      # Set @json_path to given path, defaults to "data.json".
+      # Generate json to given path, defaults to "data.json".
       def json!(path="data.json")
         @json_path = path
       end
