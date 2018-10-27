@@ -155,6 +155,11 @@ This will run only one benchmarks each time you run the command, storing
 results in the specified file. The file is deleted when all results have been
 gathered and the report is shown.
 
+Alternatively, if you prefer a different approach, the `save!` command is
+available. Examples for [hold!](examples/hold.rb) and [save!](examples/save.rb) are available in
+the `examples/` directory.
+
+
 ### Multiple iterations
 
 In some cases you may want to run multiple iterations of the warmup and

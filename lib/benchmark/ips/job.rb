@@ -58,6 +58,7 @@ module Benchmark
         @stdout = opts[:quiet] ? nil : StdoutReport.new
         @list = []
         @compare = false
+        @run_single = false
         @json_path = false
         @held_path = nil
         @held_results = nil
@@ -109,6 +110,23 @@ module Benchmark
       # @param held_path [String] File name to store hold file.
       def hold!(held_path)
         @held_path = held_path
+        @run_single = true
+      end
+
+      # Save interim results. Similar to hold, but all reports are run
+      # The report label must change for each invocation.
+      # One way to achieve this is to include the version in the label.
+      # @param held_path [String] File name to store hold file.
+      def save!(held_path)
+        @held_path = held_path
+        @run_single = false
+      end
+
+      # Return true if items are to be run one at a time.
+      # For the traditional hold, this is true
+      # @return [Boolean] Run just a single item?
+      def run_single?
+        @run_single
       end
 
       # Return true if job needs to generate json.
@@ -168,16 +186,38 @@ module Benchmark
         MICROSECONDS_PER_SECOND * (cycles.to_f / time_us.to_f)
       end
 
-      def held_results?
-        File.exist?(@held_path)
+      def load_held_results
+        return unless @held_path && File.exist?(@held_path)
+        require "json"
+        @held_results = {}
+        JSON.load(IO.read(@held_path)).each do |result|
+          @held_results[result['item']] = result
+          create_report(result['item'], result['measured_us'], result['iter'],
+                        create_stats(result['samples']), result['cycles'])
+        end
       end
 
-      def load_held_results
+      def save_held_results
+        return unless @held_path
         require "json"
-        @held_results = Hash[File.open(@held_path).map { |line|
-          result = JSON.parse(line)
-          [result['item'], result]
-        }]
+        data = full_report.entries.map { |e|
+          {
+            'item' => e.label,
+            'measured_us' => e.microseconds,
+            'iter' => e.iterations,
+            'samples' => e.samples,
+            'cycles' => e.measurement_cycle
+          }
+        }
+        IO.write(@held_path, JSON.generate(data) << "\n")
+      end
+
+      def all_results_have_been_run?
+        @full_report.entries.size == @list.size
+      end
+
+      def clear_held_results
+        File.delete @held_path if File.exist?(@held_path)
       end
 
       def run
@@ -190,24 +230,17 @@ module Benchmark
 
         @stdout.start_running if @stdout
 
-        held = nil
-
         @iterations.times do |n|
-          held = run_benchmark
+          run_benchmark
         end
 
         @stdout.footer if @stdout
-
-        if held
-          puts
-          puts 'Pausing here -- run Ruby again to measure the next benchmark...'
-        end
       end
 
       # Run warmup.
       def run_warmup
         @list.each do |item|
-          next if hold? && @held_results && @held_results.key?(item.label)
+          next if run_single? && @held_results && @held_results.key?(item.label)
 
           @suite.warming item.label, @warmup if @suite
           @stdout.warming item.label, @warmup if @stdout
@@ -233,19 +266,14 @@ module Benchmark
           @stdout.warmup_stats warmup_time_us, @timing[item] if @stdout
           @suite.warmup_stats warmup_time_us, @timing[item] if @suite
 
-          break if hold?
+          break if run_single?
         end
       end
 
       # Run calculation.
       def run_benchmark
         @list.each do |item|
-          if hold? && @held_results && @held_results.key?(item.label)
-           result = @held_results[item.label]
-            create_report(item.label, result['measured_us'], result['iter'],
-                          create_stats(result['samples']), result['cycles'])
-            next
-          end
+          next if run_single? && @held_results && @held_results.key?(item.label)
 
           @suite.running item.label, @time if @suite
           @stdout.running item.label, @time if @stdout
@@ -292,28 +320,8 @@ module Benchmark
           @stdout.add_report rep, caller(1).first if @stdout
           @suite.add_report rep, caller(1).first if @suite
 
-          if hold? && item != @list.last
-            File.open @held_path, "a" do |f|
-              require "json"
-              f.write JSON.generate({
-                :item => item.label,
-                :measured_us => measured_us,
-                :iter => iter,
-                :samples => samples,
-                :cycles => cycles
-              })
-              f.write "\n"
-            end
-
-            return true
-          end
+          break if run_single?
         end
-
-        if hold? && @full_report.entries.size == @list.size
-          File.delete @held_path if File.exist?(@held_path)
-        end
-
-        false
       end
 
       def create_stats(samples)
