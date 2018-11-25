@@ -40,18 +40,14 @@ module Benchmark
 
       $stdout.puts "\nComparison:"
 
-      $stdout.printf "%20s: %10.1f i/s\n", best.label, best.stats.central_tendency
+      $stdout.printf "%20s: %10.1f i/s\n", best.label.to_s, best.stats.central_tendency
 
       sorted.each do |report|
         name = report.label.to_s
 
         $stdout.printf "%20s: %10.1f i/s - ", name, report.stats.central_tendency
 
-        best_low = best.stats.central_tendency - best.stats.error
-        report_high = report.stats.central_tendency + report.stats.error
-        overlaps = report_high > best_low
-
-        if overlaps
+        if report.stats.overlaps?(best.stats)
           $stdout.print "same-ish: difference falls within error"
         else
           slowdown, error = report.stats.slowdown(best.stats)

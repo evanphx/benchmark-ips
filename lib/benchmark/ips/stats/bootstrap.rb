@@ -3,27 +3,30 @@ module Benchmark
     module Stats
 
       class Bootstrap
-
-        attr_reader :data
+        include StatsMetric
+        attr_reader :data, :error, :samples
 
         def initialize(samples, confidence)
           dependencies
           @iterations = 10_000
           @confidence = (confidence / 100.0).to_s
+          @samples = samples
           @data = Kalibera::Data.new({[0] => samples}, [1, samples.size])
           interval = @data.bootstrap_confidence_interval(@iterations, @confidence)
           @median = interval.median
           @error = interval.error
         end
 
+        # Average stat value
+        # @return [Float] central_tendency
         def central_tendency
           @median
         end
 
-        def error
-          @error
-        end
-
+        # Determines how much slower this stat is than the baseline stat
+        # if this average is lower than the faster baseline, higher average is better (e.g. ips) (calculate accordingly)
+        # @param baseline [SD|Bootstrap] faster baseline
+        # @returns [Array<Float, nil>] the slowdown and the error (not calculated for standard deviation)
         def slowdown(baseline)
           low, slowdown, high = baseline.data.bootstrap_quotient(@data, @iterations, @confidence)
           error = Timing.mean([slowdown - low, high - slowdown])

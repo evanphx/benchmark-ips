@@ -1,6 +1,7 @@
 # encoding: utf-8
 require 'benchmark/timing'
 require 'benchmark/compare'
+require 'benchmark/ips/stats/stats_metric'
 require 'benchmark/ips/stats/sd'
 require 'benchmark/ips/stats/bootstrap'
 require 'benchmark/ips/report'
@@ -54,9 +55,16 @@ module Benchmark
 
       yield job
 
-      job.load_held_results if job.hold? && job.held_results?
+      job.load_held_results
 
       job.run
+
+      if job.run_single? && job.all_results_have_been_run?
+        job.clear_held_results
+      else
+        job.save_held_results
+        puts '', 'Pausing here -- run Ruby again to measure the next benchmark...' if job.run_single?
+      end
 
       $stdout.sync = sync
       job.run_comparison
