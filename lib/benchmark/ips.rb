@@ -109,6 +109,8 @@ module Benchmark
     end
   end
 
+  extend Benchmark::IPS # make ips available as module-level method
+
   ##
   # :singleton-method: ips
   #
@@ -172,5 +174,4 @@ module Benchmark
   #                 addition:  4955278.9 i/s - 4.85x slower
   #
   # See also Benchmark::IPS
-  extend Benchmark::IPS # make ips available as module-level method
 end
