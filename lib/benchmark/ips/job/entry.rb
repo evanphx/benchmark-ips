@@ -11,10 +11,12 @@ module Benchmark
         def initialize(label, action)
           @label = label
 
+          # We define #call_times on the singleton class of each Entry instance.
+          # That way, there is no polymorphism for `@action.call` inside #call_times.
+
           if action.kind_of? String
-            compile action
+            compile_string action
             @action = self
-            @as_action = true
           else
             unless action.respond_to? :call
               raise ArgumentError, "invalid action, must respond to #call"
@@ -23,12 +25,10 @@ module Benchmark
             @action = action
 
             if action.respond_to? :arity and action.arity > 0
-              @call_loop = true
+              compile_block_with_manual_loop
             else
-              @call_loop = false
+              compile_block
             end
-
-            @as_action = false
           end
         end
 
@@ -40,25 +40,43 @@ module Benchmark
         # @return [String, Proc] Code to be called, could be String / Proc.
         attr_reader :action
 
-        # Call action by given times, return if +@call_loop+ is present.
+        # Call action by given times.
         # @param times [Integer] Times to call +@action+.
         # @return [Integer] Number of times the +@action+ has been called.
         def call_times(times)
-          return @action.call(times) if @call_loop
+          raise '#call_times should be redefined per Benchmark::IPS::Job::Entry instance'
+        end
 
-          act = @action
+        def compile_block
+          m = (class << self; self; end)
+          code = <<-CODE
+            def call_times(times)
+              act = @action
 
-          i = 0
-          while i < times
-            act.call
-            i += 1
-          end
+              i = 0
+              while i < times
+                act.call
+                i += 1
+              end
+            end
+          CODE
+          m.class_eval code
+        end
+
+        def compile_block_with_manual_loop
+          m = (class << self; self; end)
+          code = <<-CODE
+            def call_times(times)
+              @action.call(times)
+            end
+          CODE
+          m.class_eval code
         end
 
         # Compile code into +call_times+ method.
         # @param str [String] Code to be compiled.
         # @return [Symbol] :call_times.
-        def compile(str)
+        def compile_string(str)
           m = (class << self; self; end)
           code = <<-CODE
             def call_times(__total);
