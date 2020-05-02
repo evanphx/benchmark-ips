@@ -12,5 +12,6 @@ lib/benchmark/ips/report.rb
 lib/benchmark/ips/share.rb
 lib/benchmark/ips/stats/bootstrap.rb
 lib/benchmark/ips/stats/sd.rb
+lib/benchmark/ips/stats/stats_metric.rb
 lib/benchmark/timing.rb
 test/test_benchmark_ips.rb
