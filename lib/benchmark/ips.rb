@@ -16,7 +16,7 @@ module Benchmark
   module IPS
 
     # Benchmark-ips Gem version.
-    VERSION = "2.8.0"
+    VERSION = "2.8.2"
 
     # CODENAME of current version.
     CODENAME = "Tardy Turtle"
