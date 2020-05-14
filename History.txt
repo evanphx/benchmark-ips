@@ -1,3 +1,22 @@
+=== 2.8.2 / 2020-05-04
+
+* Bug fix 
+  * Fixed problems with Manifest.txt.
+  * Empty interim results files are ignored.
+
+=== 2.8.0 / 2020-05-01
+
+* Feature
+  * Allow running with empty ips block.
+  * Added save! method for saving interim results.
+  * Run more than just 1 cycle during warmup to reduce overhead.
+  * Optimized Job::Entry hot-path for fairer results on JRuby/TruffleRuby.
+
+* Bug fix
+  * Removed the warmup section if set to 0.
+  * Added some RDoc docs.
+  * Added some examples in examples/
+
 === 2.7.2 / 2016-08-18
 
 * 1 bug fix:
