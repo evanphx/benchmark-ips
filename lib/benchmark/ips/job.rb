@@ -9,6 +9,7 @@ module Benchmark
       # The percentage of the expected runtime to allow
       # before reporting a weird runtime
       MAX_TIME_SKEW = 0.05
+      POW_2_30 = 1 << 30
 
       # Two-element arrays, consisting of label and block pairs.
       # @return [Array<Entry>] list of entries
@@ -263,6 +264,10 @@ module Benchmark
             t1 = Timing.now
             warmup_iter = cycles
             warmup_time_us = Timing.time_us(t0, t1)
+
+            # If the number of cycles would go outside the 32-bit signed integers range
+            # then exit the loop to avoid overflows and start the 100ms warmup runs
+            break if cycles >= POW_2_30
             cycles *= 2
           end
 
