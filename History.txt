@@ -1,3 +1,8 @@
+=== 2.8.4 / 2020-12-03
+
+* Bug fix
+  * Fixed hold! when results file does not exist.
+
 === 2.8.3 / 2020-08-28
 
 * Bug fix 
