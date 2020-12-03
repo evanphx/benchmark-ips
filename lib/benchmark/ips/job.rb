@@ -188,7 +188,7 @@ module Benchmark
       end
 
       def load_held_results
-        return unless @held_path && !File.zero?(@held_path)
+        return unless @held_path && File.exist?(@held_path) && !File.zero?(@held_path)
         require "json"
         @held_results = {}
         JSON.load(IO.read(@held_path)).each do |result|
