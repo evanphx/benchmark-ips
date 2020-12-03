@@ -1,6 +1,7 @@
 require "minitest/autorun"
 require "benchmark/ips"
 require "stringio"
+require "tmpdir"
 
 class TestBenchmarkIPS < Minitest::Test
   def setup
@@ -181,5 +182,18 @@ class TestBenchmarkIPS < Minitest::Test
     assert_equal "sleep 0.25", data[0]["name"]
     assert data[0]["ips"]
     assert data[0]["stddev"]
+  end
+
+  def test_hold!
+    temp_file_name = Dir::Tmpname.create(["benchmark-ips", ".tmp"]) { }
+
+    Benchmark.ips(:time => 0.001, :warmup => 0.001) do |x|
+      x.report("operation") { 100 * 100 }
+      x.report("operation2") { 100 * 100 }
+      x.hold! temp_file_name
+    end
+
+    assert File.exist?(temp_file_name)
+    File.unlink(temp_file_name)
   end
 end
