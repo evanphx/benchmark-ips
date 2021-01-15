@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'net/http'
 require 'net/https'
 require 'json'
@@ -5,7 +7,7 @@ require 'json'
 module Benchmark
   module IPS
     class Share
-      DEFAULT_URL = "https://benchmark.fyi"
+      DEFAULT_URL = "https://ips.fastruby.io"
       def initialize(report, job)
         @report = report
         @job = job

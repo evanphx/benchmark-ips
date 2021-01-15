@@ -186,10 +186,14 @@ end
 
 ### Online sharing
 
-If you want to share quickly your benchmark result with others. Run you benchmark
-with `SHARE=1` argument. I.e.: `SHARE=1 ruby my_benchmark.rb`.
-Result will be sent to [benchmark.fyi](https://benchmark.fyi/) and benchmark-ips
+If you want to quickly share your benchmark result with others, run you benchmark
+with `SHARE=1` argument. For example: `SHARE=1 ruby my_benchmark.rb`.
+
+Result will be sent to [benchmark.fyi](https://ips.fastruby.io/) and benchmark-ips
 will display the link to share the benchmark's result.
+
+If you want to run your own instance of [benchmark.fyi](https://github.com/evanphx/benchmark.fyi)
+and share it to that instance, you can do this: `SHARE_URL=https://ips.example.com ruby my_benchmark.rb`
 
 ### Advanced Statistics
 
@@ -227,7 +231,7 @@ Benchmark.ips do |x|
 
   x.stats = :bootstrap
   x.confidence = 95
-  
+
   # confidence is 95% by default, so it can be omitted
 
 end
