@@ -5,8 +5,10 @@ require 'benchmark/ips/stats/stats_metric'
 require 'benchmark/ips/stats/sd'
 require 'benchmark/ips/stats/bootstrap'
 require 'benchmark/ips/report'
+require 'benchmark/ips/noop_suite'
 require 'benchmark/ips/job/entry'
 require 'benchmark/ips/job/stdout_report'
+require 'benchmark/ips/job/noop_report'
 require 'benchmark/ips/job'
 
 # Performance benchmarking library
@@ -33,23 +35,14 @@ module Benchmark
         time, warmup, quiet = args
       end
 
-      suite = nil
-
       sync, $stdout.sync = $stdout.sync, true
 
-      if defined? Benchmark::Suite and Suite.current
-        suite = Benchmark::Suite.current
-      end
-
-      quiet ||= (suite && suite.quiet?)
-
-      job = Job.new({:suite => suite,
-                     :quiet => quiet
-      })
+      job = Job.new
 
       job_opts = {}
       job_opts[:time] = time unless time.nil?
       job_opts[:warmup] = warmup unless warmup.nil?
+      job_opts[:quiet] = quiet unless quiet.nil?
 
       job.config job_opts
 
