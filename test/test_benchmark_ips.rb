@@ -54,6 +54,13 @@ class TestBenchmarkIPS < Minitest::Test
     end
 
     assert $stdout.string.size.zero?
+
+    Benchmark.ips do |x|
+      x.quiet = true
+      x.report("operation") { 100 * 100 }
+    end
+
+    assert $stdout.string.size.zero?
   end
 
   def test_ips
@@ -111,6 +118,21 @@ class TestBenchmarkIPS < Minitest::Test
 
     Benchmark.ips(0.1, 0.1) do |x|
       x.config(:suite => suite)
+      x.report("job") {}
+    end
+
+    assert_equal [:warming, :warmup_stats, :running, :add_report], suite.calls
+  end
+
+  def test_ips_config_suite_by_accsr
+    suite = Struct.new(:calls) do
+      def method_missing(method, *args)
+        calls << method
+      end
+    end.new([])
+
+    Benchmark.ips(0.1, 0.1) do |x|
+      x.suite = suite
       x.report("job") {}
     end
 

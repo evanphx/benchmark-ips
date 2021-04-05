@@ -51,16 +51,20 @@ module Benchmark
       # @return [Integer]
       attr_accessor :confidence
 
+      # Silence output
+      # @return [Boolean]
+      attr_reader :quiet
+
+      # Suite
+      # @return [Benchmark::IPS::NoopSuite]
+      attr_reader :suite
+
       # Instantiate the Benchmark::IPS::Job.
-      # @option opts [Benchmark::Suite] (nil) :suite Specify Benchmark::Suite.
-      # @option opts [Boolean] (false) :quiet Suppress the printing of information.
       def initialize opts={}
-        @suite = opts[:suite] || nil
-        @stdout = opts[:quiet] ? nil : StdoutReport.new
         @list = []
-        @compare = false
         @run_single = false
         @json_path = false
+        @compare = false
         @held_path = nil
         @held_results = nil
 
@@ -88,6 +92,20 @@ module Benchmark
         @iterations = opts[:iterations] if opts[:iterations]
         @stats = opts[:stats] if opts[:stats]
         @confidence = opts[:confidence] if opts[:confidence]
+        self.quiet = opts[:quiet]
+        self.suite = opts[:suite]
+      end
+
+      def quiet=(val)
+        @stdout = reporter(quiet: val)
+      end
+
+      def suite=(suite)
+        @suite = suite || Benchmark::IPS::NoopSuite.new
+      end
+
+      def reporter(quiet:)
+        quiet ? NoopReport.new : StdoutReport.new
       end
 
       # Return true if job needs to be compared.
@@ -223,19 +241,19 @@ module Benchmark
 
       def run
         if @warmup && @warmup != 0 then
-          @stdout.start_warming if @stdout
+          @stdout.start_warming
           @iterations.times do
             run_warmup
           end
         end
 
-        @stdout.start_running if @stdout
+        @stdout.start_running
 
         @iterations.times do |n|
           run_benchmark
         end
 
-        @stdout.footer if @stdout
+        @stdout.footer
       end
 
       # Run warmup.
@@ -243,8 +261,8 @@ module Benchmark
         @list.each do |item|
           next if run_single? && @held_results && @held_results.key?(item.label)
 
-          @suite.warming item.label, @warmup if @suite
-          @stdout.warming item.label, @warmup if @stdout
+          @suite.warming item.label, @warmup
+          @stdout.warming item.label, @warmup
 
           Timing.clean_env
 
@@ -280,8 +298,8 @@ module Benchmark
             item.call_times cycles
           end
 
-          @stdout.warmup_stats warmup_time_us, @timing[item] if @stdout
-          @suite.warmup_stats warmup_time_us, @timing[item] if @suite
+          @stdout.warmup_stats warmup_time_us, @timing[item]
+          @suite.warmup_stats warmup_time_us, @timing[item]
 
           break if run_single?
         end
@@ -292,8 +310,8 @@ module Benchmark
         @list.each do |item|
           next if run_single? && @held_results && @held_results.key?(item.label)
 
-          @suite.running item.label, @time if @suite
-          @stdout.running item.label, @time if @stdout
+          @suite.running item.label, @time
+          @stdout.running item.label, @time
 
           Timing.clean_env
 
@@ -334,8 +352,8 @@ module Benchmark
             rep.show_total_time!
           end
 
-          @stdout.add_report rep, caller(1).first if @stdout
-          @suite.add_report rep, caller(1).first if @suite
+          @stdout.add_report rep, caller(1).first
+          @suite.add_report rep, caller(1).first
 
           break if run_single?
         end
