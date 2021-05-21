@@ -18,10 +18,10 @@ module Benchmark
   module IPS
 
     # Benchmark-ips Gem version.
-    VERSION = "2.8.4"
+    VERSION = "2.9.0"
 
     # CODENAME of current version.
-    CODENAME = "Tardy Turtle"
+    CODENAME = "Sleepy Sasquatch"
 
     # Measure code in block, each code's benchmarked result will display in
     # iteration per second with standard deviation in given time.

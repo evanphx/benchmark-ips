@@ -1,3 +1,9 @@
+=== 2.9.0 / 2021-05-21
+
+* Features
+  * Suite can now be set via an accessor
+  * Default SHARE_URL is now `ips.fastruby.io`, operated by Ombu Labs.
+
 === 2.8.4 / 2020-12-03
 
 * Bug fix
@@ -5,12 +11,12 @@
 
 === 2.8.3 / 2020-08-28
 
-* Bug fix 
+* Bug fix
   * Fixed inaccuracy caused by integer overflows.
 
 === 2.8.2 / 2020-05-04
 
-* Bug fix 
+* Bug fix
   * Fixed problems with Manifest.txt.
   * Empty interim results files are ignored.
 
