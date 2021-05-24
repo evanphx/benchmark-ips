@@ -18,8 +18,8 @@ Gem::Specification.new do |s|
   s.date = "2015-01-12"
   s.description = "A iterations per second enhancement to Benchmark."
   s.email = ["evan@phx.io"]
-  s.extra_rdoc_files = ["History.txt", "Manifest.txt", "README.md"]
-  s.files = [".autotest", ".gemtest", "History.txt", "Manifest.txt", "README.md", "Rakefile", "lib/benchmark/compare.rb", "lib/benchmark/ips.rb", "lib/benchmark/ips/job.rb", "lib/benchmark/ips/report.rb", "lib/benchmark/timing.rb", "test/test_benchmark_ips.rb"]
+  s.extra_rdoc_files = ["History.txt", "README.md"]
+  s.files = Dir[".autotest", ".gemtest", "History.txt", "README.md", "Rakefile", "lib/**/*.rb"]
   s.homepage = "https://github.com/evanphx/benchmark-ips"
   s.licenses = ["MIT"]
   s.rdoc_options = ["--main", "README.md"]
