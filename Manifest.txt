@@ -7,7 +7,9 @@ lib/benchmark/compare.rb
 lib/benchmark/ips.rb
 lib/benchmark/ips/job.rb
 lib/benchmark/ips/job/entry.rb
+lib/benchmark/ips/job/noop_report.rb
 lib/benchmark/ips/job/stdout_report.rb
+lib/benchmark/ips/noop_suite.rb
 lib/benchmark/ips/report.rb
 lib/benchmark/ips/share.rb
 lib/benchmark/ips/stats/bootstrap.rb
