@@ -13,6 +13,13 @@ class TestBenchmarkIPS < Minitest::Test
     $stdout = @old_stdout
   end
 
+  def test_all_lib_files_are_included_in_manifest
+    project_root = File.expand_path('../..', __FILE__)
+    manifest = File.readlines("#{project_root}/Manifest.txt").map(&:chomp)
+    lib_files = Dir["#{project_root}/lib/**/*.rb"].map { |path| path.sub("#{project_root}/", '') }
+    lib_files.each { |lib_file| assert_includes manifest, lib_file }
+  end
+
   def test_kwargs
     Benchmark.ips(:time => 1, :warmup => 1, :quiet => false) do |x|
       x.report("sleep 0.25") { sleep(0.25) }
