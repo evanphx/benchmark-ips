@@ -60,7 +60,14 @@ module Benchmark
       attr_reader :suite
 
       # Instantiate the Benchmark::IPS::Job.
+      #
+      # @option opts [Benchmark::Suite] (nil) :suite Specify Benchmark::Suite.
+      # @option opts [Boolean] (false) :quiet Suppress the printing of information.
       def initialize opts={}
+       
+        #@out = MultiReport.new
+        #@out << opts[:suite] if opts[:suite]
+        #@out << StdoutReport.new unless opts[:quiet]
         @list = []
         @run_single = false
         @json_path = false
@@ -88,7 +95,8 @@ module Benchmark
       def config opts
         @warmup = opts[:warmup] if opts[:warmup]
         @time = opts[:time] if opts[:time]
-        @suite = opts[:suite] if opts[:suite]
+        #@out << opts[:suite] if opts[:suite]
+        @suite = opts[:suite] if opts[:suite] #
         @iterations = opts[:iterations] if opts[:iterations]
         @stats = opts[:stats] if opts[:stats]
         @confidence = opts[:confidence] if opts[:confidence]
@@ -242,18 +250,21 @@ module Benchmark
       def run
         if @warmup && @warmup != 0 then
           @stdout.start_warming
+          #@out.start_warming
           @iterations.times do
             run_warmup
           end
         end
 
         @stdout.start_running
+        #@out.start_running
 
         @iterations.times do |n|
           run_benchmark
         end
 
         @stdout.footer
+        #@out.footer
       end
 
       # Run warmup.
@@ -263,6 +274,7 @@ module Benchmark
 
           @suite.warming item.label, @warmup
           @stdout.warming item.label, @warmup
+          #@out.warming item.label, @warmup
 
           Timing.clean_env
 
@@ -300,6 +312,7 @@ module Benchmark
 
           @stdout.warmup_stats warmup_time_us, @timing[item]
           @suite.warmup_stats warmup_time_us, @timing[item]
+          # @out.warmup_stats warmup_time_us, @timing[item]
 
           break if run_single?
         end
@@ -312,6 +325,7 @@ module Benchmark
 
           @suite.running item.label, @time
           @stdout.running item.label, @time
+          # @out.running item.label, @time
 
           Timing.clean_env
 
@@ -352,6 +366,7 @@ module Benchmark
             rep.show_total_time!
           end
 
+          # @out.add_report rep, caller(1).first
           @stdout.add_report rep, caller(1).first
           @suite.add_report rep, caller(1).first
 

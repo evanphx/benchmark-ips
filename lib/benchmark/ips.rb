@@ -9,6 +9,7 @@ require 'benchmark/ips/noop_suite'
 require 'benchmark/ips/job/entry'
 require 'benchmark/ips/job/stdout_report'
 require 'benchmark/ips/job/noop_report'
+require 'benchmark/ips/job/multi_report'
 require 'benchmark/ips/job'
 
 # Performance benchmarking library
