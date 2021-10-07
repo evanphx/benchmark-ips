@@ -70,6 +70,32 @@ class TestBenchmarkIPS < Minitest::Test
     assert $stdout.string.size.zero?
   end
 
+  def test_quiet_option_override
+    Benchmark.ips(quiet: true) do |x|
+      x.quiet = false
+      x.report("operation") { 100 * 100 }
+    end
+
+    assert $stdout.string.size > 0
+    $stdout.truncate(0)
+
+    Benchmark.ips(quiet: true) do |x|
+      x.config(quiet: false)
+      x.report("operation") { 100 * 100 }
+    end
+
+    assert $stdout.string.size > 0
+    $stdout.truncate(0)
+
+    Benchmark.ips(quiet: true) do |x|
+      # Calling config should not make quiet option overridden when no specified
+      x.config({})
+      x.report("operation") { 100 * 100 }
+    end
+
+    assert $stdout.string.size.zero?
+  end
+
   def test_ips
     report = Benchmark.ips do |x|
       x.config(:time => 1, :warmup => 1)
