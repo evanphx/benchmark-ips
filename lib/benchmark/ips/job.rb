@@ -79,6 +79,8 @@ module Benchmark
         # Default statistical model
         @stats = :sd
         @confidence = 95
+
+        self.quiet = false
       end
 
       # Job configuration options, set +@warmup+ and +@time+.
@@ -92,7 +94,7 @@ module Benchmark
         @iterations = opts[:iterations] if opts[:iterations]
         @stats = opts[:stats] if opts[:stats]
         @confidence = opts[:confidence] if opts[:confidence]
-        self.quiet = opts[:quiet]
+        self.quiet = opts[:quiet] if opts.key?(:quiet)
         self.suite = opts[:suite]
       end
 
