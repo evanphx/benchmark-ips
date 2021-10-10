@@ -18,7 +18,7 @@ module Benchmark
   module IPS
 
     # Benchmark-ips Gem version.
-    VERSION = "2.9.1"
+    VERSION = "2.9.2"
 
     # CODENAME of current version.
     CODENAME = "Sleepy Sasquatch"
