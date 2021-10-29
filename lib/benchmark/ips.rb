@@ -5,10 +5,9 @@ require 'benchmark/ips/stats/stats_metric'
 require 'benchmark/ips/stats/sd'
 require 'benchmark/ips/stats/bootstrap'
 require 'benchmark/ips/report'
-require 'benchmark/ips/noop_suite'
 require 'benchmark/ips/job/entry'
 require 'benchmark/ips/job/stdout_report'
-require 'benchmark/ips/job/noop_report'
+require 'benchmark/ips/job/multi_report'
 require 'benchmark/ips/job'
 
 # Performance benchmarking library

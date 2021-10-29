@@ -53,10 +53,12 @@ module Benchmark
 
       # Silence output
       # @return [Boolean]
-      attr_reader :quiet
+      def quiet
+        @stdout.respond_to?(:quiet?) ? @stdout.quiet? : false
+      end
 
       # Suite
-      # @return [Benchmark::IPS::NoopSuite]
+      # @return [Benchmark::IPS::MultiReport]
       attr_reader :suite
 
       # Instantiate the Benchmark::IPS::Job.
@@ -82,6 +84,7 @@ module Benchmark
         @confidence = 95
 
         self.quiet = false
+        self.suite = nil
       end
 
       # Job configuration options, set +@warmup+ and +@time+.
@@ -91,24 +94,19 @@ module Benchmark
       def config opts
         @warmup = opts[:warmup] if opts[:warmup]
         @time = opts[:time] if opts[:time]
-        @suite = opts[:suite] if opts[:suite]
         @iterations = opts[:iterations] if opts[:iterations]
         @stats = opts[:stats] if opts[:stats]
         @confidence = opts[:confidence] if opts[:confidence]
         self.quiet = opts[:quiet] if opts.key?(:quiet)
-        self.suite = opts[:suite]
+        self.suite = opts[:suite] if opts[:suite]
       end
 
       def quiet=(val)
-        @stdout = reporter(quiet: val)
+        @stdout = val ? MultiReport.new : StdoutReport.new
       end
 
       def suite=(suite)
-        @suite = suite || Benchmark::IPS::NoopSuite.new
-      end
-
-      def reporter(quiet:)
-        quiet ? NoopReport.new : StdoutReport.new
+        @suite = suite || MultiReport.new
       end
 
       # Return true if job needs to be compared.
