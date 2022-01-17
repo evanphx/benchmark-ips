@@ -21,7 +21,7 @@ class TestBenchmarkIPS < Minitest::Test
   end
 
   def test_kwargs
-    Benchmark.ips(:time => 1, :warmup => 1, :quiet => false) do |x|
+    Benchmark.ips(:time => 0.001, :warmup => 0.001, :quiet => false) do |x|
       x.report("sleep 0.25") { sleep(0.25) }
     end
 
@@ -50,19 +50,22 @@ class TestBenchmarkIPS < Minitest::Test
   end
 
   def test_quiet
-    Benchmark.ips(1, nil, true) do |x|
+    Benchmark.ips(nil, nil, true) do |x|
+      x.config(:warmup => 0.001, :time => 0.001)
       x.report("operation") { 100 * 100 }
     end
 
     assert $stdout.string.size.zero?
 
     Benchmark.ips(:quiet => true) do |x|
+      x.config(:warmup => 0.001, :time => 0.001)
       x.report("operation") { 100 * 100 }
     end
 
     assert $stdout.string.size.zero?
 
     Benchmark.ips do |x|
+      x.config(:warmup => 0.001, :time => 0.001)
       x.quiet = true
       x.report("operation") { 100 * 100 }
     end
@@ -72,6 +75,7 @@ class TestBenchmarkIPS < Minitest::Test
 
   def test_quiet_option_override
     Benchmark.ips(quiet: true) do |x|
+      x.config(:warmup => 0.001, :time => 0.001)
       x.quiet = false
       x.report("operation") { 100 * 100 }
     end
@@ -80,14 +84,14 @@ class TestBenchmarkIPS < Minitest::Test
     $stdout.truncate(0)
 
     Benchmark.ips(quiet: true) do |x|
-      x.config(quiet: false)
+      x.config(quiet: false, warmup: 0.001, time: 0.001)
       x.report("operation") { 100 * 100 }
     end
 
     assert $stdout.string.size > 0
     $stdout.truncate(0)
 
-    Benchmark.ips(quiet: true) do |x|
+    Benchmark.ips(quiet: true, warmup: 0.001, time: 0.001) do |x|
       # Calling config should not make quiet option overridden when no specified
       x.config({})
       x.report("operation") { 100 * 100 }
@@ -131,7 +135,7 @@ class TestBenchmarkIPS < Minitest::Test
   end
 
   def test_ips_old_config
-    report = Benchmark.ips(1,1) do |x|
+    report = Benchmark.ips(1, 1) do |x|
       x.report("sleep 0.25") { sleep(0.25) }
     end
 
@@ -198,6 +202,7 @@ class TestBenchmarkIPS < Minitest::Test
 
   def test_ips_default_data
     report = Benchmark.ips do |x|
+      x.config(:warmup => 0.001, :time => 0.001)
       x.report("sleep 0.25") { sleep(0.25) }
     end
 
