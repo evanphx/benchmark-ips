@@ -256,4 +256,36 @@ class TestBenchmarkIPS < Minitest::Test
     assert File.exist?(temp_file_name)
     File.unlink(temp_file_name)
   end
+
+  def test_small_warmup_and_time
+    report = Benchmark.ips do |x|
+      x.config(:warmup => 0.0000000001, :time => 0.001)
+      x.report("addition") { 1 + 2 }
+    end
+    assert_operator report.entries[0].iterations, :>=, 1
+
+    report = Benchmark.ips do |x|
+      x.config(:warmup => 0, :time => 0.0000000001)
+      x.report("addition") { 1 + 2 }
+    end
+    assert_equal 1, report.entries[0].iterations
+
+    report = Benchmark.ips do |x|
+      x.config(:warmup => 0.001, :time => 0.0000000001)
+      x.report("addition") { 1 + 2 }
+    end
+    assert_operator report.entries[0].iterations, :>=, 1
+
+    report = Benchmark.ips do |x|
+      x.config(:warmup => 0.0000000001, :time => 0.0000000001)
+      x.report("addition") { 1 + 2 }
+    end
+    assert_operator report.entries[0].iterations, :>=, 1
+
+    report = Benchmark.ips do |x|
+      x.config(:warmup => 0, :time => 0)
+      x.report("addition") { 1 + 2 }
+    end
+    assert_equal 1, report.entries[0].iterations
+  end
 end

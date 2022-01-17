@@ -276,9 +276,7 @@ module Benchmark
           target = Timing.add_second before, @warmup / 2.0
 
           cycles = 1
-          warmup_iter = 1
-          warmup_time_us = 0.0
-          while Timing.now + warmup_time_us * 2 < target
+          begin
             t0 = Timing.now
             item.call_times cycles
             t1 = Timing.now
@@ -289,7 +287,7 @@ module Benchmark
             # then exit the loop to avoid overflows and start the 100ms warmup runs
             break if cycles >= POW_2_30
             cycles *= 2
-          end
+          end while Timing.now + warmup_time_us * 2 < target
 
           cycles = cycles_per_100ms warmup_time_us, warmup_iter
           @timing[item] = cycles
@@ -326,7 +324,8 @@ module Benchmark
 
           target = Timing.add_second Timing.now, @time
 
-          while (before = Timing.now) < target
+          begin
+            before = Timing.now
             item.call_times cycles
             after = Timing.now
 
@@ -338,7 +337,7 @@ module Benchmark
             iter += cycles
 
             measurements_us << iter_us
-          end
+          end while Timing.now < target
 
           final_time = before
 
