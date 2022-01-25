@@ -3,3 +3,4 @@ tmp
 pkg
 doc
 Gemfile.lock
+vendor

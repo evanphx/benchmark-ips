@@ -1,27 +1,15 @@
 # -*- ruby -*-
 
-require 'rubygems'
-require 'hoe'
+require "bundler/setup"
+require "rake/testtask"
+require "rubygems/package_task"
+require "bundler/gem_tasks"
 
-Hoe.plugin :minitest
-Hoe.plugin :git
-Hoe.plugin :ignore
+gemspec = Gem::Specification.load("benchmark-ips.gemspec")
+Gem::PackageTask.new(gemspec).define
 
-hoe = Hoe.spec 'benchmark-ips' do
-  developer('Evan Phoenix', 'evan@phx.io')
+Rake::TestTask.new(:test)
 
-  self.readme_file = 'README.md'
-
-  license "MIT"
-end
-
-file "#{hoe.spec.name}.gemspec" => ['Rakefile', "lib/benchmark/ips.rb"] do |t|
-  puts "Generating #{t.name}"
-  File.open(t.name, 'wb') { |f| f.write hoe.spec.to_ruby }
-end
-
-desc "Generate or update the standalone gemspec file for the project"
-task :gemspec => ["#{hoe.spec.name}.gemspec"]
-
+task default: :test
 
 # vim: syntax=ruby

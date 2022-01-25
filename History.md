@@ -1,36 +1,41 @@
-=== 2.9.2 / 2021-10-10
+### 2.9.3 / 2022-01-25
+
+* Bug fix
+  * All warmups and benchmarks must run at least once
+
+### 2.9.2 / 2021-10-10
 
 * Bug fix
   * Fix a problem with certain configs of quiet mode
 
-=== 2.9.1 / 2021-05-24
+### 2.9.1 / 2021-05-24
 
 * Bug fix
   * Include all files in gem
 
-=== 2.9.0 / 2021-05-21
+### 2.9.0 / 2021-05-21
 
 * Features
   * Suite can now be set via an accessor
   * Default SHARE_URL is now `ips.fastruby.io`, operated by Ombu Labs.
 
-=== 2.8.4 / 2020-12-03
+### 2.8.4 / 2020-12-03
 
 * Bug fix
   * Fixed hold! when results file does not exist.
 
-=== 2.8.3 / 2020-08-28
+### 2.8.3 / 2020-08-28
 
 * Bug fix
   * Fixed inaccuracy caused by integer overflows.
 
-=== 2.8.2 / 2020-05-04
+### 2.8.2 / 2020-05-04
 
 * Bug fix
   * Fixed problems with Manifest.txt.
   * Empty interim results files are ignored.
 
-=== 2.8.0 / 2020-05-01
+### 2.8.0 / 2020-05-01
 
 * Feature
   * Allow running with empty ips block.
@@ -43,16 +48,16 @@
   * Added some RDoc docs.
   * Added some examples in examples/
 
-=== 2.7.2 / 2016-08-18
+### 2.7.2 / 2016-08-18
 
 * 1 bug fix:
   * Restore old accessors. Fixes #76
 
-=== 2.7.1 / 2016-08-08
+### 2.7.1 / 2016-08-08
 
 Add missing files
 
-=== 2.7.0 / 2016-08-05
+### 2.7.0 / 2016-08-05
 
 * 1 minor features:
   * Add support for confidence intervals
@@ -69,9 +74,9 @@ Add missing files
   * Merge pull request #67 from benoittgt/master
   * Merge pull request #69 from chrisseaton/kalibera-confidence-intervals
 
-=== MISSING 2.6.0 and 2.6.1
+### MISSING 2.6.0 and 2.6.1
 
-=== 2.5.0 / 2016-02-14
+### 2.5.0 / 2016-02-14
 
 * 1 minor feature:
   * Add iterations option.
@@ -83,12 +88,12 @@ Add missing files
   * Merge pull request #58 from chrisseaton/iterations
   * Merge pull request #60 from chrisseaton/significance
 
-=== 2.4.1 / 2016-02-12
+### 2.4.1 / 2016-02-12
 
 * 1 bug fix:
   * Add missing files to gem
 
-=== 2.4.0 / 2016-02-12
+### 2.4.0 / 2016-02-12
 
 * 1 minor features
   * Add support for hold! and independent invocations.
@@ -123,7 +128,7 @@ Add missing files
   * Merge pull request #56 from chrisseaton/independence
   * Merge pull request #57 from chrisseaton/tighten-loop
 
-=== 2.3.0 / 2015-07-20
+### 2.3.0 / 2015-07-20
 
 * 2 minor features:
   * Support keyword arguments
@@ -137,7 +142,7 @@ Add missing files
   * Merge pull request #42 from kbrock/newer_travis
   * Merge pull request #43 from kbrock/non_to_s_labels
 
-=== 2.2.0 / 2015-05-09
+### 2.2.0 / 2015-05-09
 
 * 1 minor features:
   * Fix quiet mode
@@ -161,7 +166,7 @@ Add missing files
   * Merge pull request #29 from JuanitoFatas/feature/json-export
   * Merge pull request #26 from JuanitoFatas/feature/takes-symbol-as-report-parameter
 
-=== 2.1.1 / 2015-01-12
+### 2.1.1 / 2015-01-12
 
 * 1 minor fix:
   * Don't send label through printf so that % work directly
@@ -175,7 +180,7 @@ Add missing files
 * 1 PR merged:
   * Merge pull request #24 from zzak/simple-format-result-description
 
-=== 2.1.0 / 2014-11-10
+### 2.1.0 / 2014-11-10
 
 * Documentation changes:
   * Many documentation fixes by Juanito Fatas!
@@ -186,7 +191,7 @@ Add missing files
   * Formatting of large values improved (human vs raw mode)
     * Contributed by Charles Oliver Nutter
 
-=== 2.0.0 / 2014-06-18
+### 2.0.0 / 2014-06-18
 
 * The 'Davy Stevenson' release!
   * Codename: Springtime Hummingbird Dance
@@ -204,7 +209,7 @@ Add missing files
   *  Zachary Scott
   *  schneems (Richard Schneeman)
 
-=== 1.0.0 / 2012-03-23
+### 1.0.0 / 2012-03-23
 
 * 1 major enhancement
 
