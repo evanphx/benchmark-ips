@@ -33,6 +33,10 @@ module Benchmark
           [slowdown, error]
         end
 
+        def speedup(baseline)
+          baseline.slowdown(self)
+        end
+
         def footer
           "with #{(@confidence.to_f * 100).round(1)}% confidence"
         end

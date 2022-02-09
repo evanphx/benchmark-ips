@@ -30,6 +30,10 @@ module Benchmark
           end
         end
 
+        def speedup(baseline)
+          baseline.slowdown(self)
+        end
+
         def footer
           nil
         end
