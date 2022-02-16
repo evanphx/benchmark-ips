@@ -176,8 +176,8 @@ module Benchmark
       end
 
       # Run comparison of entries.
-      def run_comparison
-        Benchmark.compare(*@entries)
+      def run_comparison(order)
+        Benchmark.compare(*@entries, order: order)
       end
 
       # Generate json from Report#data to given path.

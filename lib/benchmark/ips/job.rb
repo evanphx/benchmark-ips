@@ -65,6 +65,7 @@ module Benchmark
         @run_single = false
         @json_path = false
         @compare = false
+        @compare_order = :fastest
         @held_path = nil
         @held_results = nil
 
@@ -117,8 +118,9 @@ module Benchmark
       end
 
       # Run comparison utility.
-      def compare!
+      def compare!(order: :fastest)
         @compare = true
+        @compare_order = order
       end
 
       # Return true if results are held while multiple Ruby invocations
@@ -373,7 +375,7 @@ module Benchmark
 
       # Run comparison of entries in +@full_report+.
       def run_comparison
-        @full_report.run_comparison if compare?
+        @full_report.run_comparison(@compare_order) if compare?
       end
 
       # Generate json from +@full_report+.
