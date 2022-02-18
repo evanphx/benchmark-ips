@@ -1,3 +1,9 @@
+### 2.10.0 / 2022-02-17
+
+* Feature
+  * Adds :order option to compare, with new `:baseline` order which compares all
+    variations against the first option benchmarked.
+
 ### 2.9.3 / 2022-01-25
 
 * Bug fix
