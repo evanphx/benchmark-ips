@@ -24,9 +24,9 @@ module Benchmark
         # @returns [Array<Float, nil>] the slowdown and the error (not calculated for standard deviation)
         def slowdown(baseline)
           if baseline.central_tendency > central_tendency
-            [baseline.central_tendency.to_f / central_tendency, 0]
+            [baseline.central_tendency.to_f / central_tendency, nil]
           else
-            [central_tendency.to_f / baseline.central_tendency, 0]
+            [central_tendency.to_f / baseline.central_tendency, nil]
           end
         end
 
