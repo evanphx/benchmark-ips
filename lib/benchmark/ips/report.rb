@@ -183,9 +183,13 @@ module Benchmark
       # Generate json from Report#data to given path.
       # @param path [String] path to generate json.
       def generate_json(path)
-        File.open path, "w" do |f|
-          require "json"
-          f.write JSON.pretty_generate(data)
+        require "json"
+        if path.respond_to?(:write) # STDOUT
+          path.write JSON.pretty_generate(data)
+        else
+          File.open path, "w" do |f|
+            f.write JSON.pretty_generate(data)
+          end
         end
       end
     end

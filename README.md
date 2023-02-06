@@ -237,6 +237,29 @@ Benchmark.ips do |x|
 end
 ```
 
+### Output as JSON
+
+You can generate output in JSON. If you want to write JSON to a file, pass filename to `json!` method:
+
+```ruby
+Benchmark.ips do |x|
+  x.report("some report") {  }
+  x.json! 'filename.json'
+end
+```
+
+If you want to write JSON to STDOUT, pass `STDOUT` to `json!` method and set `quiet = true` before `json!`:
+
+```ruby
+Benchmark.ips do |x|
+  x.report("some report") {  }
+  x.quiet = true
+  x.json! STDOUT
+end
+```
+
+This is useful when the output from `benchmark-ips` becomes an input of other tools via stdin.
+
 ## REQUIREMENTS:
 
 * None!

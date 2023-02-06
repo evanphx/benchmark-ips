@@ -237,6 +237,23 @@ class TestBenchmarkIPS < Minitest::Test
     assert data[0]["stddev"]
   end
 
+  def test_json_output_to_stdout
+    Benchmark.ips do |x|
+      x.report("sleep 0.25") { sleep(0.25) }
+      x.quiet = true
+      x.json! $stdout
+    end
+
+    assert $stdout.string.size > 0
+
+    data = JSON.parse $stdout.string
+    assert data
+    assert_equal 1, data.size
+    assert_equal "sleep 0.25", data[0]["name"]
+    assert data[0]["ips"]
+    assert data[0]["stddev"]
+  end
+
   def test_hold!
     temp_file_name = Dir::Tmpname.create(["benchmark-ips", ".tmp"]) { }
 
