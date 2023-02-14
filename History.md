@@ -1,3 +1,8 @@
+### 2.11.0 / 2023-02-15
+
+* Feature
+  * Adds .json! method to the ips block argument, allowing you to print the output as JSON to a file or STDOUT.
+
 ### 2.10.0 / 2022-02-17
 
 * Feature
