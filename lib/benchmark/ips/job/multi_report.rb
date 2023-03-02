@@ -2,7 +2,7 @@ module Benchmark
   module IPS
     class Job
       class MultiReport
-        # @returns out [Array<StdoutReport>] list of reports to send output
+        # @returns out [Array<StreamReport>] list of reports to send output
         attr_accessor :out
 
         def empty?
@@ -10,14 +10,14 @@ module Benchmark
         end
 
         def quiet?
-          @out.none? { |rpt| rpt.kind_of?(StdoutReport) }
+          @out.none? { |rpt| rpt.kind_of?(StreamReport) }
         end
 
         def quiet!
-          @out.delete_if { |rpt| rpt.kind_of?(StdoutReport) }
+          @out.delete_if { |rpt| rpt.kind_of?(StreamReport) }
         end
 
-        # @param report [StdoutReport] report to accept input?
+        # @param report [StreamReport] report to accept input?
         def <<(report)
           if report.kind_of?(MultiReport)
             self << report.out
@@ -28,7 +28,7 @@ module Benchmark
           end
         end
 
-        # @param out [Array<StdoutReport>] list of reports to send output
+        # @param out [Array<StreamReport>] list of reports to send output
         def initialize(out = nil)
           @out = []
           self << out

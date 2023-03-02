@@ -85,7 +85,7 @@ module Benchmark
         @stats = :sd
         @confidence = 95
 
-        @out = MultiReport.new(StdoutReport.new)
+        @out = MultiReport.new(StreamReport.new)
       end
 
       # Job configuration options, set +@warmup+ and +@time+.
@@ -103,10 +103,10 @@ module Benchmark
       end
 
       def quiet=(val)
-        if val # remove instances of StdoutReport
+        if val # remove instances of StreamReport
           @out.quiet!
-        else # ensure there is an instance of StdoutReport
-          @out << StdoutReport.new if @out.quiet?
+        else # ensure there is an instance of StreamReport
+          @out << StreamReport.new if @out.quiet?
         end
       end
 

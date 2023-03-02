@@ -1,7 +1,7 @@
 module Benchmark
   module IPS
     class Job
-      class StdoutReport
+      class StreamReport
         def initialize(stream = $stdout)
           @last_item = nil
           @out = stream
