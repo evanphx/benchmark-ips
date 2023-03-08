@@ -1,3 +1,8 @@
+### 2.12.0 / 2023-03-08
+
+* Feature
+  * Adds MultiReport and ability report to a stream rather than a string.
+
 ### 2.11.0 / 2023-02-15
 
 * Feature
