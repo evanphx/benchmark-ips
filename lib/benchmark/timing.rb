@@ -1,5 +1,5 @@
 module Benchmark
-  # Perform caclulations on Timing results.
+  # Perform calculations on Timing results.
   module Timing
     # Microseconds per second.
     MICROSECONDS_PER_SECOND = 1_000_000

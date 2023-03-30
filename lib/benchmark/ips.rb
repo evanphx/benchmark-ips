@@ -82,20 +82,15 @@ module Benchmark
     end
 
     module Helpers
+      SUFFIXES = ['', 'k', 'M', 'B', 'T', 'Q'].freeze
+    
       def scale(value)
-        scale = (Math.log10(value) / 3).to_i
-        suffix = case scale
-        when 1; 'k'
-        when 2; 'M'
-        when 3; 'B'
-        when 4; 'T'
-        when 5; 'Q'
-        else
-          # < 1000 or > 10^15, no scale or suffix
-          scale = 0
-          ' '
-        end
-        "%10.3f#{suffix}" % (value.to_f / (1000 ** scale))
+        scale = (Math.log10(value) / 3).to_i 
+        scale = 0 if scale < 0 || scale >= SUFFIXES.size
+        suffix = SUFFIXES[scale]
+        scaled_value = value.to_f / (1000 ** scale)
+    
+        "%10.3f#{suffix}" % scaled_value
       end
       module_function :scale
     end
