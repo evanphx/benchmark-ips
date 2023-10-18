@@ -15,7 +15,7 @@ module Benchmark
         base = (ENV['SHARE_URL'] || DEFAULT_URL)
         url = URI(File.join(base, "reports"))
 
-        req = Net::HTTP::Post.new(url)
+        req = Net::HTTP::Post.new(url, initheader = {'Content-Type' =>'application/json'})
 
         data = {
           "entries" => @report.data,
