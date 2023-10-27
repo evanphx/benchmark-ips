@@ -8,6 +8,7 @@ module Benchmark
         end
 
         def start_warming
+          @out.puts RUBY_DESCRIPTION
           @out.puts "Warming up --------------------------------------"
         end
 
