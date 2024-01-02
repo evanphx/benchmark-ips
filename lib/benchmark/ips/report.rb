@@ -86,23 +86,25 @@ module Benchmark
         # percentage of standard deviation, iterations in runtime.
         # @return [String] Left justified body.
         def body
+          per_iter = (" (%s/i)" % Helpers.humanize_duration(1_000_000_000 / @stats.central_tendency)).rjust(15)
+
           case Benchmark::IPS.options[:format]
           when :human
-            left = "%s (±%4.1f%%) i/s" % [Helpers.scale(@stats.central_tendency), @stats.error_percentage]
+            left = ("%s (±%4.1f%%) i/s" % [Helpers.scale(@stats.central_tendency), @stats.error_percentage]).ljust(20)
             iters = Helpers.scale(@iterations)
 
             if @show_total_time
-              left.ljust(20) + (" - %s in %10.6fs" % [iters, runtime])
+              left + per_iter + (" - %s in %10.6fs" % [iters, runtime])
             else
-              left.ljust(20) + (" - %s" % iters)
+              left + per_iter + (" - %s" % iters)
             end
           else
-            left = "%10.1f (±%.1f%%) i/s" % [@stats.central_tendency, @stats.error_percentage]
+            left = ("%10.1f (±%.1f%%) i/s" % [@stats.central_tendency, @stats.error_percentage]).ljust(20)
 
             if @show_total_time
-              left.ljust(20) + (" - %10d in %10.6fs" % [@iterations, runtime])
+              left + per_iter + (" - %10d in %10.6fs" % [@iterations, runtime])
             else
-              left.ljust(20) + (" - %10d" % @iterations)
+              left + per_iter + (" - %10d" % @iterations)
             end
           end
         end
