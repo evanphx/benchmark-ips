@@ -268,4 +268,12 @@ class TestBenchmarkIPS < Minitest::Test
     end
     assert_equal 1, report.entries[0].iterations
   end
+
+  def test_humanize_duration
+    assert_equal Benchmark::IPS::Helpers.humanize_duration(0.000000001), "0.00 ns"
+    assert_equal Benchmark::IPS::Helpers.humanize_duration(123.456789), "123.46 ns"
+    assert_equal Benchmark::IPS::Helpers.humanize_duration(12345.67890123), "12.35 μs"
+    assert_equal Benchmark::IPS::Helpers.humanize_duration(123456789.0123456789), "123.46 ms"
+    assert_equal Benchmark::IPS::Helpers.humanize_duration(123456789012.3456789012), "123.46 s"
+  end
 end

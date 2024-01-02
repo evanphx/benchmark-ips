@@ -93,6 +93,19 @@ module Benchmark
         "%10.3f#{suffix}" % scaled_value
       end
       module_function :scale
+
+      def humanize_duration(duration_ns)
+        if duration_ns < 1000
+          "%.2f ns" % duration_ns
+        elsif duration_ns < 1_000_000
+          "%.2f μs" % (duration_ns / 1000)
+        elsif duration_ns < 1_000_000_000
+          "%.2f ms" % (duration_ns / 1_000_000)
+        else
+          "%.2f s" % (duration_ns / 1_000_000_000)
+        end
+      end
+      module_function :humanize_duration
     end
   end
 

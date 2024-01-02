@@ -64,24 +64,24 @@ end
 This will generate the following report:
 
 ```
+Warming up --------------------------------------
+            addition     3.572M i/100ms
+           addition2     3.672M i/100ms
+           addition3     3.677M i/100ms
+addition-test-long-label
+                         3.511M i/100ms
 Calculating -------------------------------------
-            addition    71.254k i/100ms
-           addition2    68.658k i/100ms
-           addition3    83.079k i/100ms
+            addition     36.209M (± 2.8%) i/s   (27.62 ns/i) -    182.253M in   5.037433s
+           addition2     36.552M (± 7.8%) i/s   (27.36 ns/i) -    183.541M in   5.069987s
+           addition3     36.639M (± 4.8%) i/s   (27.29 ns/i) -    182.994M in   5.009234s
 addition-test-long-label
-                        70.129k i/100ms
--------------------------------------------------
-            addition     4.955M (± 8.7%) i/s -     24.155M
-           addition2    24.011M (± 9.5%) i/s -    114.246M
-           addition3    23.958M (±10.1%) i/s -    115.064M
-addition-test-long-label
-                         5.014M (± 9.1%) i/s -     24.545M
+                         36.164M (± 5.8%) i/s   (27.65 ns/i) -    181.312M in   5.038364s
 
 Comparison:
-           addition2: 24011974.8 i/s
-           addition3: 23958619.8 i/s - 1.00x slower
-addition-test-long-label:  5014756.0 i/s - 4.79x slower
-            addition:  4955278.9 i/s - 4.85x slower
+           addition2: 36558904.5 i/s
+           addition3: 36359284.0 i/s - same-ish: difference falls within error
+addition-test-long-label: 36135428.8 i/s - same-ish: difference falls within error
+            addition: 34666931.3 i/s - same-ish: difference falls within error
 ```
 
 Benchmark/ips will report the number of iterations per second for a given block
