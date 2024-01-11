@@ -9,15 +9,19 @@ require 'benchmark/ips/job/entry'
 require 'benchmark/ips/job/stream_report'
 require 'benchmark/ips/job/multi_report'
 require 'benchmark/ips/job'
+require 'benchmark/ips/quick'
 
 # Performance benchmarking library
 module Benchmark
   # Benchmark in iterations per second, no more guessing!
-  # @see https://github.com/evanphx/benchmark-ips
+  #
+  # See Benchmark.ips for documentation on using this gem~
+  #
+  # @see {https://github.com/evanphx/benchmark-ips}
   module IPS
 
     # Benchmark-ips Gem version.
-    VERSION = "2.13.0"
+    VERSION = "2.13.1"
 
     # CODENAME of current version.
     CODENAME = "Long Awaited"
