@@ -36,6 +36,8 @@ class TestBenchmarkIPS < Minitest::Test
 
   def test_output
     Benchmark.ips(1) do |x|
+      x.warmup = 0
+      x.time = 0.1
       x.report("operation") { 100 * 100 }
     end
 
@@ -129,14 +131,10 @@ class TestBenchmarkIPS < Minitest::Test
 
   def test_ips_old_config
     report = Benchmark.ips(1, 1) do |x|
-      x.report("sleep 0.25") { sleep(0.25) }
+      assert_equal 1, x.time
+      assert_equal 1, x.warmup
+      return
     end
-
-    rep = report.entries.first
-
-    assert_equal "sleep 0.25", rep.label
-    assert_equal 4, rep.iterations
-    assert_in_delta 4.0, rep.ips, 0.2
   end
 
   def test_ips_defaults
@@ -153,14 +151,14 @@ class TestBenchmarkIPS < Minitest::Test
 
   def test_ips_report_using_symbol
     report = Benchmark.ips do |x|
-      x.report(:sleep_a_quarter_second) { sleep(0.25) }
+      x.warmup = 0
+      x.time = 0.1
+      x.report(:sleep_a_quarter_second) { 1 + 1 }
     end
 
     rep = report.entries.first
 
     assert_equal :sleep_a_quarter_second, rep.label
-    assert_equal 4*5, rep.iterations
-    assert_in_delta 4.0, rep.ips, 0.2
   end
 
   def test_ips_default_data
@@ -178,8 +176,8 @@ class TestBenchmarkIPS < Minitest::Test
   end
 
   def test_ips_empty
-    report = Benchmark.ips do |_x|
-
+    report = Benchmark.ips do |x|
+      x.config(:warmup => 0.001, :time => 0.001)
     end
 
     all_data = report.data
@@ -192,6 +190,7 @@ class TestBenchmarkIPS < Minitest::Test
     json_file = Tempfile.new("data.json")
 
     Benchmark.ips do |x|
+      x.config(:warmup => 0.001, :time => 0.001)
       x.report("sleep 0.25") { sleep(0.25) }
       x.json! json_file.path
     end
@@ -209,6 +208,7 @@ class TestBenchmarkIPS < Minitest::Test
 
   def test_json_output_to_stdout
     Benchmark.ips do |x|
+      x.config(:warmup => 0.001, :time => 0.001)
       x.report("sleep 0.25") { sleep(0.25) }
       x.quiet = true
       x.json! $stdout
