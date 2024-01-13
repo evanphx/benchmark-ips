@@ -2,6 +2,16 @@
 
 require 'benchmark/ips'
 
+def add
+  1 + 1
+end
+
+def sub
+  2 - 1
+end
+
+quick_compare(:add, :sub, warmup: 1, time: 1)
+
 h = {}
 
-Benchmark.quick_compare(h, :size, :empty?, warmup: 1, time: 1)
+h.quick_compare(:size, :empty?)
