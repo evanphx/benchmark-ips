@@ -187,7 +187,7 @@ Add missing files
 * 1 minor fix:
   * Don't send label through printf so that % work directly
 
-* 1 documenation changes:
+* 1 documentation changes:
   * Use HEREDOC and wrap at 80 chars for example result description
 
 * 1 usage fix:

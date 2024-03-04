@@ -62,7 +62,7 @@ module Benchmark
 
         # Control if the total time the job took is reported.
         # Typically this value is not significant because it's very
-        # close to the expected time, so it's supressed by default.
+        # close to the expected time, so it's suppressed by default.
         def show_total_time!
           @show_total_time = true
         end
@@ -115,7 +115,7 @@ module Benchmark
           @label.to_s.rjust(20)
         end
 
-        # Return string repesentation of Entry object.
+        # Return string representation of Entry object.
         # @return [String] Header and body.
         def to_s
           "#{header} #{body}"

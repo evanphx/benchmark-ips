@@ -64,7 +64,7 @@ module Benchmark
         sorted = entries.sort_by{ |e| e.stats.central_tendency }.reverse
         baseline = sorted.shift
       else
-        raise ArgumentError, "Unknwon order: #{order.inspect}"
+        raise ArgumentError, "Unknown order: #{order.inspect}"
       end
 
       $stdout.puts "\nComparison:"

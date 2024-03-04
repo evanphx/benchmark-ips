@@ -203,7 +203,7 @@ module Benchmark
         (after.to_f - before.to_f) * MICROSECONDS_PER_SECOND
       end
 
-      # Calculate the interations per second given the number
+      # Calculate the iterations per second given the number
       # of cycles run and the time in microseconds that elapsed.
       # @param [Integer] cycles Cycles.
       # @param [Integer] time_us Time in microsecond.
