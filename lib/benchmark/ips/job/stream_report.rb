@@ -54,10 +54,11 @@ module Benchmark
         # @return [String] Right justified label.
         def rjust(label)
           label = label.to_s
-          if label.size > 20
-            "#{label}\n#{' ' * 20}"
+          width = IPS.width
+          if label.size > width
+            "#{label}\n#{' ' * width}"
           else
-            label.rjust(20)
+            label.rjust(width)
           end
         end
       end

@@ -69,12 +69,12 @@ module Benchmark
 
       $stdout.puts "\nComparison:"
 
-      $stdout.printf "%20s: %10.1f i/s\n", baseline.label.to_s, baseline.stats.central_tendency
+      $stdout.printf "%s: %10.1f i/s\n", baseline.label.to_s.rjust(IPS.width), baseline.stats.central_tendency
 
       sorted.each do |report|
-        name = report.label.to_s
+        name = report.label.to_s.rjust(IPS.width)
 
-        $stdout.printf "%20s: %10.1f i/s - ", name, report.stats.central_tendency
+        $stdout.printf "%s: %10.1f i/s - ", name, report.stats.central_tendency
 
         if report.stats.overlaps?(baseline.stats)
           $stdout.print "same-ish: difference falls within error"

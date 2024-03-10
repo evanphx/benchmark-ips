@@ -86,6 +86,7 @@ module Benchmark
         # percentage of standard deviation, iterations in runtime.
         # @return [String] Left justified body.
         def body
+          width = IPS.width
           per_iter = (" (%s/i)" % Helpers.humanize_duration(1_000_000_000 / @stats.central_tendency)).rjust(15)
 
           case Benchmark::IPS.options[:format]
@@ -99,7 +100,7 @@ module Benchmark
               left + per_iter + (" - %s" % iters)
             end
           else
-            left = ("%10.1f (±%.1f%%) i/s" % [@stats.central_tendency, @stats.error_percentage]).ljust(20)
+            left = ("%10.1f (±%.1f%%) i/s" % [@stats.central_tendency, @stats.error_percentage]).ljust(width)
 
             if @show_total_time
               left + per_iter + (" - %10d in %10.6fs" % [@iterations, runtime])
@@ -109,10 +110,10 @@ module Benchmark
           end
         end
 
-        # Return header with padding if +@label+ is < length of 20.
+        # Return header with padding if +@label+ is < length of the configured width (by default 20).
         # @return [String] Right justified header (+@label+).
         def header
-          @label.to_s.rjust(20)
+          @label.to_s.rjust(IPS.width)
         end
 
         # Return string representation of Entry object.
