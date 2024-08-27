@@ -94,6 +94,18 @@ One benefit to using this method is benchmark-ips automatically determines the
 data points for testing our code, so we can focus on the results instead of
 guessing iteration counts as we do with the traditional Benchmark library.
 
+You can also use `ips_quick` to save a few lines of code:
+
+```ruby
+Benchmark.ips_quick([:upcase, :downcase], "hello") # runs a suite comparing "hello".upcase and "hello".downcase
+
+def first; MyJob.perform(1); end
+def second; MyJobOptimized.perform(1); end
+Benchmark.ips_quick([:first, second]) # compares :first and :second
+```
+
+This adds a very small amount of overhead, which may be significant (i.e. ips_quick will understate the difference) if you're microbenchmarking things that can do over 1 million iterations per second. In that case, you're better off using the full format.
+
 ### Custom Suite
 
 Pass a custom suite to disable garbage collection during benchmark:

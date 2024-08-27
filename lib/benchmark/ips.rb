@@ -9,7 +9,6 @@ require 'benchmark/ips/job/entry'
 require 'benchmark/ips/job/stream_report'
 require 'benchmark/ips/job/multi_report'
 require 'benchmark/ips/job'
-require 'benchmark/ips/quick'
 
 # Performance benchmarking library
 module Benchmark
@@ -77,6 +76,34 @@ module Benchmark
       report
     end
 
+    # Quickly compare multiple methods on the same object.
+    # @param methods [Array<Symbol>] An array of method names (as symbols) to compare.
+    # @param receiver [Object] The object on which to call the methods. Defaults to Kernel.
+    # @param opts [Hash] Additional options for customizing the benchmark.
+    # @option opts [Integer] :warmup The number of seconds to warm up the benchmark. (optional)
+    # @option opts [Integer] :time The number of seconds to run the benchmark. (optional)
+    #
+    # @example Compare String#upcase and String#downcase
+    #   ips_quick([:upcase, :downcase], "hello")
+    #
+    # @example Compare two methods you just defined, with a custom warmup.
+    #   def add; 1+1; end
+    #   def sub; 2-1; end
+    #   ips_quick([:add, :sub], warmup: 10)
+    def ips_quick(methods, receiver = Kernel, **opts)
+      ips do |x|
+        x.compare!
+        x.warmup = opts[:warmup] if opts[:warmup]
+        x.time = opts[:time] if opts[:time]
+
+        methods.each do |name|
+          x.report(name) do |x|
+            x.times { receiver.__send__ name }
+          end
+        end
+      end
+    end
+
     # Set options for running the benchmarks.
     # :format => [:human, :raw]
     #    :human format narrows precision and scales results for readability
@@ -87,13 +114,13 @@ module Benchmark
 
     module Helpers
       SUFFIXES = ['', 'k', 'M', 'B', 'T', 'Q'].freeze
-    
+
       def scale(value)
-        scale = (Math.log10(value) / 3).to_i 
+        scale = (Math.log10(value) / 3).to_i
         scale = 0 if scale < 0 || scale >= SUFFIXES.size
         suffix = SUFFIXES[scale]
         scaled_value = value.to_f / (1000 ** scale)
-    
+
         "%10.3f#{suffix}" % scaled_value
       end
       module_function :scale
@@ -113,7 +140,7 @@ module Benchmark
     end
   end
 
-  extend Benchmark::IPS # make ips available as module-level method
+  extend Benchmark::IPS # make ips/ips_quick available as module-level method
 
   ##
   # :singleton-method: ips
