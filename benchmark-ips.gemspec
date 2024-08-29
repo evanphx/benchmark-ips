@@ -41,4 +41,5 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<minitest>, ["~> 5.4"])
     s.add_dependency(%q<rdoc>, ["~> 4.0"])
   end
+  s.add_dependency(%q<benchmark>, ["~> 0.1"])
 end
