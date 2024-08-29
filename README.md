@@ -27,11 +27,7 @@ require 'benchmark/ips'
 Benchmark.ips do |x|
   # Configure the number of seconds used during
   # the warmup phase (default 2) and calculation phase (default 5)
-  x.config(:time => 5, :warmup => 2)
-
-  # These parameters can also be configured this way
-  x.time = 5
-  x.warmup = 2
+  x.config(warmup: 2, time: 5)
 
   # Typical mode, runs the block as many times as it can
   x.report("addition") { 1 + 2 }
@@ -43,8 +39,9 @@ Benchmark.ips do |x|
   x.report("addition2") do |times|
     i = 0
     while i < times
-      1 + 2
       i += 1
+
+      1 + 2
     end
   end
 
