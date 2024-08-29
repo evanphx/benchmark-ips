@@ -77,28 +77,27 @@ module Benchmark
     end
 
     # Quickly compare multiple methods on the same object.
-    # @param methods [Array<Symbol>] An array of method names (as symbols) to compare.
+    # @param methods [Symbol...] A list of method names (as symbols) to compare.
     # @param receiver [Object] The object on which to call the methods. Defaults to Kernel.
-    # @param opts [Hash] Additional options for customizing the benchmark.
-    # @option opts [Integer] :warmup The number of seconds to warm up the benchmark. (optional)
-    # @option opts [Integer] :time The number of seconds to run the benchmark. (optional)
+    # @param opts [Hash] Additional options for customizing the benchmark. See Job.config for all available options.
+    # @option opts [Integer] :warmup The number of seconds to warm up the benchmark.
+    # @option opts [Integer] :time The number of seconds to run the benchmark.
     #
     # @example Compare String#upcase and String#downcase
-    #   ips_quick([:upcase, :downcase], "hello")
+    #   ips_quick(:upcase, :downcase, on: "hello")
     #
     # @example Compare two methods you just defined, with a custom warmup.
     #   def add; 1+1; end
     #   def sub; 2-1; end
-    #   ips_quick([:add, :sub], warmup: 10)
-    def ips_quick(methods, receiver = Kernel, **opts)
+    #   ips_quick(:add, :sub, warmup: 10)
+    def ips_quick(*methods, on: Kernel, **opts)
       ips do |x|
         x.compare!
-        x.warmup = opts[:warmup] if opts[:warmup]
-        x.time = opts[:time] if opts[:time]
+        x.config(opts) if opts
 
         methods.each do |name|
           x.report(name) do |x|
-            x.times { receiver.__send__ name }
+            x.times { on.__send__ name }
           end
         end
       end

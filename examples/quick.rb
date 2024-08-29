@@ -10,8 +10,8 @@ def sub
   2 - 1
 end
 
-Benchmark.ips_quick([:add, :sub], warmup: 1, time: 1)
+Benchmark.ips_quick(:add, :sub, warmup: 1, time: 1)
 
 h = {}
 
-Benchmark.ips_quick([:size, :empty?], h)
+Benchmark.ips_quick(:size, :empty?, on: h)
