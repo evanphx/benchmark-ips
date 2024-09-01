@@ -130,7 +130,7 @@ class TestBenchmarkIPS < Minitest::Test
   end
 
   def test_ips_old_config
-    report = Benchmark.ips(1, 1) do |x|
+    Benchmark.ips(1, 1) do |x|
       assert_equal 1, x.time
       assert_equal 1, x.warmup
       return
