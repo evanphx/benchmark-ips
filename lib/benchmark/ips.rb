@@ -79,7 +79,7 @@ module Benchmark
     # Quickly compare multiple methods on the same object.
     # @param methods [Symbol...] A list of method names (as symbols) to compare.
     # @param receiver [Object] The object on which to call the methods. Defaults to Kernel.
-    # @param opts [Hash] Additional options for customizing the benchmark. See Job.config for all available options.
+    # @param opts [Hash] Additional options for customizing the benchmark.
     # @option opts [Integer] :warmup The number of seconds to warm up the benchmark.
     # @option opts [Integer] :time The number of seconds to run the benchmark.
     #
@@ -91,9 +91,8 @@ module Benchmark
     #   def sub; 2-1; end
     #   ips_quick(:add, :sub, warmup: 10)
     def ips_quick(*methods, on: Kernel, **opts)
-      ips do |x|
+      ips(opts) do |x|
         x.compare!
-        x.config(opts) if opts
 
         methods.each do |name|
           x.report(name) do |x|

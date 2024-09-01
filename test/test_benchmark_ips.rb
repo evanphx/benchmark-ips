@@ -276,4 +276,16 @@ class TestBenchmarkIPS < Minitest::Test
     assert_equal Benchmark::IPS::Helpers.humanize_duration(123456789.0123456789), "123.46 ms"
     assert_equal Benchmark::IPS::Helpers.humanize_duration(123456789012.3456789012), "123.46 s"
   end
+
+  def test_quick
+    Benchmark.ips_quick(:upcase, :downcase, on: "Hello World!", warmup: 0.001, time: 0.001)
+
+    assert $stdout.string.size > 0
+  end
+
+  def test_quick_on_kernel
+    Benchmark.ips_quick(:srand, :rand, warmup: 0.001, time: 0.001)
+
+    assert $stdout.string.size > 0
+  end
 end
