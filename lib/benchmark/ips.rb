@@ -95,8 +95,8 @@ module Benchmark
         x.compare!
 
         methods.each do |name|
-          x.report(name) do |x|
-            x.times { on.__send__ name }
+          x.report(name) do |iter|
+            iter.times { on.__send__ name }
           end
         end
       end
