@@ -107,7 +107,15 @@ module Benchmark
     #    :human format narrows precision and scales results for readability
     #    :raw format displays 6 places of precision and exact iteration counts
     def self.options
-      @options ||= {:format => :human}
+      @options ||= {
+        :format => :human,
+        :width => 20
+      }
+    end
+
+    # How wide of a column (in characters) to display the labels in (by default 20)
+    def self.width
+      options[:width] || 20
     end
 
     module Helpers
@@ -203,4 +211,12 @@ module Benchmark
   #                 addition:  4955278.9 i/s - 4.85x slower
   #
   # See also Benchmark::IPS
+end
+
+if width = ENV['IPS_WIDTH']
+  w = width.to_i
+
+  if w > 0
+    Benchmark::IPS.options[:width] = w
+  end
 end
