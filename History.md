@@ -1,3 +1,14 @@
+### 2.14.0 / 2024-09-08
+
+* Feature
+  * Adds Benchmark::IPS.quick_compare.
+  * Adds absolute duration of each iteration to compare output.
+
+### 2.13.0 / 2023-12-12
+
+* Feature
+  * Prints ruby version at top of report.
+
 ### 2.12.0 / 2023-03-08
 
 * Feature
