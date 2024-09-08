@@ -13,11 +13,14 @@ require 'benchmark/ips/job'
 # Performance benchmarking library
 module Benchmark
   # Benchmark in iterations per second, no more guessing!
-  # @see https://github.com/evanphx/benchmark-ips
+  #
+  # See Benchmark.ips for documentation on using this gem~
+  #
+  # @see {https://github.com/evanphx/benchmark-ips}
   module IPS
 
     # Benchmark-ips Gem version.
-    VERSION = "2.13.0"
+    VERSION = "2.13.1"
 
     # CODENAME of current version.
     CODENAME = "Long Awaited"
@@ -73,6 +76,32 @@ module Benchmark
       report
     end
 
+    # Quickly compare multiple methods on the same object.
+    # @param methods [Symbol...] A list of method names (as symbols) to compare.
+    # @param receiver [Object] The object on which to call the methods. Defaults to Kernel.
+    # @param opts [Hash] Additional options for customizing the benchmark.
+    # @option opts [Integer] :warmup The number of seconds to warm up the benchmark.
+    # @option opts [Integer] :time The number of seconds to run the benchmark.
+    #
+    # @example Compare String#upcase and String#downcase
+    #   ips_quick(:upcase, :downcase, on: "hello")
+    #
+    # @example Compare two methods you just defined, with a custom warmup.
+    #   def add; 1+1; end
+    #   def sub; 2-1; end
+    #   ips_quick(:add, :sub, warmup: 10)
+    def ips_quick(*methods, on: Kernel, **opts)
+      ips(opts) do |x|
+        x.compare!
+
+        methods.each do |name|
+          x.report(name) do |iter|
+            iter.times { on.__send__ name }
+          end
+        end
+      end
+    end
+
     # Set options for running the benchmarks.
     # :format => [:human, :raw]
     #    :human format narrows precision and scales results for readability
@@ -83,13 +112,13 @@ module Benchmark
 
     module Helpers
       SUFFIXES = ['', 'k', 'M', 'B', 'T', 'Q'].freeze
-    
+
       def scale(value)
-        scale = (Math.log10(value) / 3).to_i 
+        scale = (Math.log10(value) / 3).to_i
         scale = 0 if scale < 0 || scale >= SUFFIXES.size
         suffix = SUFFIXES[scale]
         scaled_value = value.to_f / (1000 ** scale)
-    
+
         "%10.3f#{suffix}" % scaled_value
       end
       module_function :scale
@@ -109,7 +138,7 @@ module Benchmark
     end
   end
 
-  extend Benchmark::IPS # make ips available as module-level method
+  extend Benchmark::IPS # make ips/ips_quick available as module-level method
 
   ##
   # :singleton-method: ips
