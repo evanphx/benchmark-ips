@@ -56,6 +56,8 @@ module Benchmark
     def compare(*entries, order: :fastest)
       return if entries.size < 2
 
+      max_width = entries.map { |e| e.label.to_s.size }.max
+
       case order
       when :baseline
         baseline = entries.shift
@@ -69,12 +71,12 @@ module Benchmark
 
       $stdout.puts "\nComparison:"
 
-      $stdout.printf "%20s: %10.1f i/s\n", baseline.label.to_s, baseline.stats.central_tendency
+      $stdout.printf "%#{max_width}s: %10.1f i/s\n", baseline.label.to_s, baseline.stats.central_tendency
 
       sorted.each do |report|
         name = report.label.to_s
 
-        $stdout.printf "%20s: %10.1f i/s - ", name, report.stats.central_tendency
+        $stdout.printf "%#{max_width}s: %10.1f i/s - ", name, report.stats.central_tendency
 
         if report.stats.overlaps?(baseline.stats)
           $stdout.print "same-ish: difference falls within error"

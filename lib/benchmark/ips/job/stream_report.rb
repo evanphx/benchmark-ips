@@ -2,9 +2,10 @@ module Benchmark
   module IPS
     class Job
       class StreamReport
-        def initialize(stream = $stdout)
+        def initialize(job, stream = $stdout)
           @last_item = nil
           @out = stream
+          @job = job
         end
 
         def start_warming
@@ -17,8 +18,9 @@ module Benchmark
         end
 
         def warming(label, _warmup)
-          @out.print rjust(label)
+          @out.print label.to_s.rjust(@job.max_width)
         end
+        alias_method :running, :warming
 
         def warmup_stats(_warmup_time_us, timing)
           case format
@@ -28,8 +30,6 @@ module Benchmark
             @out.printf "%10d i/100ms\n", timing
           end
         end
-
-        alias_method :running, :warming
 
         def add_report(item, caller)
           @out.puts " #{item.body}"
@@ -47,18 +47,6 @@ module Benchmark
         # @return [Symbol] format used for benchmarking
         def format
           Benchmark::IPS.options[:format]
-        end
-
-        # Add padding to label's right if label's length < 20,
-        # Otherwise add a new line and 20 whitespaces.
-        # @return [String] Right justified label.
-        def rjust(label)
-          label = label.to_s
-          if label.size > 20
-            "#{label}\n#{' ' * 20}"
-          else
-            label.rjust(20)
-          end
         end
       end
     end

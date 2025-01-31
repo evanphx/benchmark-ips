@@ -51,6 +51,10 @@ module Benchmark
       # @return [Integer]
       attr_accessor :confidence
 
+      # The maximum label width
+      # @return [Integer]
+      attr_reader :max_width
+
       # Silence output
       # @return [Boolean]
       def quiet
@@ -72,6 +76,7 @@ module Benchmark
         @compare_order = :fastest
         @held_path = nil
         @held_results = nil
+        @max_width = 20 # automatically computed as entries are added
 
         @timing = Hash.new 1 # default to 1 in case warmup isn't run
         @full_report = Report.new
@@ -85,7 +90,7 @@ module Benchmark
         @stats = :sd
         @confidence = 95
 
-        @out = MultiReport.new(StreamReport.new)
+        @out = MultiReport.new(StreamReport.new(self))
       end
 
       # Job configuration options, set +@warmup+ and +@time+.
@@ -106,7 +111,7 @@ module Benchmark
         if val # remove instances of StreamReport
           @out.quiet!
         else # ensure there is an instance of StreamReport
-          @out << StreamReport.new if @out.quiet?
+          @out << StreamReport.new(self) if @out.quiet?
         end
       end
 
@@ -179,6 +184,8 @@ module Benchmark
 
         action = str || blk
         raise ArgumentError, "no block or string" unless action
+
+        @max_width = label.size if label.size > @max_width
 
         @list.push Entry.new(label, action)
         self
