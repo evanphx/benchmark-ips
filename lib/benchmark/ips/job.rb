@@ -9,7 +9,8 @@ module Benchmark
       # The percentage of the expected runtime to allow
       # before reporting a weird runtime
       MAX_TIME_SKEW = 0.05
-      POW_2_30 = 1 << 30
+      # Keep iterations below this to avoid overflow to 64-bit long or Bignum
+      MAX_ITERATIONS = 1 << 30
 
       # Two-element arrays, consisting of label and block pairs.
       # @return [Array<Entry>] list of entries
@@ -296,11 +297,13 @@ module Benchmark
 
             # If the number of cycles would go outside the 32-bit signed integers range
             # then exit the loop to avoid overflows and start the 100ms warmup runs
-            break if cycles >= POW_2_30
+            break if cycles >= MAX_ITERATIONS
             cycles *= 2
           end while Timing.now + warmup_time_us * 2 < target
 
-          cycles = cycles_per_100ms warmup_time_us, warmup_iter
+          per_100ms = cycles_per_100ms warmup_time_us, warmup_iter
+          # Not [per_100ms, MAX_ITERATIONS].min as that can promote the result to long
+          cycles = per_100ms > MAX_ITERATIONS ? MAX_ITERATIONS : per_100ms
           @timing[item] = cycles
 
           # Run for the remaining of warmup in a similar way as #run_benchmark.
