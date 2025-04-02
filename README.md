@@ -4,7 +4,7 @@
 * home :: https://github.com/evanphx/benchmark-ips
 
 [![Gem Version](https://badge.fury.io/rb/benchmark-ips.svg)](http://badge.fury.io/rb/benchmark-ips)
-[![Build Status](https://secure.travis-ci.org/evanphx/benchmark-ips.svg)](http://travis-ci.org/evanphx/benchmark-ips)
+[![CI](https://github.com/evanphx/benchmark-ips/actions/workflows/ci.yml/badge.svg)](https://github.com/evanphx/benchmark-ips/actions/workflows/ci.yml)
 [![Inline docs](http://inch-ci.org/github/evanphx/benchmark-ips.svg)](http://inch-ci.org/github/evanphx/benchmark-ips)
 
 * https://github.com/evanphx/benchmark-ips
