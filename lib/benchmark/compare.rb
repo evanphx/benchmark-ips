@@ -30,22 +30,22 @@ module Benchmark
   # +x.compare!+ also takes an +order: :baseline+ option.
   #
   # Example:
-  #  > Benchmark.ips do |x|
-  #   x.report('Reduce using block')   { [*1..10].reduce { |sum, n| sum + n } }
-  #   x.report('Reduce using tag')     { [*1..10].reduce(:+) }
-  #   x.report('Reduce using to_proc') { [*1..10].reduce(&:+) }
-  #   x.compare!(order: :baseline)
-  # end
+  #    > Benchmark.ips do |x|
+  #     x.report('Reduce using block')   { [*1..10].reduce { |sum, n| sum + n } }
+  #     x.report('Reduce using tag')     { [*1..10].reduce(:+) }
+  #     x.report('Reduce using to_proc') { [*1..10].reduce(&:+) }
+  #     x.compare!(order: :baseline)
+  #   end
   #
-  # Calculating -------------------------------------
-  #   Reduce using block    886.202k (± 2.2%) i/s -      4.521M in   5.103774s
-  #     Reduce using tag      1.821M (± 1.6%) i/s -      9.111M in   5.004183s
-  # Reduce using to_proc    895.948k (± 1.6%) i/s -      4.528M in   5.055368s
+  #   Calculating -------------------------------------
+  #     Reduce using block    886.202k (± 2.2%) i/s -      4.521M in   5.103774s
+  #       Reduce using tag      1.821M (± 1.6%) i/s -      9.111M in   5.004183s
+  #   Reduce using to_proc    895.948k (± 1.6%) i/s -      4.528M in   5.055368s
   #
-  # Comparison:
-  #   Reduce using block:   886202.5 i/s
-  #     Reduce using tag:  1821055.0 i/s - 2.05x  (± 0.00) faster
-  # Reduce using to_proc:   895948.1 i/s - same-ish: difference falls within error
+  #   Comparison:
+  #     Reduce using block:   886202.5 i/s
+  #       Reduce using tag:  1821055.0 i/s - 2.05x  (± 0.00) faster
+  #   Reduce using to_proc:   895948.1 i/s - same-ish: difference falls within error
   #
   # The first report is considered the baseline against which other reports are compared.
   module Compare
