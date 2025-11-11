@@ -83,7 +83,7 @@ module Benchmark
         @full_report = Report.new
 
         # Default warmup and calculation time in seconds.
-        @warmup = 2
+        @warmup = nil
         @time = 5
         @iterations = 1
 
@@ -255,11 +255,16 @@ module Benchmark
       end
 
       def run
-        if @warmup && @warmup != 0 then
-          @out.start_warming
-          @iterations.times do
-            run_warmup
+        if @warmup
+          if @warmup != 0
+            @out.start_warming
+            @iterations.times do
+              run_warmup
+            end
           end
+        else
+          @out.start_warming
+          run_auto_warmup
         end
 
         @out.start_running
@@ -313,6 +318,82 @@ module Benchmark
           end
 
           @out.warmup_stats warmup_time_us, @timing[item]
+
+          break if run_single?
+        end
+      end
+
+      def run_single_autowarm(item)
+        @out.warming item.label, warmup
+
+        # The idea is to run the item until the cycles per 100ms timing
+        # is within 1% of the previous run. This means that the default is still
+        # 2 seconds like it was originally, but now if those 2 seconds didn't
+        # yield runs that were close enough together, the warmup will continue to
+        # run.
+        #
+        # It will run for a maximum of 30 seconds.
+        warmup = 1
+        prev = nil
+        warmup_time_us = nil
+
+        30.times do
+          Timing.clean_env
+
+          # Run for up to half of the configured warmup time with an increasing
+          # number of cycles to reduce overhead and improve accuracy.
+          # This also avoids running with a constant number of cycles, which a
+          # JIT might speculate on and then have to recompile in #run_benchmark.
+          before = Timing.now
+          target = Timing.add_second before, warmup
+
+          cycles = 1
+          begin
+            t0 = Timing.now
+            item.call_times cycles
+            t1 = Timing.now
+            warmup_iter = cycles
+            warmup_time_us = Timing.time_us(t0, t1)
+
+            # If the number of cycles would go outside the 32-bit signed integers range
+            # then exit the loop to avoid overflows and start the 100ms warmup runs
+            break if cycles >= POW_2_30
+            cycles *= 2
+          end while Timing.now + warmup_time_us * 2 < target
+
+          per = cycles_per_100ms warmup_time_us, warmup_iter
+
+          if prev != nil
+            diff = if per > prev
+              per / prev
+            else
+              prev / per
+            end
+
+            if diff - 1.0 <= 0.1
+              @timing[item] = cycles
+              break
+            end
+          end
+
+          prev = per
+
+          # Run for the remaining of warmup in a similar way as #run_benchmark.
+          target = Timing.add_second before, warmup
+          while Timing.now + MICROSECONDS_PER_100MS < target
+            item.call_times cycles
+          end
+        end
+
+        @out.warmup_stats warmup_time_us, @timing[item]
+      end
+
+      # Run warmup.
+      def run_auto_warmup
+        @list.each do |item|
+          next if run_single? && @held_results && @held_results.key?(item.label)
+
+          run_single_autowarm(item)
 
           break if run_single?
         end
