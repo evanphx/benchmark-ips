@@ -1,14 +1,14 @@
 # encoding: utf-8
-require 'benchmark/timing'
-require 'benchmark/compare'
-require 'benchmark/ips/stats/stats_metric'
-require 'benchmark/ips/stats/sd'
-require 'benchmark/ips/stats/bootstrap'
-require 'benchmark/ips/report'
-require 'benchmark/ips/job/entry'
-require 'benchmark/ips/job/stream_report'
-require 'benchmark/ips/job/multi_report'
-require 'benchmark/ips/job'
+require_relative 'timing'
+require_relative 'compare'
+require_relative 'ips/stats/stats_metric'
+require_relative 'ips/stats/sd'
+require_relative 'ips/stats/bootstrap'
+require_relative 'ips/report'
+require_relative 'ips/job/entry'
+require_relative 'ips/job/stream_report'
+require_relative 'ips/job/multi_report'
+require_relative 'ips/job'
 
 # Performance benchmarking library
 module Benchmark
@@ -68,7 +68,7 @@ module Benchmark
       report = job.full_report
 
       if ENV['SHARE'] || ENV['SHARE_URL']
-        require 'benchmark/ips/share'
+        require_relative 'ips/share'
         share = Share.new report, job
         share.share
       end
