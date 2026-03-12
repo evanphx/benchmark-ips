@@ -1,5 +1,5 @@
-require_relative "../lib/benchmark/ips"
 require "minitest/autorun"
+require "benchmark/ips"
 require "stringio"
 require "tmpdir"
 
