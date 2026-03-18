@@ -90,7 +90,15 @@ module Benchmark
 
           case Benchmark::IPS.options[:format]
           when :human
-            left = ("%s (±%4.1f%%) i/s" % [Helpers.scale(@stats.central_tendency), @stats.error_percentage]).ljust(20)
+            central_tendency = Helpers.scale(@stats.central_tendency)
+            error_percentage = @stats.error_percentage
+            left =
+              if error_percentage > 99.9
+                "%s (± Inf%%) i/s" % [central_tendency]
+              else
+                "%s (±%4.1f%%) i/s" % [central_tendency, @stats.error_percentage]
+              end.ljust(20)
+
             iters = Helpers.scale(@iterations)
 
             if @show_total_time
