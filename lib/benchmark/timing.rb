@@ -4,12 +4,20 @@ module Benchmark
     # Microseconds per second.
     MICROSECONDS_PER_SECOND = 1_000_000
 
-    # Calculate (arithmetic) mean of given samples.
+    # Calculate arithmetic mean of given numbers.
     # @param [Array] samples Samples to calculate mean.
-    # @return [Float] Mean of given samples.
+    # @return [Float] Mean of given numbers.
     def self.mean(samples)
       sum = samples.inject(:+)
       sum / samples.size
+    end
+
+    # Calculate harmonic mean of given samples.
+    # @param [Array] samples Samples to calculate mean.
+    # @return [Float] Harmonic mean of given samples.
+    def self.harmonic_mean(samples)
+      reciprocals = samples.inject(0) { |acc, i| acc + (1.0 / i) }
+      samples.size / reciprocals
     end
 
     # Calculate variance of given samples.

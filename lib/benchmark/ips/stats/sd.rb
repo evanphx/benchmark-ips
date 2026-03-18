@@ -8,7 +8,7 @@ module Benchmark
 
         def initialize(samples)
           @samples = samples
-          @mean = Timing.mean(samples)
+          @mean = Timing.harmonic_mean(samples)
           @error = Timing.stddev(samples, @mean).round
         end
 
