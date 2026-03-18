@@ -227,7 +227,7 @@ module Benchmark
         JSON.load(IO.read(@held_path)).each do |result|
           @held_results[result['item']] = result
           create_report(result['item'], result['measured_us'], result['iter'],
-                        create_stats(result['samples']), result['cycles'])
+                        create_stats(result['samples'], result['measured_us'], result['iter']), result['cycles'])
         end
       end
 
@@ -359,7 +359,7 @@ module Benchmark
             iterations_per_sec cycles, time_us
           }
 
-          rep = create_report(item.label, measured_us, iter, create_stats(samples), cycles)
+          rep = create_report(item.label, measured_us, iter, create_stats(samples, measured_us, iter), cycles)
 
           if (final_time - target).abs >= (@time.to_f * MAX_TIME_SKEW)
             rep.show_total_time!
@@ -371,10 +371,10 @@ module Benchmark
         end
       end
 
-      def create_stats(samples)
+      def create_stats(samples, measured_us, iterations)
         case @stats
           when :sd
-            Stats::SD.new(samples)
+            Stats::SD.new(samples, measured_us, iterations)
           when :bootstrap
             Stats::Bootstrap.new(samples, @confidence)
           else

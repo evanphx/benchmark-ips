@@ -12,14 +12,6 @@ module Benchmark
       sum / samples.size
     end
 
-    # Calculate harmonic mean of given samples.
-    # @param [Array] samples Samples to calculate mean.
-    # @return [Float] Harmonic mean of given samples.
-    def self.harmonic_mean(samples)
-      reciprocals = samples.inject(0) { |acc, i| acc + (1.0 / i) }
-      samples.size / reciprocals
-    end
-
     # Calculate variance of given samples.
     # @param [Float] m Optional mean (Expected value).
     # @return [Float] Variance of given samples.

@@ -6,9 +6,9 @@ module Benchmark
         include StatsMetric
         attr_reader :error, :samples
 
-        def initialize(samples)
+        def initialize(samples, measured_us, iterations)
           @samples = samples
-          @mean = Timing.harmonic_mean(samples)
+          @mean = Timing::MICROSECONDS_PER_SECOND * (iterations.to_f / measured_us)
           @error = Timing.stddev(samples, @mean).round
         end
 
