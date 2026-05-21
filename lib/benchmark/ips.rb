@@ -20,7 +20,7 @@ module Benchmark
   module IPS
 
     # Benchmark-ips Gem version.
-    VERSION = "2.15.0"
+    VERSION = "2.15.1"
 
     # CODENAME of current version.
     CODENAME = "Harmonic Nice"
