@@ -20,10 +20,10 @@ module Benchmark
   module IPS
 
     # Benchmark-ips Gem version.
-    VERSION = "2.14.0"
+    VERSION = "2.15.0"
 
     # CODENAME of current version.
-    CODENAME = "Akagi"
+    CODENAME = "Harmonic Nice"
 
     # Measure code in block, each code's benchmarked result will display in
     # iteration per second with standard deviation in given time.
